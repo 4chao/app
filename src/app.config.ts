@@ -13,5 +13,10 @@ export default {
       },
     },
   },
+  preset: {
+    hide: {
+      navigationStyle: 'custom',
+    },
+  },
   uniCloud: true,
 }

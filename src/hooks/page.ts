@@ -37,7 +37,7 @@ export const ScrollSymbol = Symbol('mescroll')
 export interface ScrollOptions {
   mescroll?: Mescroll
   enable: 'none' | 'up' | 'down' | 'all'
-  fetch: (...arg: any[]) => void
+  fetch: (mescroll: Mescroll) => void
 }
 /**
  * 上拉加载,下拉刷新
@@ -53,7 +53,7 @@ export function useScroll(onPageScroll?: typeof import('@dcloudio/uni-app')['onP
   const scrollOptions = reactive<ScrollOptions>({
     enable: 'all',
     mescroll: null,
-    fetch: () => {},
+    fetch: (page) => page.endSuccess(),
   })
   provide(ScrollSymbol, scrollOptions)
   let { mescroll, fetch, enable } = $(scrollOptions)
