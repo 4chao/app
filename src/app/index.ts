@@ -8,8 +8,11 @@ export const app = {
 
 export const appPlugin = {
   install: (vueApp: VueApp, options) => {
-    if (window) window.app = app
-    if (wx) wx['app'] = app
+    if (import.meta.env.DEV) {
+      if (window) window.app = app
+      if (wx) wx['app'] = app
+      if (wx) wx['uni'] = uni
+    }
     vueApp.config.globalProperties.app = app
     vueApp.config.globalProperties.uni = uni
     vueApp.config.globalProperties.log = (...args) => (console.log(...args), args[0])

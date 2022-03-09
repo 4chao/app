@@ -1,6 +1,10 @@
 <script setup lang="ts">
+  async function init() {
+    for (let i = 0; i < 3; i++) await Promise.wait(3000), app.Global.getSystemInfo()
+  }
   onLaunch(() => {
     console.log('App Launch')
+    init()
   })
   onShow(() => {
     console.log('App Show')
