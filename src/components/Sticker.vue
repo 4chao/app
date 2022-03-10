@@ -27,7 +27,9 @@
     focus: { default: true },
   })
   let scrollTop = $ref(0)
+  // #ifndef MP
   onPageScroll((e) => (scrollTop = e.scrollTop))
+  // #endif
 </script>
 
 <script module="wxsBiz" lang="wxs">
@@ -55,7 +57,7 @@
   }
     function setH(ins,t){
     ins.setStyle({
-      transition: t ? 'all 0.3s' : 'all 0.03s',
+      transition: t ? 'all 0.3s' : 'all 0.03s cubic-bezier(0,.6,.34,1)',
       'will-change': 'transform',
       transform: 'translateY(' + h + 'px)',
     })

@@ -1,0 +1,22 @@
+@import './patches.scss';
+
+.shadow-box,
+[data-shadow-box],
+[shadow-box] {
+  border-radius: 16rpx;
+  box-shadow: 0 1rpx 7rpx rgba(0, 0, 0, 0.2);
+  background-color: #fff;
+}
+
+.smooth {
+  border-radius: 30%;
+  overflow: hidden;
+  background-color: #eee;
+}
+
+.smooth-enable .smooth {
+  border-radius: 0;
+  mask-image: paint(smooth-corners);
+  -webkit-mask-image: paint(smooth-corners);
+  --smooth-corners: 3;
+}

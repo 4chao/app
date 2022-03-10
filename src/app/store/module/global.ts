@@ -9,7 +9,7 @@ export class Global extends createModule({
   get navBarHeight() {
     const { top, height } = this.menuButtonBounding || {}
     const { statusBarHeight } = this.systemInfo
-    return (top - statusBarHeight) * 2 + height || uni.upx2px(100)
+    return (top - statusBarHeight) * 2 + height || uni.upx2px(120)
   }
   get capsuleWidth() {
     const { left, right } = this.menuButtonBounding || {}

@@ -33,6 +33,7 @@ export function useQuery(fn?: (...args: any[]) => void) {
 }
 
 import { Mescroll } from '@/types'
+import { debounce } from 'lodash'
 export const ScrollSymbol = Symbol('mescroll')
 export interface ScrollOptions {
   mescroll?: Mescroll
@@ -53,11 +54,11 @@ export function useScroll(onPageScroll?: typeof import('@dcloudio/uni-app')['onP
   const scrollOptions = reactive<ScrollOptions>({
     enable: 'all',
     mescroll: null,
-    fetch: (page) => page.endSuccess(),
+    fetch: (page) => setTimeout(() => page.endSuccess(10, false), 1000),
   })
   provide(ScrollSymbol, scrollOptions)
   let { mescroll, fetch, enable } = $(scrollOptions)
-  onPageScroll?.((e) => mescroll && mescroll.onPageScroll(e))
+  onPageScroll(debounce((e) => mescroll && mescroll.onPageScroll(e), 100))
   onReachBottom(() => mescroll && mescroll.onReachBottom())
   onPullDownRefresh(() => mescroll && mescroll.onPullDownRefresh())
 
