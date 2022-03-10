@@ -45,6 +45,6 @@ export default defineConfig({
         reactivityTransform: true,
       },
     }),
-    visualizer(), // 依赖可视化
+    // visualizer(), // 依赖可视化
   ],
 })
