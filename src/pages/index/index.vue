@@ -8,7 +8,7 @@
     <div @touchstart="scrolling = true" @touchend="scrolling = false">
       <!-- #endif -->
       <div flex-center-col pt40>
-        {{ searchValue }}
+        {{ JSON.stringify(searchInfo) }}
       </div>
       <div flex-center-col pt40>
         {{ title }}
@@ -79,8 +79,11 @@
   const title = $ref('Hello')
   useScroll(onPageScroll)
   const scrolling = $ref(false)
-  const searchValue = $ref('123')
-  provide('searchValue', $$(searchValue))
+  const searchInfo = reactive({
+    value: '',
+    searched: '',
+  })
+  provide('searchInfo', searchInfo)
 </script>
 
 <style lang="scss"></style>

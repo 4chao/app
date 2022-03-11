@@ -18,10 +18,13 @@
     >
       <div
         :style="{ height: open ? oHeight + 'px' : app.Global.navBarHeight + 'px' }"
+        relative
         mxsm
         shadow-box
         pxsm
+        flex
         flex-grow
+        flex-col
       >
         <div :style="{ height: app.Global.navBarHeight + 'px' }" flex-center justify-start>
           <div flex-center>
@@ -29,33 +32,38 @@
               :style="{ height: navHpx(mp ? 0.5 : 0.6), width: navHpx(mp ? 0.5 : 0.6) }"
               class="smooth"
               src="http://q2.qlogo.cn/headimg_dl?dst_uin=2490445193&spec=100&v=0.5662477152747005"
+              @click="profile = !profile"
             ></image>
           </div>
-
-          <input
-            v-model="value"
-            h-full
-            flex-grow
-            mxsm
-            placeholder="搜索思潮"
-            :style="{ fontSize: navHpx(mp ? 0.35 : 0.3) }"
-            @focus=";(bHeight = $event.detail['height']), (open = true)"
-          />
+          <div relative h-full flex-grow mxsm>
+            <input
+              v-model="dValue"
+              h-full
+              w-full
+              :placeholder="'搜索思潮'"
+              :style="{ fontSize: navHpx(mp ? 0.35 : 0.3) }"
+              @focus=";(bHeight = $event.detail['height']), (focus = true)"
+            />
+            <div class="ab an" :class="{ hide: !profile }" flex items-center bg-white> 123 </div>
+          </div>
           <div flex-center :style="{ fontSize: navHpx(mp ? 0.5 : 0.5) }">
             <div
               i-ri-close-fill
               class="x"
-              :class="{ act: open }"
-              @click.prevent.stop="
-                () => (open ? (value ? (value = '') : (open = false)) : (menu = true))
-              "
+              :class="{ act: open || menu }"
+              @click.prevent.stop="rightBtn"
             ></div>
           </div>
         </div>
+        <div flex-grow relative>
+          <div class="ab history" :class="{ hide: !focus }" bg-blue-100></div>
+          <div class="ab profile" :class="{ hide: !profile }" bg-green-100></div>
+        </div>
+        <div shadow-box class="menu" :class="{ act: menu }"></div>
       </div>
     </div>
   </Sticker>
-  <div v-show="open" class="mask" @click.stop="open = false"></div>
+  <div v-show="open || menu" class="mask" @click.stop="open = false"></div>
 </template>
 
 <script setup lang="ts">
@@ -65,7 +73,11 @@
   defineProps({
     scrolling: Boolean,
   })
-  const value = inject('searchValue')
+  let { value, searched } = $(inject('searchInfo'))
+  const dValue = computed({
+    get: () => (open && !profile ? value || searched : searched),
+    set: (val) => (value = val),
+  })
   function navHpx(n) {
     return n * app.Global.navBarHeight + 'px'
   }
@@ -75,12 +87,28 @@
   var mp = false
   // #endif
 
-  let open = $ref(false)
+  let focus = $ref(false)
+  let profile = $ref(false)
+  let menu = $ref(false)
+  let open = $computed({
+    get: () => focus || profile,
+    set: () => (focus = profile = menu = false),
+  })
+  watchEffect(() => profile && (focus = false))
+  watch($$(open), () => (menu = false))
+  function rightBtn() {
+    if (!open) return (menu = true) //图标为 + , 未弹出 => 打开菜单
+    if (profile) return (profile = false) // 图标为 x 关闭个人信息
+    if (value) return (value = '') // 图标为 x 清空输入
+    return (open = false) // 图标为 x 关闭弹窗
+  }
+
   let bHeight = $ref(0)
   uni.onKeyboardHeightChange?.(({ height }) => {
     bHeight = height
+    if (height) defaultHeight = oHeight as number
   })
-  let defaultHeight = $ref(uni.upx2px(10000))
+  let defaultHeight = $ref(uni.upx2px(1000))
   let oHeight = $computed(() => {
     let height =
       app.Global.systemInfo.windowHeight -
@@ -89,8 +117,6 @@
         uni.upx2px(50) || defaultHeight
     return height > defaultHeight ? defaultHeight : height
   })
-
-  let menu = $ref(false)
 </script>
 
 <style lang="scss" scoped>
@@ -121,6 +147,42 @@
 
     &.act {
       transform: rotate(180deg);
+    }
+  }
+
+  .ab {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    opacity: 1;
+    &.an {
+      transition: opacity 0.3s ease;
+    }
+    transition: opacity 0.3s ease;
+    &.hide {
+      pointer-events: none;
+      opacity: 0;
+    }
+  }
+
+  .menu {
+    position: absolute;
+    top: calc(100% - 60rpx);
+    // top: calc(calc(100% + 30rpx) - 300rpx);
+
+    right: 0;
+    width: 250rpx;
+    height: 400rpx;
+    opacity: 0;
+
+    transition: all 0.3s ease;
+    pointer-events: none;
+    &.act {
+      top: calc(100% + 30rpx);
+      opacity: 1;
+      transform: translateY(0);
     }
   }
 </style>

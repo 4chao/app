@@ -132,7 +132,7 @@ module.exports = {
     'no-proto': 'off',
     'no-redeclare': 'off',
     'no-regex-spaces': 2,
-    'no-return-assign': [2, 'except-parens'],
+    'no-return-assign': 'off',
     'no-self-assign': 2,
     'no-self-compare': 2,
     'no-sequences': 0,

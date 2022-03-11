@@ -6,11 +6,14 @@
     console.log('App Launch')
     init()
   })
+
   onShow(() => {
     console.log('App Show')
+    uni.setKeepScreenOn({ keepScreenOn: true })
   })
   onHide(() => {
     console.log('App Hide')
+    uni.setKeepScreenOn({ keepScreenOn: false })
   })
 </script>
 <style lang="scss">
