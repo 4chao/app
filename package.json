@@ -65,7 +65,6 @@
     "normalize-path": "^3.0.0",
     "patch-package": "^6.4.7",
     "picocolors": "^1.0.0",
-    "postcss-relaxed-unit": "^1.1.1",
     "prettier": "^2.5.1",
     "rimraf": "^3.0.2",
     "rollup-plugin-visualizer": "^5.6.0",
