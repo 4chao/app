@@ -57,7 +57,7 @@
   }
     function setH(ins,t){
     ins.setStyle({
-      transition: t ? 'all 0.3s' : 'all 0.03s cubic-bezier(0,.6,.34,1)',
+      transition: t ? 'all 0.3s ease' : 'all 0.3s cubic-bezier(0,.6,.34,1)',
       'will-change': 'transform',
       transform: 'translateY(' + h + 'px)',
     })

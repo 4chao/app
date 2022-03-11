@@ -1,13 +1,12 @@
 <template>
   <meta hide title="主页" />
-  <sys>
+  <sys :top="app.Global.navBarHeight * 2 + app.Global.systemInfo.statusBarHeight">
     <template #fixed>
       <Search :scrolling="scrolling"></Search>
     </template>
+    <!-- #ifndef MP -->
     <div @touchstart="scrolling = true" @touchend="scrolling = false">
-      <div
-        :style="{ paddingTop: 'var(--status-bar-height)', height: app.Global.navBarHeight + 'px' }"
-      ></div>
+      <!-- #endif -->
       <div flex-center-col pt40>
         {{ searchValue }}
       </div>
@@ -68,7 +67,9 @@
       <div flex-center-col pt40>
         {{ title }}
       </div>
+      <!-- #ifndef MP -->
     </div>
+    <!-- #endif -->
   </sys>
 </template>
 
@@ -82,11 +83,4 @@
   provide('searchValue', $$(searchValue))
 </script>
 
-<style lang="scss">
-  .sticker {
-    position: fixed;
-    left: 0;
-    right: 0;
-    z-index: 900;
-  }
-</style>
+<style lang="scss"></style>

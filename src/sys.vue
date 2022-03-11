@@ -3,6 +3,7 @@
   <MescrollBody
     :up="{ use: enableUp }"
     :down="{ use: enableDown }"
+    :top="top"
     @init="mescroll = $event"
     @up="fetch"
     @down="enableUp ? $event.resetUpScroll() : fetch($event)"
@@ -21,6 +22,10 @@
   import Paint from '@/components/Paint.vue'
   // #endif
   import { useQuery, ScrollSymbol, ScrollOptions } from '@/hooks'
+
+  defineProps({
+    top: Number,
+  })
 
   const { t } = $(useQuery())
   onUnload(() => uni.$off(t)) // 页面卸载,解绑回调事件

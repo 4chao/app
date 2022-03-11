@@ -58,7 +58,7 @@ export function useScroll(onPageScroll?: typeof import('@dcloudio/uni-app')['onP
   })
   provide(ScrollSymbol, scrollOptions)
   let { mescroll, fetch, enable } = $(scrollOptions)
-  onPageScroll(throttle((e) => mescroll && mescroll.onPageScroll(e), 100, { trailing: false }))
+  onPageScroll((e) => mescroll && mescroll.onPageScroll(e))
   onReachBottom(() => mescroll && mescroll.onReachBottom())
   onPullDownRefresh(() => mescroll && mescroll.onPullDownRefresh())
 
