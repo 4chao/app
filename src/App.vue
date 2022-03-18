@@ -17,7 +17,7 @@
   })
 </script>
 <style lang="scss">
-  @import '@/styles/color-ui.css';
   @import 'uview-ui/index.scss';
-  @import '@/style/index.scss';
+  @import '@/styles/color-ui.css';
+  @import '@/styles/index.scss';
 </style>

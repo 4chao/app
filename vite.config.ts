@@ -7,6 +7,7 @@ import AutoImport from 'unplugin-auto-import/vite'
 import Inspect from 'vite-plugin-inspect'
 import Unocss from 'unocss/vite'
 import { presetUno, presetAttributify, presetIcons } from 'unocss'
+import transformerDirective from '@unocss/transformer-directives'
 import presetUniapp from './build/uniapp.preset'
 import presetAppUtils from './build/appUtils.preset'
 import UniMeta from './build/vite-plugin-uni-meta'
@@ -28,6 +29,7 @@ export default defineConfig({
     UniProvider(), //自动注册页面全局组件
     Unocss({
       presets: [presetUno(), presetAttributify({ prefix: 'data-' }), presetIcons()],
+      transformers: [transformerDirective() as any],
       shortcuts: {
         'flex-center': 'flex flex-row justify-center items-center',
         'flex-center-col': 'flex flex-col justify-center items-center',

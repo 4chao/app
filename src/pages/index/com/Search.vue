@@ -15,6 +15,7 @@
         paddingRight: app.Global.capsuleWidth + 'px',
       }"
       flex
+      @touchmove.stop.prevent
     >
       <div
         :style="{ height: open ? oHeight + 'px' : app.Global.navBarHeight + 'px' }"
@@ -33,18 +34,23 @@
               class="smooth"
               src="http://q2.qlogo.cn/headimg_dl?dst_uin=2490445193&spec=100&v=0.5662477152747005"
               @click="profile = !profile"
+              @touchstart="createTick"
+              @touchmove="clearTick"
+              @touchend="clearTick"
             ></image>
           </div>
           <div relative h-full flex-grow mxsm>
             <input
               v-model="dValue"
+              class="ab"
+              :class="{ hide: profile }"
               h-full
               w-full
               :placeholder="'搜索思潮'"
               :style="{ fontSize: navHpx(mp ? 0.35 : 0.3) }"
               @focus=";(bHeight = $event.detail['height']), (focus = true)"
             />
-            <div class="ab an" :class="{ hide: !profile }" flex items-center bg-white> 123 </div>
+            <div class="ab" :class="{ hide: !profile }" flex items-center bg-white> 123 </div>
           </div>
           <div flex-center :style="{ fontSize: navHpx(mp ? 0.5 : 0.5) }">
             <div
@@ -55,15 +61,30 @@
             ></div>
           </div>
         </div>
-        <div flex-grow relative>
-          <div class="ab history" :class="{ hide: !focus }" bg-blue-100></div>
-          <div class="ab profile" :class="{ hide: !profile }" bg-green-100></div>
+        <div flex-grow relative overflow-hidden>
+          <scroll-view scroll-y class="ab history" :class="{ hide: !focus }" @touchend.prevent>
+            <!-- 搜索记录和推荐 -->
+            <div py30>111111111111111111111</div>
+            <div py30>111111111111111111111</div>
+            <div py30>111111111111111111111</div>
+            <div py30>111111111111111111111</div>
+            <div py30>111111111111111111111</div>
+            <div py30>111111111111111111111</div>
+          </scroll-view>
+          <scroll-view scroll-y class="ab profile" :class="{ hide: !profile }">
+            <!-- 个人信息 -->
+          </scroll-view>
         </div>
-        <div shadow-box class="menu" :class="{ act: menu }"></div>
+        <div
+          shadow-box
+          class="menu"
+          :class="{ act: menu }"
+          :style="{ right: app.Global.capsuleWidth && -app.Global.capsuleWidth + 10 + 'px' }"
+        ></div>
       </div>
     </div>
   </Sticker>
-  <div v-show="open || menu" class="mask" @click.stop="open = false"></div>
+  <div v-show="open || menu" class="mask" @click.stop="open = false" @touchmove.stop.prevent></div>
 </template>
 
 <script setup lang="ts">
@@ -97,6 +118,7 @@
   watchEffect(() => profile && (focus = false))
   watch($$(open), () => (menu = false))
   function rightBtn() {
+    if (menu == true) return (menu = false)
     if (!open) return (menu = true) //图标为 + , 未弹出 => 打开菜单
     if (profile) return (profile = false) // 图标为 x 关闭个人信息
     if (value) return (value = '') // 图标为 x 清空输入
@@ -117,6 +139,11 @@
         uni.upx2px(50) || defaultHeight
     return height > defaultHeight ? defaultHeight : height
   })
+
+  let timer = null
+  const createTick = () => (timer = setTimeout(toTest, 5000))
+  const clearTick = () => clearTimeout(timer)
+  const toTest = () => (uni.vibrateShort({}), app.to('test/index'))
 </script>
 
 <style lang="scss" scoped>
@@ -157,9 +184,6 @@
     right: 0;
     bottom: 0;
     opacity: 1;
-    &.an {
-      transition: opacity 0.3s ease;
-    }
     transition: opacity 0.3s ease;
     &.hide {
       pointer-events: none;
@@ -170,7 +194,6 @@
   .menu {
     position: absolute;
     top: calc(100% - 60rpx);
-    // top: calc(calc(100% + 30rpx) - 300rpx);
 
     right: 0;
     width: 250rpx;
@@ -180,9 +203,10 @@
     transition: all 0.3s ease;
     pointer-events: none;
     &.act {
-      top: calc(100% + 30rpx);
+      top: calc(100% + 20rpx);
       opacity: 1;
       transform: translateY(0);
+      pointer-events: auto;
     }
   }
 </style>

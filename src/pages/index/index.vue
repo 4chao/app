@@ -1,72 +1,14 @@
 <template>
-  <meta hide title="主页" />
-  <sys :top="app.Global.navBarHeight * 2 + app.Global.systemInfo.statusBarHeight">
+  <meta hide title="主页" title:微信="微信端主页" />
+  <sys :top="top">
     <template #fixed>
       <Search :scrolling="scrolling"></Search>
     </template>
     <!-- #ifndef MP -->
     <div @touchstart="scrolling = true" @touchend="scrolling = false">
       <!-- #endif -->
-      <div flex-center-col pt40>
-        {{ JSON.stringify(searchInfo) }}
-      </div>
-      <div flex-center-col pt40>
-        {{ title }}
-      </div>
-      <div flex-center-col pt40>
-        {{ title }}
-      </div>
-      <div flex-center-col pt40>
-        {{ title }}
-      </div>
-      <div flex-center-col pt40>
-        {{ title }}
-      </div>
-      <div flex-center-col pt40>
-        {{ title }}
-      </div>
-      <div flex-center-col pt40>
-        {{ title }}
-      </div>
-      <div flex-center-col pt40>
-        {{ title }}
-      </div>
-      <div flex-center-col pt40>
-        {{ title }}
-      </div>
-      <div flex-center-col pt40>
-        {{ title }}
-      </div>
-      <div flex-center-col pt40>
-        {{ title }}
-      </div>
-      <div flex-center-col pt40>
-        {{ title }}
-      </div>
-      <div flex-center-col pt40>
-        {{ title }}
-      </div>
-      <div flex-center-col pt40>
-        {{ title }}
-      </div>
-      <div flex-center-col pt40>
-        {{ title }}
-      </div>
-      <div flex-center-col pt40>
-        {{ title }}
-      </div>
-      <div flex-center-col pt40>
-        {{ title }}
-      </div>
-      <div flex-center-col pt40>
-        {{ title }}
-      </div>
-      <div flex-center-col pt40>
-        {{ title }}
-      </div>
-      <div flex-center-col pt40>
-        {{ title }}
-      </div>
+      <div ptlg></div>
+      <div psm shadow-box mxsm mb4>123</div>
       <!-- #ifndef MP -->
     </div>
     <!-- #endif -->
@@ -84,6 +26,13 @@
     searched: '',
   })
   provide('searchInfo', searchInfo)
+
+  let th = $computed(() => {
+    const { navBarHeight } = app.Global
+    const { statusBarHeight, windowWidth } = app.Global.systemInfo
+    return ((navBarHeight + statusBarHeight) * 750) / windowWidth
+  })
+  var top = $computed(() => th + 30)
 </script>
 
 <style lang="scss"></style>

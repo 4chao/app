@@ -1,5 +1,5 @@
 <template>
-  <meta title="测试页面" />
+  <meta title="工程模式" />
 </template>
 
 <script setup lang="ts">
