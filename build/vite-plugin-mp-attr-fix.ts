@@ -13,6 +13,7 @@ export interface Options {
   DEBUG: boolean
 }
 
+const htmlRE = /<template>[\s\S]*<\/template>/g
 const elementRE = /<\w[\w:\.$-]*\s((?:'[\s\S]*?'|"[\s\S]*?"|`[\s\S]*?`|\{[\s\S]*?\}|[\s\S]*?)*?)>/g
 const valuedAttributeRE =
   /([?]|(?!\d|-{2}|-\d)[a-zA-Z0-9\u00A0-\uFFFF-@_:%-]+)(?:=(["'])([^\2]*?)\2)?/g
@@ -50,18 +51,18 @@ export default function (options: Partial<Options> = {}) {
     enforce: 'pre',
     transform(code: string, id) {
       let map = {}
-      if (excludedFiles.some((e) => id.includes(e)) || !includedFiles.some((e) => e.test(id)))
+      if (excludedFiles.some(e => id.includes(e)) || !includedFiles.some(e => e.test(id)))
         return null
-      let aaa = Array.from(code.matchAll(elementRE)).flatMap((match) =>
+      let aaa = Array.from(code.match(htmlRE)?.[0]?.matchAll(elementRE) || []).flatMap(match =>
         Array.from(
-          (excludedTags.some((e) => match[0].startsWith('<' + e)) ? '' : match[1]).matchAll(
-            valuedAttributeRE
-          )
-        )
+          (excludedTags.some(e => match[0].startsWith('<' + e)) ? '' : match[1]).matchAll(
+            valuedAttributeRE,
+          ),
+        ),
       )
       aaa.forEach(([s, name, _, content = '']) => {
         if (
-          excludedAttributes.some((e) => name.includes(e)) ||
+          excludedAttributes.some(e => name.includes(e)) ||
           name.startsWith(PREFIX) ||
           name.startsWith('@') ||
           content.includes('/') ||
@@ -74,7 +75,7 @@ export default function (options: Partial<Options> = {}) {
       })
 
       Object.entries(map).forEach(([s, v]) => {
-        let sPrefix = strippedPrefixes.find((e) => s.startsWith(e))
+        let sPrefix = strippedPrefixes.find(e => s.startsWith(e))
         if (sPrefix) return
         let suffix = v ? '' : '=""'
         debug(s, '=>', `${sPrefix || ''}data-${s.replace(/:/g, '-').replace(sPrefix, '')}${suffix}`)
@@ -82,7 +83,7 @@ export default function (options: Partial<Options> = {}) {
           new RegExp(`(?<=\\s)${s}(?=\\s|>)`, 'g'),
           `${s.replace(/hover:/g, 'hover-')} data-${s
             .replace(/hover:/g, 'hover-')
-            .replace(sPrefix, '')}${suffix}`
+            .replace(sPrefix, '')}${suffix}`,
         )
       })
 
@@ -107,7 +108,7 @@ export default function (options: Partial<Options> = {}) {
       console.log(
         c.dim(new Date().toLocaleTimeString()),
         c.bold(c.red(`[debug:${pluginName}]`)),
-        ...args
+        ...args,
       )
   }
 }
