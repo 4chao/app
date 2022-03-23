@@ -8,8 +8,7 @@ import Inspect from 'vite-plugin-inspect'
 import Unocss from 'unocss/vite'
 import { presetUno, presetAttributify, presetIcons } from 'unocss'
 import transformerDirective from '@unocss/transformer-directives'
-import presetUniapp from './build/uniapp.preset'
-import presetAppUtils from './build/appUtils.preset'
+import appAutoImport from './build/appAutoImport.preset'
 import UniMeta from './build/vite-plugin-uni-meta'
 import UniProvider from './build/vite-plugin-uni-provider'
 import MpAttrFix from './build/vite-plugin-mp-attr-fix'
@@ -39,7 +38,7 @@ export default defineConfig({
       restart: ['src/pages.js', 'src/app.config.ts'],
     }),
     AutoImport({
-      imports: ['vue', presetAppUtils, presetUniapp],
+      imports: ['vue', 'uni-app', appAutoImport],
       dts: 'declare/auto-imports.d.ts',
     }),
     uni({
