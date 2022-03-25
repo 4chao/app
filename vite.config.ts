@@ -2,6 +2,7 @@ import { defineConfig } from 'vite'
 import path from 'path'
 
 import uni from '@dcloudio/vite-plugin-uni'
+import mkcert from 'vite-plugin-mkcert'
 import ViteRestart from 'vite-plugin-restart'
 import AutoImport from 'unplugin-auto-import/vite'
 import Inspect from 'vite-plugin-inspect'
@@ -21,8 +22,10 @@ export default defineConfig({
       lodash: 'lodash-es',
     },
   },
+  server: { https: true },
   plugins: [
     Inspect(), //vite分析工具
+    mkcert(), //生成证书
     MpAttrFix(), //修复小程序不能使用attr的问题
     UniMeta(), //自动生成页面meta信息和路由并注册pages.json
     UniProvider(), //自动注册页面全局组件

@@ -74,6 +74,7 @@
     "unplugin-auto-import": "^0.6.6",
     "vite": "^2.7.13",
     "vite-plugin-inspect": "^0.3.15",
+    "vite-plugin-mkcert": "^1.6.0",
     "vite-plugin-restart": "^0.1.1"
   },
   "config": {
