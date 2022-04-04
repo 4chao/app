@@ -20,7 +20,7 @@ const valuedAttributeRE =
 const PREFIX = 'data-'
 
 export default function (options: Partial<Options> = {}) {
-  if (!process.env.UNI_PLATFORM.startsWith('mp')) return []
+  if (!process.env.UNI_PLATFORM?.startsWith('mp')) return []
 
   let {
     pagesBasePath = 'src/pages',

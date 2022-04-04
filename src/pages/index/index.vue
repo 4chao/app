@@ -16,23 +16,23 @@
 </template>
 
 <script setup lang="ts">
-  import Search from './com/Search.vue'
-  import { useScroll } from '@/hooks'
-  const title = $ref('Hello')
-  useScroll(onPageScroll)
-  const scrolling = $ref(false)
-  const searchInfo = reactive({
-    value: '',
-    searched: '',
-  })
-  provide('searchInfo', searchInfo)
+import Search from './com/Search.vue'
+import { useScroll } from '@/hooks'
+const title = $ref('Hello')
+useScroll(onPageScroll)
+const scrolling = $ref(false)
+const searchInfo = reactive({
+  value: '',
+  searched: '',
+})
+provide('searchInfo', searchInfo)
 
-  let th = $computed(() => {
-    const { navBarHeight } = app.Global
-    const { statusBarHeight, windowWidth } = app.Global.systemInfo
-    return ((navBarHeight + statusBarHeight) * 750) / windowWidth
-  })
-  var top = $computed(() => th + 30)
+let th = $computed(() => {
+  const { navBarHeight } = app.Global
+  const { statusBarHeight, windowWidth } = app.Global.systemInfo
+  return ((navBarHeight + statusBarHeight) * 750) / windowWidth
+})
+var top = $computed(() => th + 30)
 </script>
 
 <style lang="scss"></style>

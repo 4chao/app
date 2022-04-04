@@ -16,13 +16,14 @@ const pageTools = {
         ][pathArray.length].join('/')
       }
       const pkg = { data: obj, from: currentPath, t }
+      //TODO: 改成事件机制
       const querystr = encode(JSON.stringify(pkg)).replace(/=/g, '等')
-      console.log(`to ${path}`, obj ? `\n` : '', obj || '')
       uni.navigateTo({
         url: path + '?q=' + querystr,
         fail: err => console.log(err),
+        success: () => app.info(`页面切换`, obj || '', '=>' + path),
       })
-      return new Promise<void>(r => uni.$once(t, r))
+      return new Promise<any>(r => uni.$once(t, r))
     },
     500,
     { leading: true, trailing: false },
@@ -34,6 +35,8 @@ const pageTools = {
         const { t } = useQuery()
         uni.$emit(t.value, data)
       }
+
+      //TODO: 这里有bug,不能用try来判断成功与否
       try {
         uni.navigateBack({})
       } catch (error) {
@@ -54,6 +57,8 @@ export default function () {
   Object.assign(app, pageTools)
 }
 
+type pageType = typeof pageTools
+
 declare global {
-  interface App extends Is<typeof pageTools> {}
+  interface App extends pageType {}
 }

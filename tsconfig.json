@@ -25,14 +25,14 @@
     "allowJs": true,
     "noImplicitAny": false,
     "pretty": false,
-    "lib": ["esnext"],
-    "types": ["node", "@dcloudio/types", "@types/weixin-app"],
+    "lib": ["esnext", "dom"],
+    "types": ["node", "@dcloudio/types", "@types/weixin-app", "vitest/globals"],
     "paths": {
       "@": ["./src"],
       "@/*": ["./src/*"],
       "@root/*": ["./*"]
     }
   },
-  "include": ["src/**/*", "declare/**/*", "build/**/*"],
+  "include": ["src/**/*", "declare/**/*", "build/**/*", "test/**/*"],
   "exclude": ["node_modules"]
 }
