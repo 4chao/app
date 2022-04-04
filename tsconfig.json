@@ -29,7 +29,8 @@
     "types": ["node", "@dcloudio/types", "@types/weixin-app"],
     "paths": {
       "@": ["./src"],
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@root/*": ["./*"]
     }
   },
   "include": ["src/**/*", "declare/**/*", "build/**/*"],
