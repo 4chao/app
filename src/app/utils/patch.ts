@@ -9,6 +9,16 @@ let patch = {
 
 export default function (vueApp: VueApp) {
   Object.assign(vueApp.config.globalProperties, patch)
+  vueApp.mixin({
+    props: {
+      run: Function,
+    },
+    mounted() {
+      this.$nextTick(() => {
+        console.log(123, this.run)
+      })
+    },
+  })
 }
 
 type patchType = typeof patch

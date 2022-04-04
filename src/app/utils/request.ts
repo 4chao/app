@@ -4,7 +4,9 @@ import { map, type IResult } from '@root/declare/APId'
 export const api = new Proxy(map, {
   get: function (target, name: string) {
     function found(name, type?) {
+      app.log('found', name, type)
       if (!type && name in target) return target[name]
+      if (!type && 'Post' + name in target) return target['Post' + name]
       if (!type && 'Get' + name in target) return target['Get' + name]
       if (type + name in target) return target[type + name]
       return null
@@ -13,20 +15,25 @@ export const api = new Proxy(map, {
       if (!ins) throw new Error('错误调用: ' + name)
       let { url, type } = ins
       return async (data, options = {}) => {
-        url.match(/(?<=\/:)[^\/]+/g).forEach(attr => {
+        url.match(/(?<=\/:)[^\/]+/g)?.forEach(attr => {
           url = url.replace(':' + attr, attr in data ? data[attr] : '')
         })
+        app.debug('发起请求', type, url, data)
         return new Promise((resolve, reject) => {
           uni.request({
             url: import.meta.env.VITE_BASE_URL + url,
             method: type,
             data: data,
+            header: {
+              'Sichiao-User-Token': app.User.token,
+            },
             success: ({ data: res }: any) => {
               if (res.code !== 1000) {
                 uni.showToast({ title: res.message, icon: 'none' })
                 app.error('请求失败', res.message)
                 return reject(res)
               }
+              app.success('请求成功', res.data)
               return resolve(res.data)
             },
             fail: err => {
@@ -74,7 +81,7 @@ type APIs<K = keyof IResult> = K extends infer Name
           { [k in Key]: WithMethod<{ [m in Type]: FReq<IResult[`${U}Req`], IResult[`${U}Res`]> }> }
         : never
       : //@ts-expect-error `${U}Req`无法被约束为IResult的索引类型
-        { [k in U]: WithMethod<{ post: FReq<IResult[`${U}Req`], IResult[`${U}Res`]> }> }
+        { [k in U]: WithMethod<{ Post: FReq<IResult[`${U}Req`], IResult[`${U}Res`]> }> }
     : never
   : never
 

@@ -6,9 +6,10 @@
     </template>
     <!-- #ifndef MP -->
     <div @touchstart="scrolling = true" @touchend="scrolling = false">
+      <div ptsm></div>
       <!-- #endif -->
-      <div ptlg></div>
       <div psm shadow-box mxsm mb4>123</div>
+      <div @click="app.to('login')">登录</div>
       <!-- #ifndef MP -->
     </div>
     <!-- #endif -->
@@ -27,12 +28,12 @@ const searchInfo = reactive({
 })
 provide('searchInfo', searchInfo)
 
-let th = $computed(() => {
+let top = $computed(() => {
   const { navBarHeight } = app.Global
-  const { statusBarHeight, windowWidth } = app.Global.systemInfo
-  return ((navBarHeight + statusBarHeight) * 750) / windowWidth
+  const { statusBarHeight } = app.Global.systemInfo
+  return navBarHeight + statusBarHeight + uni.upx2px(30) + 'px'
 })
-var top = $computed(() => th + 30)
+// var top = $computed(() => th + 30)
 </script>
 
 <style lang="scss"></style>

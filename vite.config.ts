@@ -57,6 +57,7 @@ export default ({ mode }) =>
           'vue',
           'uni-app',
           { '@/app/index': ['app'] },
+          { '@/app/utils/request': ['api'] },
           { 'power-assert': [['default', 'assert']] },
         ],
         dts: 'declare/auto-imports.d.ts',
