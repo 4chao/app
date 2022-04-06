@@ -27,8 +27,12 @@ defineProps({
   top: Number,
 })
 
-const { t } = $(useQuery())
-onUnload(() => uni.$off(t)) // 页面卸载,解绑回调事件
+const { id } = $(useQuery())
+
+// 页面卸载,解绑回调事件
+onUnload(() => uni.$off(id + '_resolve'))
+onUnload(() => uni.$off(id + '_reject'))
+onUnload(() => uni.$off(id + '_query'))
 
 // mescroll 提供上拉加载下拉刷新能力
 // 文档: https://www.mescroll.com/uni.html

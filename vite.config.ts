@@ -62,12 +62,7 @@ export default ({ mode }) =>
         ],
         dts: 'declare/auto-imports.d.ts',
       }),
-      isTest() ||
-        uni({
-          vueOptions: {
-            reactivityTransform: true,
-          },
-        }),
+      isTest() || uni({ vueOptions: { reactivityTransform: true } }),
       isTest() && Espower(),
     ],
     test: {
