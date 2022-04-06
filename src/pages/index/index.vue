@@ -17,7 +17,7 @@
 </template>
 
 <script setup lang="ts">
-import Search from './com/Search.vue'
+import Search from './components/Search.vue'
 import { useScroll } from '@/hooks'
 const title = $ref('Hello')
 useScroll(onPageScroll)
