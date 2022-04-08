@@ -24,7 +24,7 @@ import Paint from '@/components/Paint.vue'
 import { useQuery, ScrollSymbol, ScrollOptions } from '@/hooks'
 
 defineProps({
-  top: Number,
+  top: String,
 })
 
 const { id } = $(useQuery())
