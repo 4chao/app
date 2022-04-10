@@ -15,9 +15,10 @@ export const api = new Proxy(map, {
       if (!ins) throw new Error('错误调用: ' + name)
       let { url, type } = ins
       return async (data, options = {}) => {
-        url.match(/(?<=\/:)[^\/]+/g)?.forEach(attr => {
+        let attr = /\/:(.+?)[\/]/g.exec(url)?.[1]
+        if (attr) {
           url = url.replace(':' + attr, attr in data ? data[attr] : '')
-        })
+        }
         app.debug('发起请求', type, url, data)
         return new Promise((resolve, reject) => {
           uni.request({

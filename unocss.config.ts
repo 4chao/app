@@ -13,8 +13,9 @@ export default defineConfig({
       return o
     }, {}),
   },
+  rules: [[/^bg-(.{6})$/, ([, d]) => ({ background: `#${d}` })]],
   presets: [presetUno(), presetAttributify(), presetIcons()],
-  transformers: [transformerDirective()],
+  transformers: [transformerDirective() as any],
   shortcuts: {
     'flex-center': 'flex flex-row justify-center items-center',
     'flex-center-col': 'flex flex-col justify-center items-center',

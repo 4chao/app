@@ -18,7 +18,9 @@
       @touchmove.stop.prevent
     >
       <div
-        :style="{ height: open ? oHeight + 'px' : app.Global.navBarHeight + 'px' }"
+        :style="{
+          height: (open ? (profile ? profileHeight : oHeight) : app.Global.navBarHeight) + 'px',
+        }"
         relative
         mxsm
         shadow-box
@@ -131,6 +133,7 @@ uni.onKeyboardHeightChange?.(({ height }) => {
   if (height) defaultHeight = oHeight as number
 })
 let defaultHeight = $ref(uni.upx2px(1000))
+let profileHeight = $ref(uni.upx2px(500))
 let oHeight = $computed(() => {
   let height =
     app.Global.systemInfo.windowHeight -

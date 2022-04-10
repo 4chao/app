@@ -9,12 +9,7 @@
     <div @touchstart="scrolling = true" @touchend="scrolling = false">
       <!-- #endif -->
       <div ptsm></div>
-      <div v-for="i in 100" :key="i" mxsm mxy mbxl>
-        <div psm shadow-box mbxs>
-          <div text-xl>标题</div>
-        </div>
-        <div text-right>123</div>
-      </div>
+      <ArticleCard v-for="i in 20" :key="i"></ArticleCard>
       <div @click="app.to('login')">登录</div>
       <!-- #ifndef MP -->
     </div>
@@ -25,6 +20,7 @@
 <script setup lang="ts">
 import Search from './components/Search.vue'
 import Fab from './components/Fab.vue'
+import ArticleCard from './components/ArticleCard.vue'
 import { useScroll } from '@/hooks'
 const title = $ref('Hello')
 useScroll(onPageScroll)
