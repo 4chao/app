@@ -4,7 +4,7 @@
     :style="{
       top: app.Global.systemInfo.statusBarHeight + 'px',
     }"
-    :limit="[-app.Global.navBarHeight - app.Global.systemInfo.statusBarHeight - uni.upx2px(30), 0]"
+    :limit="[-app.Global.navBarHeight - app.Global.systemInfo.statusBarHeight - pa, 0]"
     :focus="scrolling"
   >
     <div
@@ -104,6 +104,8 @@ const dValue = computed({
 function navHpx(n) {
   return n * app.Global.navBarHeight + 'px'
 }
+
+let pa = uni.upx2px(30)
 
 var mp = true
 // #ifndef MP
