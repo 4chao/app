@@ -1,0 +1,1 @@
+import{K as s,L as a,b as r,c as e}from"./index.0670c8b7.js";import{_ as o,a as t}from"./sys.625e7a1c.js";var n=o({},[["render",function(o,n){const c=s(a("sys"),t);return r(),e(c)}]]);export{n as default};
