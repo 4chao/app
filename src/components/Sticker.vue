@@ -1,13 +1,6 @@
 <template>
   <!-- #ifndef MP -->
-  <view
-    :change:scrollTop="wxsBiz.onScroll"
-    :scrollTop="scrollTop"
-    :change:limit="wxsBiz.limit"
-    :limit="limit.join(',')"
-    :change:focus="wxsBiz.focus"
-    :focus="focus"
-  >
+  <view id="sticker" :data-height="back" style="willchange: transform">
     <slot></slot>
   </view>
   <!-- #endif -->
@@ -19,17 +12,60 @@
 </template>
 
 <script setup lang="ts">
-// #ifdef never
-let wxsBiz
-// #endif
-const props = defineProps({
-  limit: { default: () => [-40, 0] },
-  focus: { default: true },
+defineProps({
+  back: { default: 40 },
 })
-let scrollTop = $ref(0)
-// #ifndef MP
-onPageScroll(e => (scrollTop = e.scrollTop))
+
+// #ifdef never
+let renderBiz: any
 // #endif
+</script>
+
+<script module="renderBiz" lang="renderjs">
+export default {
+  data() {
+    return {
+      scrollTop: 0,
+      min: 0,
+      max: 0,
+      focus: true,
+      height: 12,
+    }
+  },
+  mounted() {
+    this.min = Number(this.$ownerInstance.$el.dataset.height)
+    window.addEventListener("scroll", this.scrollHandler)
+    window.addEventListener("touchstart", () => (this.focus = true))
+    window.addEventListener("touchend", () => (this.focus = false))
+  },
+  watch: {
+    focus(val) {
+      if (val) return
+      this.height = (Math.abs(this.height - this.min) < Math.abs(this.height - this.max) ? this.min : this.max)
+      this.setHeight(true)
+    },
+    scrollTop(y1, y2) {
+      if (y1 <= 0) return (this.height = this.max), this.setHeight(true)
+      if (!this.focus) return
+      this.height += (y2 - y1) || 0
+      this.height < this.min && (this.height = this.min)
+      this.height > this.max && (this.height = this.max)
+      this.setHeight(false)
+    }
+  },
+  methods: {
+    propObserver(props) {
+      console.log('props', props);
+    },
+    scrollHandler() {
+      this.scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+    },
+    setHeight(t) {
+      this.$ownerInstance.$el.style.transition = t ? 'all 0.3s ease' : 'none' // 'all  0.07s cubic-bezier(0,.6,.34,1)'
+      this.$ownerInstance.$el.style.transform = 'translateY(' + this.height + 'px)'
+    }
+  }
+}
 </script>
 
 <script module="wxsBiz" lang="wxs">
@@ -57,7 +93,7 @@ function onScroll(y1, y2, ins) {
 }
   function setH(ins,t){
   ins.setStyle({
-    transition: t ? 'all 0.3s ease' : 'none',
+    transition: t ? 'all 0.3s ease' : 'all 0.05s cubic-bezier(0,.6,.34,1)',
     'will-change': 'transform',
     transform: 'translateY(' + h + 'px)',
   })

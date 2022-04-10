@@ -28,9 +28,9 @@
             <span mbxs text-gray text-20>还没有账号?</span>
             <span text-hex-1989C8 text-27>点此注册</span>
           </div>
-          <div v-else text-20 flex-center-col>
+          <div v-else flex-center-col>
             <span mbxs text-gray text-20>已拥有账号?</span>
-            <span text-hex-1989C8 text-25>点此登录</span>
+            <span text-hex-1989C8 text-27>点此登录</span>
           </div>
         </div>
       </div>
@@ -84,16 +84,7 @@
       <div mt3xl plg flex justify-between>
         <div v-if="isLogin" text-25 self-end text-hex-1989C8>忘记密码</div>
         <div v-else></div>
-        <div
-          rounded-12
-          text-white
-          pysm
-          px3xl
-          bg-hex-6991c7
-          @click="app.User.login({ email, password })"
-        >
-          提交
-        </div>
+        <div rounded-12 text-white pysm px3xl bg-hex-6991c7 @click="submit">提交</div>
       </div>
     </div>
   </div>
@@ -142,6 +133,7 @@ async function submit() {
 export default {
   methods: {
     getCode(email) {
+      if (!email) return uni.$u.toast('请输入邮箱')
       if (!this.$refs.uCode.canGetCode) return uni.$u.toast('倒计时结束后再发送')
       uni.showLoading({ title: '正在获取验证码' })
 

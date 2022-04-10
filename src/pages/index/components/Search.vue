@@ -1,11 +1,8 @@
 <template>
   <Sticker
     class="sticker"
-    :style="{
-      top: app.Global.systemInfo.statusBarHeight + 'px',
-    }"
-    :limit="[-app.Global.navBarHeight - app.Global.systemInfo.statusBarHeight - pa, 0]"
-    :focus="scrolling"
+    :style="{ top: app.Global.systemInfo.statusBarHeight + 'px' }"
+    :back="-app.Global.navBarHeight - app.Global.systemInfo.statusBarHeight - pa"
   >
     <div
       :style="{
@@ -93,9 +90,6 @@
 import Sticker from '@/components/Sticker.vue'
 import {} from '@/hooks'
 
-defineProps({
-  scrolling: Boolean,
-})
 let { value, searched } = $(inject('searchInfo'))
 const dValue = computed({
   get: () => (open && !profile ? value || searched : searched),

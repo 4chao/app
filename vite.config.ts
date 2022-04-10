@@ -43,6 +43,7 @@ export default ({ mode }) =>
       AutoImport({
         imports: [
           'vue',
+          '@vueuse/core',
           'uni-app',
           { '@/app/index': ['app'] },
           { '@/app/utils/request': ['api'] },

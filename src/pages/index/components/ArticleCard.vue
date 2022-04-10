@@ -33,7 +33,7 @@
             <div class="tag thin-8">物联网</div>
           </div>
           <div>
-            <div class="more round">
+            <div class="more thin-500 round">
               <h1 w30 h30 i-ri-arrow-drop-down-line></h1>
             </div>
           </div>
@@ -75,7 +75,6 @@ import {} from '@/hooks'
     @apply flex-center;
   }
   .tag {
-    border-radius: 10rpx;
     font-size: 17rpx;
     padding: 0 17rpx;
     margin-right: 12rpx;
