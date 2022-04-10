@@ -8,7 +8,10 @@ export class User extends createModule({
     return this.userInfo.token
   }
 
-  @action async login({ email, password }) {
-    this.userInfo = await api.Login({ email, password })
+  @action async login(options: Parameters<typeof api.Login>[0]) {
+    this.userInfo = await api.Login(options)
+  }
+  @action async register(options: Parameters<typeof api.Register>[0]) {
+    this.userInfo = await api.Register(options)
   }
 }

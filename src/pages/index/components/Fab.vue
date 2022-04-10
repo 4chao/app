@@ -20,10 +20,10 @@ watch($$(scrollTop), (n, o) => (hide = n > o))
   bottom: 50rpx;
   width: 100rpx;
   height: 100rpx;
-  background-color: #66ccff;
+  background-color: #edf7ff;
   @apply rounded-full;
   @apply flex-center;
-  @apply text-white;
+  // @apply text-white;
   z-index: 900;
   transition: all 0.5s ease;
 

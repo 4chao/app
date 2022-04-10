@@ -1,5 +1,6 @@
 import { App as VueApp } from 'vue'
-import { map, type IResult } from '@root/declare/APId'
+import { type IResult } from '@root/declare/APId'
+import { map } from '@root/build/APIm'
 
 export const api = new Proxy(map, {
   get: function (target, name: string) {

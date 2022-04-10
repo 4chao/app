@@ -9,7 +9,7 @@
     "test": "vitest",
     "commit": "cz",
     "upgrade:template": "echo '将模板合并到当前分支...' ; git remote add template https://github.com/4chao/preset.git ; git fetch template && git merge template/master -m '🥝 upgrade: template'",
-    "upgrade:api": "curl http://wofbi-mipro-ubuntu.local/APId.ts -o declare/APId.ts",
+    "upgrade:api": "curl http://wofbi000.local/APId.ts -o declare/APId.ts && curl http://wofbi000.local/APIm.ts -o build/APIm.ts",
     "prepare": "husky install",
     "preinstall": "node ./scripts/preinstall.js",
     "postinstall": "patch-package"

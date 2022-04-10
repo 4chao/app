@@ -1,4 +1,10 @@
-import { defineConfig, presetUno, presetAttributify, presetIcons } from 'unocss'
+import {
+  defineConfig,
+  presetUno,
+  presetAttributify,
+  presetIcons,
+  toEscapedSelector as e,
+} from 'unocss'
 import transformerDirective from '@unocss/transformer-directives'
 import { times } from 'lodash'
 
@@ -13,7 +19,17 @@ export default defineConfig({
       return o
     }, {}),
   },
-  rules: [[/^bg-(.{6})$/, ([, d]) => ({ background: `#${d}` })]],
+  rules: [
+    [
+      /^thin-?(\d+)?-?(\w+)?$/,
+      ([_, radius, hex], { rawSelector }) => {
+        const r = (Number(radius) || 12) / 32
+        const s = e(rawSelector)
+        //prettier-ignore
+        return `${s} {position: relative;border-radius: ${r}rem;overflow: hidden;}${s}::after {content: " ";width: 200%;height: 200%;position: absolute;top: 0;left: 0;border: 1rpx solid #${hex || 'd9d9d9'};border-radius: ${r * 2}rem;transform: scale(0.5);transform-origin: 0 0;box-sizing: border-box;z-index: 1;pointer-events: none;}`
+      },
+    ],
+  ],
   presets: [presetUno(), presetAttributify(), presetIcons()],
   transformers: [transformerDirective() as any],
   shortcuts: {
