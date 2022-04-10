@@ -12,9 +12,7 @@
 </template>
 
 <script setup lang="ts">
-defineProps({
-  back: { default: 40 },
-})
+defineProps({ back: { default: 40 } })
 
 // #ifdef never
 let renderBiz: any

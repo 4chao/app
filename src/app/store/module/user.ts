@@ -10,8 +10,11 @@ export class User extends createModule({
 
   @action async login(options: Parameters<typeof api.Login>[0]) {
     this.userInfo = await api.Login(options)
+    uni.$emit('$reload')
   }
   @action async register(options: Parameters<typeof api.Register>[0]) {
     this.userInfo = await api.Register(options)
+    app.to('#user/afterRegister')
+    uni.$emit('$reload')
   }
 }

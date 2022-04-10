@@ -37,7 +37,7 @@
       <div ptlg pxxl>
         <div v-if="isLogin" mblg>
           <div text-25 mb4>手机号 / 邮箱 / 用户名</div>
-          <u-input v-model="loginAccount" />
+          <u-input v-model="account" />
         </div>
 
         <div v-if="!isLogin" mblg>
@@ -96,7 +96,7 @@ const { data } = $(useQuery())
 
 let isLogin = $ref(true)
 
-let loginAccount = $ref('')
+let account = $ref('')
 let email = $ref('')
 let code = $ref('')
 let password = $ref('')
@@ -112,9 +112,9 @@ let tip = $ref('')
 async function submit() {
   if (!agree) return uni.$u.toast('请先阅读并同意服务条款')
   if (isLogin) {
-    if (!loginAccount) return uni.$u.toast('请输入账号')
+    if (!account) return uni.$u.toast('请输入账号')
     if (!password) return uni.$u.toast('请输入密码')
-    await app.User.login({ email: loginAccount, password })
+    await app.User.login({ account, password, auth_type: 'PASSWORD' })
     app.back()
   } else {
     if (!username) return uni.$u.toast('请输入用户名')
@@ -123,7 +123,7 @@ async function submit() {
     if (!repeatPassword) return uni.$u.toast('请重复输入密码')
     if (password !== repeatPassword) return uni.$u.toast('两次密码不一致')
     if (!code) return uni.$u.toast('请输入验证码')
-    await app.User.login({ email: loginAccount, password })
+    await app.User.register({ account: email, code: Number(code), username, password })
     // TODO: 注册成功需要完善个人信息
   }
 }

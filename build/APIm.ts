@@ -71,6 +71,14 @@ export const map = {
     url: '/project/visibility_list',
     type: 'GET',
   },
+  GetText: {
+    url: '/text/:id',
+    type: 'GET',
+  },
+  UpdateText: {
+    url: '/:text_id/modification',
+    type: 'POST',
+  },
   Create_reference: {
     url: '/reference',
     type: 'POST',
@@ -83,12 +91,12 @@ export const map = {
     url: '/auth/token',
     type: 'POST',
   },
-  GetSelf: {
-    url: '/user',
+  GetAuthTypeList: {
+    url: '/auth_type_list',
     type: 'GET',
   },
-  GetText: {
-    url: '/text/:id',
+  GetSelf: {
+    url: '/user',
     type: 'GET',
   },
   GetToken: {

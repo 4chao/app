@@ -49,7 +49,9 @@
               :style="{ fontSize: navHpx(mp ? 0.35 : 0.3) }"
               @focus=";(bHeight = $event.detail['height']), (focus = true)"
             />
-            <div class="ab" :class="{ hide: !profile }" flex items-center bg-white>123</div>
+            <div class="ab" :class="{ hide: !profile }" flex items-center bg-white>
+              {{ app.User.userInfo.email }}
+            </div>
           </div>
           <div flex-center :style="{ fontSize: navHpx(mp ? 0.5 : 0.5) }">
             <div

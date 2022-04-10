@@ -6,8 +6,8 @@
       <!-- <Fab @click="log"></Fab> -->
     </template>
     <div ptsm></div>
-    <ArticleCard v-for="i in 20" :key="i"></ArticleCard>
-    <div @click="app.to('login')">登录</div>
+    <div @click="app.to('login').then(() => $u.toast('登录成功'))">登录</div>
+    <ArticleCard v-for="i in 10" :key="i"></ArticleCard>
   </sys>
 </template>
 
