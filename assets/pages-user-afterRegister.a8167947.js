@@ -1,0 +1,1 @@
+import{d as s,H as a,J as t,o,c as e,w as l,l as r}from"./index.f3870f09.js";import{a as f}from"./sys.700e42ca.js";const n=s({setup:s=>(s,n)=>{const u=a(t("sys"),f);return o(),e(u,null,{default:l((()=>[r("div",null,"恭喜你,登录成功,请修改个人信息")])),_:1})}});export{n as default};
