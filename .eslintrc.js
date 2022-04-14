@@ -232,6 +232,7 @@ module.exports = {
     '@typescript-eslint/no-empty-interface': 'off',
     '@typescript-eslint/no-empty-function': 'off',
     'vue/multi-word-component-names': 'off',
+    'no-var': 'off',
   },
   overrides: [
     {
