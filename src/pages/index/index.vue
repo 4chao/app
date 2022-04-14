@@ -1,12 +1,11 @@
 <template>
-  <meta hide title="主页" title:微信="微信端主页" />
+  <meta hide />
   <sys :top="top">
     <template #fixed>
       <Search />
       <!-- <Fab @click="log"></Fab> -->
     </template>
     <div ptsm></div>
-    <div @click="app.to('login').then(() => $u.toast('登录成功'))">登录</div>
     <ArticleCard v-for="i in 10" :key="i"></ArticleCard>
   </sys>
 </template>

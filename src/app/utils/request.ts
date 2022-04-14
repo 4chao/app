@@ -23,7 +23,7 @@ export const api = new Proxy(map, {
         app.debug('发起请求', type, url, data)
         return new Promise((resolve, reject) => {
           uni.request({
-            url: import.meta.env.VITE_BASE_URL + url,
+            url: baseUrl + url,
             method: type,
             data: data,
             header: {
@@ -53,6 +53,13 @@ export const api = new Proxy(map, {
     })
   },
 }) as unknown as UnionToIntersection<APIs>
+
+// #ifdef H5
+var baseUrl = import.meta.env.VITE_BASE_URL
+// #endif
+// #ifndef H5
+var baseUrl = import.meta.env.VITE_PROXY_URL
+// #endif
 
 export default function (vueApp: VueApp) {
   Object.assign(vueApp.config.globalProperties, { api })

@@ -38,7 +38,7 @@
             </div>
           </div>
         </div>
-        <div class="title" text-35>福建一男子摄入卡路里结果卡路里</div>
+        <div class="title" text-35 line-clamp-2>福建一男子摄入卡路里结果卡路里</div>
         <div flex justify-between text-20 text-gray mtxs>
           <div>3 天前更新</div>
           <div flex-center>

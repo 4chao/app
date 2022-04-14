@@ -5,7 +5,7 @@
     <div thin mt2xl mb5xl w640>
       <div py pl bg-hex-f6f8fa flex>
         <div flex-1>
-          <div text-35 text-bold>欢迎来到思潮</div>
+          <div text-35 font-bold>欢迎来到思潮</div>
           <div pysm text-23>
             <div flex-center justify-start>
               <div w10 h10 mrxs i-ri-checkbox-blank-circle-fill></div>
@@ -69,11 +69,11 @@
 
         <div mblg>
           <div text-25 mb4>密码</div>
-          <u-input v-model="password" />
+          <u-input v-model="password" type="password" />
         </div>
         <div v-if="!isLogin" mblg>
           <div text-25 mb4>重复密码</div>
-          <u-input v-model="repeatPassword" />
+          <u-input v-model="repeatPassword" type="password" />
         </div>
         <div v-if="!isLogin" mblg>
           <div text-25 mb4>验证码</div>
@@ -92,7 +92,7 @@
 
 <script setup lang="ts">
 import { useQuery } from '@/hooks'
-const { data } = $(useQuery())
+const { from } = $(useQuery())
 
 let isLogin = $ref(true)
 
@@ -115,7 +115,7 @@ async function submit() {
     if (!account) return uni.$u.toast('请输入账号')
     if (!password) return uni.$u.toast('请输入密码')
     await app.User.login({ account, password, auth_type: 'PASSWORD' })
-    app.back()
+    app.back('登录成功')
   } else {
     if (!username) return uni.$u.toast('请输入用户名')
     if (!email) return uni.$u.toast('请输入邮箱')
@@ -124,7 +124,7 @@ async function submit() {
     if (password !== repeatPassword) return uni.$u.toast('两次密码不一致')
     if (!code) return uni.$u.toast('请输入验证码')
     await app.User.register({ account: email, code: Number(code), username, password })
-    // TODO: 注册成功需要完善个人信息
+    app.to('#user/afterRegister', { from })
   }
 }
 </script>
