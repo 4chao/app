@@ -101,13 +101,7 @@
           </div>
         </div>
         <div flex-grow relative pointer-events-none>
-          <scroll-view
-            scroll-y
-            class="ab history"
-            :class="{ hide: !focus }"
-            border-1
-            @touchend.prevent
-          >
+          <scroll-view scroll-y class="ab history" :class="{ hide: !focus }" @touchend.prevent>
             <!-- 搜索记录和推荐 -->
             <div py30>111111111111111111111</div>
             <div py30>111111111111111111111</div>
@@ -121,7 +115,6 @@
             :class="{ hide: !profile }"
             :style="{ height: profileHeight + 'px' }"
             fira
-            border-1
           >
             <div>&#xEE03;&#xEE04;&#xEE04;&#xEE04;&#xEE01;&#xEE02;</div>
           </div>
@@ -205,20 +198,28 @@ let renderBiz: any
 export default {
   mounted() {
     let el = document.querySelector('.mescroll-body')
-    // let mask = document.querySelector('.mask')
-    el['style'].transition = 'transform 0.3s'
-    // mask['style'].transition = 'backdrop-filter 0.3s'
-    new MutationObserver(([{target}])=>{
-      if(target['dataset'].open == 'true') {
-        // mask['style'].backdropFilter = 'blur(0.94rem) opacity(1)'
+    let elc = document.querySelector('.mescroll-body-content')
+    let helper = document.querySelector('#renderHelper')
+    el['style'].transition = 'transform 1s cubic-bezier(0,.63,.27,1)'
+    elc['style'].transition = 'transform 1s'
+    let a = { xAxis: 0, yAxis: 0 }
+    // #ifdef APP-PLUS
+    plus.accelerometer.watchAcceleration(setValue, function (e) {
+      console.log('watchAcceleration error: ', e);
+    }, { frequency: 100 });
+    // #endif
+    function setValue(e) {
+      if (e) a = e
+      if (helper['dataset'].open == 'true') {
         el['style'].transform = 'scale(0.9)'
         el['style'].transformOrigin = 'center ' + (document.documentElement.scrollTop + document.documentElement.clientHeight / 2) + 'px'
+        elc['style'].transform = 'translate(' + -a.xAxis.toFixed(3) * 5 + 'px,' + -a.yAxis.toFixed(3) * 5 + 'px)'
       } else {
-        // mask['style'].backdropFilter = 'blur(0.94rem) opacity(0)'
         el['style'].transform = 'none'
-        el['style'].transformOrigin = 'center ' + (document.documentElement.scrollTop + document.documentElement.clientHeight / 2) + 'px'
+        elc['style'].transform = 'none'
       }
-    }).observe(document.querySelector('#renderHelper'), {
+    }
+    new MutationObserver(setValue).observe(helper, {
       attributes: true,
     })
   },
@@ -233,11 +234,11 @@ export default {
   right: 0;
   bottom: 0;
   z-index: 899;
-  backdrop-filter: blur(10px);
-  background-color: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(20rpx);
+  background-color: rgba(255, 255, 255, 0.7);
   opacity: 0;
   pointer-events: none;
-  transition: all 0.3s;
+  transition: all 0.3s ease;
 
   &.show {
     opacity: 1;
@@ -251,6 +252,7 @@ export default {
   right: 0;
   z-index: 900;
 }
+
 // .shadow-box,
 // [data-shadow-box],
 // [shadow-box] {
@@ -275,6 +277,7 @@ export default {
   opacity: 1;
   transition: opacity 0.3s ease;
   pointer-events: auto;
+
   &.hide {
     pointer-events: none;
     opacity: 0;
@@ -286,6 +289,9 @@ export default {
   top: 20rpx;
   left: 20rpx;
   width: calc(750rpx - 40rpx);
+  border: #586270 1rpx solid;
+  border-radius: 10rpx;
+  padding: 20rpx;
 }
 
 .menu {
@@ -299,6 +305,7 @@ export default {
 
   transition: all 0.3s ease;
   pointer-events: none;
+
   &.act {
     top: calc(100% + 40rpx);
     opacity: 1;
@@ -306,6 +313,7 @@ export default {
     pointer-events: auto;
   }
 }
+
 .login-btn {
   background-image: linear-gradient(to top, #18b471 0%, #4ccfa6 100%);
 }
