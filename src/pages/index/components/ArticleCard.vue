@@ -16,7 +16,7 @@
         关注的人
       </div>
     </div>
-    <div class="card" thin>
+    <div class="card" thin @click="app.to('#article')">
       <div w-full h100>
         <image
           w-full
@@ -62,6 +62,21 @@
 
 <script setup lang="ts">
 import {} from '@/hooks'
+
+defineProps({
+  allowBanner: {
+    type: Boolean,
+    default: true,
+  },
+  allowTag: {
+    type: Boolean,
+    default: true,
+  },
+  allowTitle: {
+    type: Boolean,
+    default: true,
+  },
+})
 </script>
 
 <style lang="scss">

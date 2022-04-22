@@ -17,7 +17,7 @@
     >
       <div
         shadow-box
-        class="menu"
+        class="menubar"
         :class="{ act: menu }"
         :style="{ right: mp ? '40rpx' : '20rpx' }"
       ></div>
@@ -27,11 +27,13 @@
           pointer-events-auto
           mxsm
           pxsm
-          :style="{ height: app.Global.navBarHeight + 'px' }"
           flex-center
           justify-start
+          :style="{ height: app.Global.navBarHeight + 'px' }"
+          class="wave"
+          :class="{ active: open }"
         >
-          <div flex-center @touchstart="createTick" @touchmove="clearTick" @touchend="clearTick">
+          <div flex-center>
             <image
               v-show="app.User.isLogin"
               :style="{ height: navHpx(mp ? 0.6 : 0.6), width: navHpx(mp ? 0.6 : 0.6) }"
@@ -57,6 +59,7 @@
               v-model="dValue"
               class="ab"
               :class="{ hide: profile }"
+              auto-blur
               h-full
               w-full
               :placeholder="'搜索思潮'"
@@ -70,7 +73,7 @@
                   <span text-20 text-gray self-end pb4>#{{ app.User.userInfo.id }}</span>
                   <div flex-1></div>
                   <!-- TODO: 上线前搞个内测徽章 -->
-                  <div>徽章</div>
+                  <!-- <div>徽章</div> -->
                 </div>
                 <div flex items-center text-24 text-gray-500>
                   <div i-ri-edit-2-fill mrxs shrink-0></div>
@@ -85,7 +88,7 @@
                 flex-center
                 mlsm
                 :style="{ fontSize: navHpx(mp ? 0.35 : 0.35) }"
-                @click="app.to('setting')"
+                @click="app.to('#user/setting').then(msg => msg && $u.toast(msg))"
               >
                 <div i-ri-settings-2-line></div>
               </div>
@@ -101,7 +104,12 @@
           </div>
         </div>
         <div flex-grow relative pointer-events-none>
-          <scroll-view scroll-y class="ab history" :class="{ hide: !focus }" @touchend.prevent>
+          <scroll-view
+            scroll-y
+            class="ab history shadow-box"
+            :class="{ hide: !focus }"
+            @touchend.prevent
+          >
             <!-- 搜索记录和推荐 -->
             <div py30>111111111111111111111</div>
             <div py30>111111111111111111111</div>
@@ -110,13 +118,70 @@
             <div py30>111111111111111111111</div>
             <div py30>111111111111111111111</div>
           </scroll-view>
-          <div
-            class="ab profile"
-            :class="{ hide: !profile }"
-            :style="{ height: profileHeight + 'px' }"
-            fira
-          >
-            <div>&#xEE03;&#xEE04;&#xEE04;&#xEE04;&#xEE01;&#xEE02;</div>
+          <div class="ab profile" :class="{ hide: !profile }">
+            <div class="lay" flex h600 mbsm>
+              <div shadow-box h-full w400>TODO:个人卡片</div>
+              <div class="lay" h-full psm>
+                <div>TODO:历史记录,个人收藏等私密信息</div>
+              </div>
+            </div>
+            <div shadow-box mbsm pylg flex-center justify-around text-25>
+              <!-- <div border border-dashed mbsm pylg flex-center justify-around> -->
+              <div flex-center-col>
+                <div w40 h40 mbxs i-ri-chat-heart-line></div>
+                回复我的
+              </div>
+              <div flex-center-col>
+                <div w40 h40 mbxs i-ri-thumb-up-line></div>
+                收到的赞
+              </div>
+              <div flex-center-col>
+                <div w40 h40 mbxs i-ri-mail-line></div>
+                我的私信
+              </div>
+              <div flex-center-col>
+                <div w40 h40 mbxs i-ri-notification-4-line></div>
+                系统通知
+              </div>
+            </div>
+            <ArticleCardRecentlyEdited></ArticleCardRecentlyEdited>
+            <!-- <div flex-center class="rowFn">
+              <div
+                v-for="e in rowFn.map(e => e.split('|'))"
+                flex-1
+                flex-center-col
+                pysm
+                class="wave click"
+              >
+                <div text-24>{{ e[0] }}</div>
+                <div text-22>123</div>
+              </div>
+            </div>
+            <div msm text-right text-20 text-gray fira>个人主页 -></div> -->
+
+            <!-- <scroll-view scroll-x enable-flex class="rowProj">
+              <div flex>
+                <div fira>&#xEE03;&#xEE04;&#xEE04;&#xEE04;&#xEE01;&#xEE02;</div>
+                <div bg-green mxy p40></div>
+                <div bg-green mxy p40></div>
+                <div bg-green mxy p40></div>
+                <div bg-green mxy p40></div>
+                <div bg-green mxy p40></div>
+                <div bg-green mxy p40></div>
+                <div bg-green mxy p40></div>
+                <div bg-green mxy p40></div>
+                <div bg-green mxy p40></div>
+                <div bg-green mxy p40></div>
+                <div bg-green mxy p40></div>
+                <div bg-green mxy p40></div>
+              </div>
+            </scroll-view> -->
+
+            <!-- <div absolute top-full left-0 right-0 text-18 ptxs flex-center text-gray-6 fira>
+              <div>2022-04-15 加入思潮</div>
+              <div flex-1></div>
+              <div>v0.0.34:65335</div>
+            </div> -->
           </div>
         </div>
       </div>
@@ -133,6 +198,7 @@
 
 <script setup lang="ts">
 import Sticker from '@/components/Sticker.vue'
+import ArticleCardRecentlyEdited from './ArticleCardRecentlyEdited.vue'
 import {} from '@/hooks'
 
 let { value, searched } = $(inject('searchInfo'))
@@ -150,6 +216,13 @@ var mp = true
 // #ifndef MP
 var mp = false
 // #endif
+
+onBackPress(({ from }) => {
+  if (from !== 'backbutton') return
+  if (!open) return
+  open = false
+  return true
+})
 
 let focus = $ref(false)
 let profile = $ref(false)
@@ -174,7 +247,6 @@ uni.onKeyboardHeightChange?.(({ height }) => {
   if (height) defaultHeight = oHeight as number
 })
 let defaultHeight = $ref(uni.upx2px(1000))
-let profileHeight = $ref(uni.upx2px(500))
 let oHeight = $computed(() => {
   let height =
     app.Global.systemInfo.windowHeight -
@@ -183,15 +255,6 @@ let oHeight = $computed(() => {
       uni.upx2px(50) || defaultHeight
   return height > defaultHeight ? defaultHeight : height
 })
-
-let timer = null
-const createTick = () => (timer = setTimeout(toTest, 5000))
-const clearTick = () => clearTimeout(timer)
-const toTest = () => (uni.vibrateShort({}), app.to('#test'))
-
-// #ifdef never
-let renderBiz: any
-// #endif
 </script>
 
 <script module="renderBiz" lang="renderjs">
@@ -202,6 +265,7 @@ export default {
     let helper = document.querySelector('#renderHelper')
     el['style'].transition = 'transform 1s cubic-bezier(0,.63,.27,1)'
     elc['style'].transition = 'transform 1s'
+    elc['style'].transform = 'translate(0,0)'
     let a = { xAxis: 0, yAxis: 0 }
     // #ifdef APP-PLUS
     plus.accelerometer.watchAcceleration(setValue, function (e) {
@@ -209,19 +273,17 @@ export default {
     }, { frequency: 100 });
     // #endif
     function setValue(e) {
-      if (e) a = e
+      if (e.xAxis) a = e
+      el['style'].transformOrigin = 'center ' + (document.documentElement.scrollTop + document.documentElement.clientHeight / 2) + 'px'
       if (helper['dataset'].open == 'true') {
         el['style'].transform = 'scale(0.9)'
-        el['style'].transformOrigin = 'center ' + (document.documentElement.scrollTop + document.documentElement.clientHeight / 2) + 'px'
-        elc['style'].transform = 'translate(' + -a.xAxis.toFixed(3) * 5 + 'px,' + -a.yAxis.toFixed(3) * 5 + 'px)'
+        elc['style'].transform = 'translate(' + +a.xAxis.toFixed(3) * 5 + 'px,' + -a.yAxis.toFixed(3) * 5 + 'px)'
       } else {
-        el['style'].transform = 'none'
-        elc['style'].transform = 'none'
+        el['style'].transform = 'scale(1)'
+        elc['style'].transform = 'translate(0,0)'
       }
     }
-    new MutationObserver(setValue).observe(helper, {
-      attributes: true,
-    })
+    new MutationObserver(setValue).observe(helper, { attributes: true })
   },
 }
 </script>
@@ -274,13 +336,23 @@ export default {
   left: 0;
   right: 0;
   bottom: 0;
-  opacity: 1;
-  transition: opacity 0.3s ease;
-  pointer-events: auto;
 
-  &.hide {
-    pointer-events: none;
-    opacity: 0;
+  transition: opacity 0.3s ease;
+
+  pointer-events: none;
+  opacity: 0;
+
+  &:not(.hide) {
+    pointer-events: auto;
+    opacity: 1;
+
+    &.profile {
+      pointer-events: none !important;
+
+      :not(.lay) {
+        pointer-events: auto !important;
+      }
+    }
   }
 }
 
@@ -289,12 +361,11 @@ export default {
   top: 20rpx;
   left: 20rpx;
   width: calc(750rpx - 40rpx);
-  border: #586270 1rpx solid;
-  border-radius: 10rpx;
-  padding: 20rpx;
+  // border: #586270 1rpx solid;
+  // border-radius: 10rpx;
 }
 
-.menu {
+.menubar {
   position: absolute;
   top: calc(100% - 60rpx);
 
@@ -316,5 +387,27 @@ export default {
 
 .login-btn {
   background-image: linear-gradient(to top, #18b471 0%, #4ccfa6 100%);
+}
+
+.rowFn {
+  > div + div {
+    position: relative;
+
+    //left border
+    &::before {
+      content: '';
+      position: absolute;
+      top: 35rpx;
+      bottom: 35rpx;
+      left: 0rpx;
+      width: 0.5rpx;
+      background-color: #90a7be;
+      // opacity: 0.5;
+    }
+  }
+}
+
+.rowProj {
+  display: flex;
 }
 </style>

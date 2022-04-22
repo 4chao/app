@@ -3,16 +3,18 @@
   <sys :top="top">
     <template #fixed>
       <Search />
-      <!-- <Fab @click="log"></Fab> -->
+      <ArticleCreate />
     </template>
     <div ptsm></div>
+    <!-- <u-input placeholder="输入baseUrl" v-model="app.User.baseUrl" /> -->
+    <!-- <div ptsm></div> -->
     <ArticleCard v-for="i in 10" :key="i"></ArticleCard>
   </sys>
 </template>
 
 <script setup lang="ts">
 import Search from './components/Search.vue'
-// import Fab from './components/Fab.vue'
+import ArticleCreate from './components/ArticleCreate.vue'
 import ArticleCard from './components/ArticleCard.vue'
 import { useScroll } from '@/hooks'
 useScroll(onPageScroll)
