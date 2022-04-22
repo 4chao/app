@@ -4,6 +4,8 @@
     :up="{ use: enableUp }"
     :down="{ use: enableDown }"
     :top="top"
+    :bottom="bottom"
+    safearea
     @init="mescroll = $event"
     @up="fetch"
     @down="enableUp ? $event.resetUpScroll() : fetch($event)"
@@ -25,6 +27,7 @@ import { useQuery, ScrollSymbol, ScrollOptions } from '@/hooks'
 
 defineProps({
   top: String,
+  bottom: String,
 })
 
 const { id } = $(useQuery())

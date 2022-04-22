@@ -24,7 +24,8 @@ export function MetaParser(str, alias, preset): Record<string, any> {
       const add = o => merge(style, o)
       // eslint-disable-next-line no-eval
       if (!name) return add({ [platform]: (0, eval)('str =' + e[1]) }) //以:开头的解析为object
-      if (!e[1]) return add(preset?.[name] || {}) // 不含value的解析为preset
+      if (!e[1] && platform) return add(preset?.[name] ? { [platform]: preset?.[name] } : {})
+      if (!e[1] && !platform) return add(preset?.[name] || {}) // 不含value的解析为preset
       if (platform) return add({ [platform]: { [name]: e[1] } }) // a:b="c"解析为{b:{a:"c"}}
       if (name) return add({ [name]: e[1] }) // a="b"解析为{a:"b"}
     }, {}),

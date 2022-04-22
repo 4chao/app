@@ -1,9 +1,16 @@
 import { createModule, action } from 'vuex-class-component'
 
+// #ifdef H5
+var baseUrl = import.meta.env.VITE_BASE_URL
+// #endif
+// #ifndef H5
+var baseUrl = import.meta.env.VITE_PROXY_URL
+// #endif
 export class User extends createModule({
   namespaced: 'user',
 }) {
-  userInfo = {} as Awaited<ReturnType<typeof api.Login>>
+  baseUrl = baseUrl
+  userInfo = { token: '12345' } as Awaited<ReturnType<typeof api.Login>>
   get token() {
     return this.userInfo.token
   }

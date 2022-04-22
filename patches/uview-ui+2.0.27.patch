@@ -1,0 +1,14 @@
+diff --git a/node_modules/uview-ui/components/u-transition/transition.js b/node_modules/uview-ui/components/u-transition/transition.js
+index 314b4af..137d553 100644
+--- a/node_modules/uview-ui/components/u-transition/transition.js
++++ b/node_modules/uview-ui/components/u-transition/transition.js
+@@ -38,9 +38,7 @@ import { $u } from '../../index';export default {
+             this.display = true
+             this.classes = classNames.enter
+             this.$nextTick(async () => {
+-				// #ifdef H5
+ 				await uni.$u.sleep(20)
+-				// #endif
+                 // 组件动画进入后触发的事件
+                 this.$emit('afterEnter')
+                 // 标识动画尚未结束

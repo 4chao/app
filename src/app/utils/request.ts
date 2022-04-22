@@ -5,7 +5,7 @@ import { map } from '@root/build/APIm'
 export const api = new Proxy(map, {
   get: function (target, name: string) {
     function found(name, type?) {
-      app.log('found', name, type)
+      // app.log('found', name, type)
       if (!type && name in target) return target[name]
       if (!type && 'Post' + name in target) return target['Post' + name]
       if (!type && 'Get' + name in target) return target['Get' + name]
@@ -16,21 +16,23 @@ export const api = new Proxy(map, {
       if (!ins) throw new Error('错误调用: ' + name)
       let { url, type } = ins
       return async (data, options = {}) => {
-        let attr = /\/:(.+?)[\/]/g.exec(url)?.[1]
+        let attr = /\/:([^\/]+)/g.exec(url)?.[1]
         if (attr) {
           url = url.replace(':' + attr, attr in data ? data[attr] : '')
+          delete data[attr]
         }
         app.debug('发起请求', type, url, data)
         return new Promise((resolve, reject) => {
           uni.request({
-            url: baseUrl + url,
+            url: app.User.baseUrl + url,
             method: type,
             data: data,
-            header: {
-              'Sichiao-User-Token': app.User.token,
-            },
+            timeout: 3000,
+            // header: {
+            //   'Sichiao-User-Token': app.User.token,
+            // },
             success: ({ data: res }: any) => {
-              if (res.code !== 1000) {
+              if (res.code != '31458') {
                 uni.showToast({ title: res.message, icon: 'none' })
                 app.error('请求失败', res.message)
                 return reject(res)
@@ -53,13 +55,6 @@ export const api = new Proxy(map, {
     })
   },
 }) as unknown as UnionToIntersection<APIs>
-
-// #ifdef H5
-var baseUrl = import.meta.env.VITE_BASE_URL
-// #endif
-// #ifndef H5
-var baseUrl = import.meta.env.VITE_PROXY_URL
-// #endif
 
 export default function (vueApp: VueApp) {
   Object.assign(vueApp.config.globalProperties, { api })

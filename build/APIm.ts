@@ -63,6 +63,14 @@ export const map = {
     url: '/project',
     type: 'POST',
   },
+  CreateProjectComment: {
+    url: '/project/:project_id/comment',
+    type: 'POST',
+  },
+  GetProject: {
+    url: '/project/:id',
+    type: 'GET',
+  },
   GetProjectParagraphPage: {
     url: '/project/:id/paragraph_page',
     type: 'GET',

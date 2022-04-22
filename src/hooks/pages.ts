@@ -45,10 +45,33 @@ export interface ScrollOptions {
  *   })
  */
 export function useScroll(onPageScroll?: typeof import('@dcloudio/uni-app')['onPageScroll']) {
+  let Load
+  let Fetch = page => setTimeout(() => page.endSuccess(10, false), 1000) as any
+  let loading = ref(true)
+  let ready = ref(false)
+  let error = ref(null)
   const scrollOptions = reactive<ScrollOptions>({
     enable: 'all',
     mescroll: null,
-    fetch: page => setTimeout(() => page.endSuccess(10, false), 1000),
+    fetch: async page => {
+      let track = []
+      if (mescroll.num == 1) {
+        loading.value = true
+        page.time = +new Date()
+        track.push(Load?.(page))
+      }
+      track.push(Fetch?.(page))
+      try {
+        await Promise.all(track)
+      } catch (err) {
+        error.value = err || '未知错误'
+        page.endErr('加载失败')
+        console.error(error)
+      }
+      loading.value = false
+      await Promise.wait(300)
+      ready.value = true
+    },
   })
   provide(ScrollSymbol, scrollOptions)
   let { mescroll, fetch, enable } = $(scrollOptions)
@@ -57,9 +80,13 @@ export function useScroll(onPageScroll?: typeof import('@dcloudio/uni-app')['onP
   onPullDownRefresh(() => mescroll && mescroll.onPullDownRefresh())
 
   const o = {
-    onLoad: (cb: (mescroll: Mescroll) => void) => ((fetch = cb), o),
+    onLoad: (cb: (mescroll: Mescroll) => void) => ((Load = cb), o),
+    onFetch: (cb: (mescroll: Mescroll) => void) => ((Fetch = cb), o),
     enable: (type: ScrollOptions['enable']) => ((enable = type), o),
     mescroll: $$(mescroll),
+    loading,
+    ready,
+    error,
   }
   return o
 }

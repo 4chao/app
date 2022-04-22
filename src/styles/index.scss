@@ -21,3 +21,33 @@
   -webkit-mask-image: paint(smooth-corners);
   --smooth-corners: 3;
 }
+
+.wave {
+  position: relative;
+  overflow: hidden;
+}
+
+.wave::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: radial-gradient(circle, rgba(38, 89, 139, 0.3) 10%, transparent 10.1%);
+  transform: scale(10);
+  opacity: 0;
+  transition: all 1s;
+  pointer-events: none;
+}
+.wave:not(.click):not(.active)::after {
+  transform: scale(0);
+  opacity: 0.2;
+  transition: 0s;
+}
+
+.wave.click:active::after {
+  transform: scale(0);
+  opacity: 0.2;
+  transition: 0s;
+}
