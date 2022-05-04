@@ -4,8 +4,8 @@ import { Ref, ShallowUnwrapRef } from 'vue'
 function StatusFactory() {
   return {
     //创作数据
-    Meta: {} as Awaited<ReturnType<typeof api.Project>>,
-    Sections: [] as Section[],
+    Meta: {} as AwaitedReturn<typeof api.getProject>,
+    Sections: [] as Section<any>[],
     //状态机
     editMode: false,
     SectionHighlight: useSwitch<Section>(),
@@ -14,7 +14,7 @@ function StatusFactory() {
     CommentShow: false,
   }
 }
-export type Section = Awaited<ReturnType<typeof api.ProjectParagraphPage>>['data'][0]
+export type Section<T = TextDto> = AwaitedReturnUnwarpPage<typeof api.getProjectParagraph> & { component: T }
 export type Status = ReturnType<typeof StatusFactory>
 const tag = Symbol('creationStatus')
 

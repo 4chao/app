@@ -21,6 +21,7 @@ watch($$(scrollTop), (n, o) => (hide = n > o))
   width: 100rpx;
   height: 100rpx;
   background-color: #edf7ff;
+  box-shadow: 0 2rpx 10rpx rgba(14, 53, 66, 0.2);
   @apply rounded-full;
   @apply flex-center;
   // @apply text-white;
@@ -28,6 +29,7 @@ watch($$(scrollTop), (n, o) => (hide = n > o))
   transition: all 0.5s ease;
 
   &.hide {
+    box-shadow: 0 0 0rpx rgba(0, 0, 0, 0.1);
     transform: rotate(225deg) scale(0);
   }
 }

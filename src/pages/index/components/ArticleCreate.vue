@@ -8,7 +8,7 @@
 
 <script setup lang="ts">
 import {} from '@/hooks'
-let show = $ref(true)
+let show = $ref(false)
 onBackPress(({ from }) => {
   if (from !== 'backbutton') return
   if (!show) return

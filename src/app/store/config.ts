@@ -1,5 +1,5 @@
 export default {
   persistedstate: {
-    paths: ['user'],
+    paths: ['user', 'data'],
   },
 }

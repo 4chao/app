@@ -15,12 +15,16 @@
       flex
       @touchmove.stop.prevent
     >
-      <div
-        shadow-box
-        class="menubar"
-        :class="{ act: menu }"
-        :style="{ right: mp ? '40rpx' : '20rpx' }"
-      ></div>
+      <div shadow-box class="menubar" :class="{ act: menu }" :style="{ right: mp ? '40rpx' : '20rpx' }">
+        <view>
+          <view i-ri-ball-pen-line></view>
+          新的创作
+        </view>
+        <view>
+          <view i-ri-qr-scan-2-line></view>
+          扫一扫
+        </view>
+      </div>
       <div :style="{ height: oHeight + 'px' }" relative flex flex-grow flex-col pointer-events-none>
         <div
           shadow-box
@@ -33,7 +37,7 @@
           class="wave"
           :class="{ active: open }"
         >
-          <div flex-center>
+          <div flex-center @longpress="app.to('#test')">
             <image
               v-show="app.User.isLogin"
               :style="{ height: navHpx(mp ? 0.6 : 0.6), width: navHpx(mp ? 0.6 : 0.6) }"
@@ -95,21 +99,11 @@
             </div>
           </div>
           <div flex-center :style="{ fontSize: navHpx(mp ? 0.5 : 0.5) }">
-            <div
-              i-ri-close-fill
-              class="x"
-              :class="{ act: open || menu }"
-              @click.prevent.stop="rightBtn"
-            ></div>
+            <div i-ri-close-fill class="x" :class="{ act: open || menu }" @click.prevent.stop="rightBtn"></div>
           </div>
         </div>
         <div flex-grow relative pointer-events-none>
-          <scroll-view
-            scroll-y
-            class="ab history shadow-box"
-            :class="{ hide: !focus }"
-            @touchend.prevent
-          >
+          <scroll-view scroll-y class="ab history shadow-box" :class="{ hide: !focus }" @touchend.prevent>
             <!-- 搜索记录和推荐 -->
             <div py30>111111111111111111111</div>
             <div py30>111111111111111111111</div>
@@ -187,12 +181,7 @@
       </div>
     </div>
   </Sticker>
-  <div
-    class="mask"
-    :class="{ show: open || menu }"
-    @click.stop="open = false"
-    @touchmove.stop.prevent
-  ></div>
+  <div class="mask" :class="{ show: open || menu }" @click.stop="open = false" @touchmove.stop.prevent></div>
   <div id="renderHelper" :data-open="open || menu"></div>
 </template>
 
@@ -226,7 +215,7 @@ onBackPress(({ from }) => {
 
 let focus = $ref(false)
 let profile = $ref(false)
-let menu = $ref(false)
+let menu = $ref(true)
 let open = $computed({
   get: () => focus || profile,
   set: () => (focus = profile = menu = false),
@@ -248,11 +237,7 @@ uni.onKeyboardHeightChange?.(({ height }) => {
 })
 let defaultHeight = $ref(uni.upx2px(1000))
 let oHeight = $computed(() => {
-  let height =
-    app.Global.systemInfo.windowHeight -
-      app.Global.systemInfo.statusBarHeight -
-      bHeight -
-      uni.upx2px(50) || defaultHeight
+  let height = app.Global.systemInfo.windowHeight - app.Global.systemInfo.statusBarHeight - bHeight - uni.upx2px(50) || defaultHeight
   return height > defaultHeight ? defaultHeight : height
 })
 </script>
@@ -261,16 +246,14 @@ let oHeight = $computed(() => {
 export default {
   mounted() {
     let el = document.querySelector('.mescroll-body')
-    let elc = document.querySelector('.mescroll-body-content')
+    let elc = document.querySelector('#articles')
     let helper = document.querySelector('#renderHelper')
     el['style'].transition = 'transform 1s cubic-bezier(0,.63,.27,1)'
     elc['style'].transition = 'transform 1s'
     elc['style'].transform = 'translate(0,0)'
     let a = { xAxis: 0, yAxis: 0 }
     // #ifdef APP-PLUS
-    plus.accelerometer.watchAcceleration(setValue, function (e) {
-      console.log('watchAcceleration error: ', e);
-    }, { frequency: 100 });
+    plus.accelerometer.watchAcceleration(setValue, (e) => console.log('watchAcceleration error: ', e), { frequency: 100 });
     // #endif
     function setValue(e) {
       if (e.xAxis) a = e
@@ -370,12 +353,28 @@ export default {
   top: calc(100% - 60rpx);
 
   right: 20rpx;
-  width: 250rpx;
-  height: 400rpx;
+  width: 300rpx;
   opacity: 0;
 
   transition: all 0.3s ease;
   pointer-events: none;
+  padding: 10rpx 30rpx;
+  font-size: 30rpx;
+
+  > view {
+    padding: 30rpx 10rpx;
+    display: flex;
+    align-items: center;
+
+    > view {
+      font-size: 40rpx;
+      margin-right: 10rpx;
+    }
+
+    + view {
+      border-top: #90a7be 1rpx solid;
+    }
+  }
 
   &.act {
     top: calc(100% + 40rpx);

@@ -49,17 +49,7 @@
           <div flex-center justify-end>
             <u-input v-model="email">
               <template #suffix>
-                <div
-                  h50
-                  w180
-                  pyxs
-                  bg-hex-f6f8fa
-                  text-hex-6991c7
-                  flex-center
-                  thin-12-6991c7
-                  text-23
-                  @click="getCode(email)"
-                >
+                <div h50 w180 pyxs bg-hex-f6f8fa text-hex-6991c7 flex-center thin-12-6991c7 text-23 @click="getCode(email)">
                   {{ tip }}
                 </div>
               </template>
@@ -77,7 +67,7 @@
         </div>
         <div v-if="!isLogin" mblg>
           <div text-25 mb4>验证码</div>
-          <u-code-input v-model="code" mode="box" :space="0" :maxlength="5" hairline></u-code-input>
+          <u-code-input v-model="code" mode="box" :space="0" :maxlength="6" hairline></u-code-input>
         </div>
       </div>
 
@@ -132,15 +122,15 @@ async function submit() {
 <script lang="ts">
 export default {
   methods: {
-    getCode(email) {
-      if (!email) return uni.$u.toast('请输入邮箱')
+    getCode(account) {
+      if (!account) return uni.$u.toast('请输入邮箱')
       if (!this.$refs.uCode.canGetCode) return uni.$u.toast('倒计时结束后再发送')
       uni.showLoading({ title: '正在获取验证码' })
 
       app.api
-        .VerificationCode({ email })
+        .getVerificationCode({ account })
         .then(() => (uni.hideLoading(), this.$refs.uCode.start()))
-        .catch(() => (uni.hideLoading(), uni.$u.toast('获取失败,请稍后重试')))
+        .catch(err => (uni.hideLoading(), uni.$u.toast(err || '获取失败,请稍后重试')))
     },
   },
 }

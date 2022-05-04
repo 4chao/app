@@ -2,13 +2,7 @@
   <div mblg mxsm>
     <div flex justify-between>
       <div mbxs flex-center text-gray text-20>
-        <image
-          w35
-          h35
-          mrxs
-          class="smooth"
-          src="https://q2.qlogo.cn/headimg_dl?dst_uin=2490445193&spec=100&v=0.5662477152747005"
-        ></image>
+        <image w35 h35 mrxs class="smooth" src="https://q2.qlogo.cn/headimg_dl?dst_uin=2490445193&spec=100&v=0.5662477152747005"></image>
         <div>PentaTea</div>
       </div>
       <div flex-center text-gray text-20>
@@ -38,7 +32,7 @@
             </div>
           </div>
         </div>
-        <div class="title" text-35 line-clamp-2>福建一男子摄入卡路里结果卡路里</div>
+        <div class="title" text-35 line-clamp-2>{{ data.title }}</div>
         <div flex justify-between text-20 text-gray mtxs>
           <div>3 天前更新</div>
           <div flex-center>
@@ -63,20 +57,7 @@
 <script setup lang="ts">
 import {} from '@/hooks'
 
-defineProps({
-  allowBanner: {
-    type: Boolean,
-    default: true,
-  },
-  allowTag: {
-    type: Boolean,
-    default: true,
-  },
-  allowTitle: {
-    type: Boolean,
-    default: true,
-  },
-})
+defineProps<{ data: AwaitedReturnUnwarpPage<typeof api.getProjectPage> }>()
 </script>
 
 <style lang="scss">

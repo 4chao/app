@@ -1,5 +1,3 @@
-import is from 'is'
-
 export default {
   set(target, property, value, storeName) {
     console.log('[vuex]', storeName + '.' + property, value)

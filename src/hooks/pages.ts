@@ -47,6 +47,7 @@ export interface ScrollOptions {
 export function useScroll(onPageScroll?: typeof import('@dcloudio/uni-app')['onPageScroll']) {
   let Load
   let Fetch = page => setTimeout(() => page.endSuccess(10, false), 1000) as any
+  let Time = +new Date()
   let loading = ref(true)
   let ready = ref(false)
   let error = ref(null)
@@ -55,11 +56,14 @@ export function useScroll(onPageScroll?: typeof import('@dcloudio/uni-app')['onP
     mescroll: null,
     fetch: async page => {
       let track = []
-      if (mescroll.num == 1) {
+
+      if (mescroll.num == 0) {
         loading.value = true
-        page.time = +new Date()
+        Time = +new Date()
+        page.time = Time
         track.push(Load?.(page))
       }
+      page.time = Time
       track.push(Fetch?.(page))
       try {
         await Promise.all(track)

@@ -16,11 +16,7 @@ module.exports = {
     getCurrentPages: 'readonly',
     app: 'readonly',
   },
-  extends: [
-    'plugin:vue/vue3-recommended',
-    'eslint:recommended',
-    'plugin:@typescript-eslint/recommended',
-  ],
+  extends: ['plugin:vue/vue3-recommended', 'eslint:recommended', 'plugin:@typescript-eslint/recommended'],
   plugins: ['@typescript-eslint', 'prettier'],
   parser: 'vue-eslint-parser',
   parserOptions: {
@@ -231,6 +227,7 @@ module.exports = {
     '@typescript-eslint/no-var-requires': 'off',
     '@typescript-eslint/no-empty-interface': 'off',
     '@typescript-eslint/no-empty-function': 'off',
+    '@typescript-eslint/ban-types': 'off',
     'vue/multi-word-component-names': 'off',
     'no-var': 'off',
   },

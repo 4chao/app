@@ -8,7 +8,7 @@
 */
 
 /* 注意⚠️ */
-/* 所有view标签被转换成div标签 */
+/* 所有view标签被转换成view标签 */
 /* 所有upx单位被转换成rpx */
 /* icon已被精简,只剩叉号箭头等必要图标 70KiB => 2KiB */
 /* by PentaTea 2022-03-11 */
@@ -950,7 +950,7 @@ button.cuIcon.lg {
   width: 100%;
 }
 
-.cu-progress + div,
+.cu-progress + view,
 .cu-progress + text {
   line-height: 1;
 }
@@ -963,7 +963,7 @@ button.cuIcon.lg {
   height: 20rpx;
 }
 
-.cu-progress div {
+.cu-progress view {
   width: 0;
   height: 100%;
   align-items: center;
@@ -987,7 +987,7 @@ button.cuIcon.lg {
   padding-right: 60rpx;
 }
 
-.cu-progress.striped div {
+.cu-progress.striped view {
   background-image: linear-gradient(
     45deg,
     rgba(255, 255, 255, 0.15) 25%,
@@ -1001,7 +1001,7 @@ button.cuIcon.lg {
   background-size: 72rpx 72rpx;
 }
 
-.cu-progress.active div {
+.cu-progress.active view {
   animation: progress-stripes 2s linear infinite;
 }
 
@@ -1211,7 +1211,7 @@ button.cuIcon.lg {
   transform: translateX(100%);
 }
 
-.cu-list > .cu-item .move div {
+.cu-list > .cu-item .move view {
   display: flex;
   flex: 1;
   justify-content: center;
@@ -1252,7 +1252,7 @@ button.cuIcon.lg {
   width: calc(100% - 96rpx - 60rpx - 20rpx);
 }
 
-.cu-list.menu-avatar > .cu-item .content > div:first-child {
+.cu-list.menu-avatar > .cu-item .content > view:first-child {
   font-size: 30rpx;
   display: flex;
   align-items: center;
@@ -1271,7 +1271,7 @@ button.cuIcon.lg {
   text-align: center;
 }
 
-.cu-list.menu-avatar > .cu-item .action div + div {
+.cu-list.menu-avatar > .cu-item .action view + view {
   margin-top: 10rpx;
 }
 
@@ -1364,7 +1364,7 @@ button.cuIcon.lg {
   border-color: #ffffff;
 }
 
-.cu-list.menu > .cu-item .content > div:first-child {
+.cu-list.menu > .cu-item .content > view:first-child {
   display: flex;
   align-items: center;
 }
@@ -1588,7 +1588,7 @@ button.cuIcon.lg {
 }
 
 .cu-bar .action > text[class*='cuIcon-'],
-.cu-bar .action > div[class*='cuIcon-'] {
+.cu-bar .action > view[class*='cuIcon-'] {
   font-size: 36rpx;
 }
 
@@ -2922,7 +2922,7 @@ scroll-view.cu-steps .cu-item {
   background-color: rgba(0, 0, 0, 0.5);
 }
 
-.grid.grid-square > div > text[class*='cuIcon-'] {
+.grid.grid-square > view > text[class*='cuIcon-'] {
   font-size: 52rpx;
   position: absolute;
   color: #8799a3;
@@ -2937,72 +2937,72 @@ scroll-view.cu-steps .cu-item {
   flex-direction: column;
 }
 
-.grid.grid-square > div {
+.grid.grid-square > view {
   margin-right: 20rpx;
   margin-bottom: 20rpx;
   border-radius: 6rpx;
   position: relative;
   overflow: hidden;
 }
-.grid.grid-square > div.bg-img image {
+.grid.grid-square > view.bg-img image {
   width: 100%;
   height: 100%;
   position: absolute;
 }
-.grid.col-1.grid-square > div {
+.grid.col-1.grid-square > view {
   padding-bottom: 100%;
   height: 0;
   margin-right: 0;
 }
 
-.grid.col-2.grid-square > div {
+.grid.col-2.grid-square > view {
   padding-bottom: calc((100% - 20rpx) / 2);
   height: 0;
   width: calc((100% - 20rpx) / 2);
 }
 
-.grid.col-3.grid-square > div {
+.grid.col-3.grid-square > view {
   padding-bottom: calc((100% - 40rpx) / 3);
   height: 0;
   width: calc((100% - 40rpx) / 3);
 }
 
-.grid.col-4.grid-square > div {
+.grid.col-4.grid-square > view {
   padding-bottom: calc((100% - 60rpx) / 4);
   height: 0;
   width: calc((100% - 60rpx) / 4);
 }
 
-.grid.col-5.grid-square > div {
+.grid.col-5.grid-square > view {
   padding-bottom: calc((100% - 80rpx) / 5);
   height: 0;
   width: calc((100% - 80rpx) / 5);
 }
 
-.grid.col-2.grid-square > div:nth-child(2n),
-.grid.col-3.grid-square > div:nth-child(3n),
-.grid.col-4.grid-square > div:nth-child(4n),
-.grid.col-5.grid-square > div:nth-child(5n) {
+.grid.col-2.grid-square > view:nth-child(2n),
+.grid.col-3.grid-square > view:nth-child(3n),
+.grid.col-4.grid-square > view:nth-child(4n),
+.grid.col-5.grid-square > view:nth-child(5n) {
   margin-right: 0;
 }
 
-.grid.col-1 > div {
+.grid.col-1 > view {
   width: 100%;
 }
 
-.grid.col-2 > div {
+.grid.col-2 > view {
   width: 50%;
 }
 
-.grid.col-3 > div {
+.grid.col-3 > view {
   width: 33.33%;
 }
 
-.grid.col-4 > div {
+.grid.col-4 > view {
   width: 25%;
 }
 
-.grid.col-5 > div {
+.grid.col-5 > view {
   width: 20%;
 }
 
@@ -3731,8 +3731,8 @@ scroll-view.cu-steps .cu-item {
   top: 0;
 }
 
-.bg-mask div,
-.bg-mask cover-div {
+.bg-mask view,
+.bg-mask cover-view {
   z-index: 5;
   position: relative;
 }

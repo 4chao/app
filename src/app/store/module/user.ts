@@ -1,16 +1,12 @@
 import { createModule, action } from 'vuex-class-component'
 
-// #ifdef H5
 var baseUrl = import.meta.env.VITE_BASE_URL
-// #endif
-// #ifndef H5
-var baseUrl = import.meta.env.VITE_PROXY_URL
-// #endif
+
 export class User extends createModule({
   namespaced: 'user',
 }) {
   baseUrl = baseUrl
-  userInfo = { token: '12345' } as Awaited<ReturnType<typeof api.Login>>
+  userInfo = { token: '12345' } as Awaited<ReturnType<typeof api.login>>
   get token() {
     return this.userInfo.token
   }
@@ -18,12 +14,12 @@ export class User extends createModule({
     return !!this.userInfo.token
   }
 
-  @action async login(options: Parameters<typeof api.Login>[0]) {
-    this.userInfo = await api.Login(options)
+  @action async login(options: Parameters<typeof api.login>[0]) {
+    this.userInfo = await api.login(options)
     uni.$emit('$reload')
   }
-  @action async register(options: Parameters<typeof api.Register>[0]) {
-    this.userInfo = await api.Register(options)
+  @action async register(options: Parameters<typeof api.register>[0]) {
+    this.userInfo = await api.register(options)
     uni.$emit('$reload')
   }
 }

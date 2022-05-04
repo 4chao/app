@@ -1,18 +1,9 @@
 <template>
   <SectionSlide @active="SectionActive = data">
     <div pxlg pblg @click="SectionHighlight = data">
-      <div relative text-35>
-        {{ data.component?.['Text']?.content }}
-        <div
-          class="highlight"
-          :class="{ show: SectionHighlight === data }"
-          absolute
-          top-full
-          left-0
-          text-24
-          text-gray
-          flex-center
-        >
+      <div relative text-35 break-all>
+        {{ data.component.content }}
+        <div class="highlight" :class="{ show: SectionHighlight === data }" absolute top-full left-0 text-24 text-gray flex-center>
           {{ data.uuid }}
         </div>
       </div>

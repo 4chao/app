@@ -35,13 +35,13 @@ import Comment from './components/Comment.vue'
 
 let { Meta, Sections, SectionActive, SectionHighlight, editMode } = $(initCreationStatus())
 
-let id = '1'
+let project_id = 1
 let { loading, ready, error } = useScroll(onPageScroll)
-  .onLoad(page => api.Project({ id }).then(res => (Meta = res)))
+  .onLoad(page => api.getProject({ id: project_id }).then(res => (Meta = res)))
   .onFetch(async page => {
     let pageData = { page: page.num, size: page.size, last_time: page.time }
-    const { data, total } = await api.ProjectParagraphPage({ id, ...pageData })
-    if (page.num == 1) Sections = []
+    const { data, total } = await api.getProjectParagraph({ project_id, ...pageData })
+    if (page.num == 0) Sections = []
     Sections = Sections.concat(data)
     page.endBySize(data.length, total, page.time)
   })

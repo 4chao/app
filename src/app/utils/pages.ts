@@ -28,6 +28,7 @@ let to = debounce(
 
 const back = debounce(
   (data?: any, type: 'resolve' | 'reject' = 'resolve') => {
+    if (data?.defaultPrevented) data = undefined
     if (data) console.log('回调:', data)
     const { id } = useQuery()
     uni.$emit(id.value + '_' + type, data)
@@ -48,6 +49,7 @@ back.reject = (data?: any) => back(data, 'reject')
 const pageTools = {
   to,
   back,
+  upx2px: uni.upx2px,
 }
 
 export default function () {
