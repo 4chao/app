@@ -1,7 +1,7 @@
 <template>
   <!-- 本组件将由uni-provider插件自动混入到每一个页面中 -->
   <MescrollBody
-    :up="{ use: enableUp }"
+    :up="{ use: enableUp, page: { num: -1, size: 10 } }"
     :down="{ use: enableDown }"
     :top="top"
     :bottom="bottom"

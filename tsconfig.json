@@ -26,6 +26,7 @@
     "noImplicitAny": false,
     "pretty": false,
     "lib": ["esnext", "dom"],
+    "typeRoots": ["./@types", "./node_modules/@types"],
     "types": ["node", "@dcloudio/types", "@types/weixin-app", "vitest/globals"],
     "paths": {
       "@": ["./src"],
