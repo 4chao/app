@@ -1,6 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
-// Generated using typescript-generator version 2.36.1070 on 2022-05-03 22:31:40.
+// Generated using typescript-generator version 2.36.1070 on 2022-05-04 22:47:24.
 
 interface CreateReportDto {
   reason: string
@@ -172,7 +172,12 @@ interface TextModificationDto {
 interface CreateProjectDto {
   title: string
   description: string
+  tagIds: number[]
   visibility: Visibility
+}
+
+interface CreateProjectTagDto {
+  name: string
 }
 
 interface ProjectDto {
@@ -181,6 +186,7 @@ interface ProjectDto {
   description: string
   user: UserBriefInfoDto
   contributors: UserBriefInfoDto[]
+  tags: ProjectTagDto[]
   coin_num: number
   participant_num: number
   upvote_num: number
@@ -188,6 +194,13 @@ interface ProjectDto {
   status: Status
   createdTime: Date
   updatedTime: Date
+}
+
+interface ProjectTagDto {
+  id: number
+  description: string
+  uuid: string
+  name: string
 }
 
 interface CreateUserDto {}

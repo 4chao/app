@@ -1,7 +1,8 @@
 <template>
   <meta title="登录" />
-  <u-code ref="uCode" :seconds="seconds" @change="tip = $event"></u-code>
+
   <div flex-center>
+    <u-code ref="Coder" :seconds="seconds" @change="tip = $event" />
     <div thin mt2xl mb5xl w640>
       <div py pl bg-hex-f6f8fa flex>
         <div flex-1>
@@ -49,7 +50,7 @@
           <div flex-center justify-end>
             <u-input v-model="email">
               <template #suffix>
-                <div h50 w180 pyxs bg-hex-f6f8fa text-hex-6991c7 flex-center thin-12-6991c7 text-23 @click="getCode(email)">
+                <div h50 w180 pyxs bg-hex-f6f8fa text-hex-6991c7 flex-center thin-12-6991c7 text-23 @click="getCode('邮箱', email)">
                   {{ tip }}
                 </div>
               </template>
@@ -113,26 +114,21 @@ async function submit() {
     if (!repeatPassword) return uni.$u.toast('请重复输入密码')
     if (password !== repeatPassword) return uni.$u.toast('两次密码不一致')
     if (!code) return uni.$u.toast('请输入验证码')
-    await app.User.register({ account: email, code: Number(code), username, password })
+    await app.User.register({ account: email, code, username, password })
     app.to('#user/afterRegister', { from })
   }
 }
-</script>
 
-<script lang="ts">
-export default {
-  methods: {
-    getCode(account) {
-      if (!account) return uni.$u.toast('请输入邮箱')
-      if (!this.$refs.uCode.canGetCode) return uni.$u.toast('倒计时结束后再发送')
-      uni.showLoading({ title: '正在获取验证码' })
+let Coder = $ref(null)
+function getCode(type: string, account: string) {
+  if (!account) return uni.$u.toast('请输入' + type)
+  if (!Coder.canGetCode) return uni.$u.toast('倒计时结束后再发送')
+  tip = '正在发送...'
 
-      app.api
-        .getVerificationCode({ account })
-        .then(() => (uni.hideLoading(), this.$refs.uCode.start()))
-        .catch(err => (uni.hideLoading(), uni.$u.toast(err || '获取失败,请稍后重试')))
-    },
-  },
+  app.api
+    .getVerificationCode({ account })
+    .then(() => Coder.start())
+    .catch(err => uni.$u.toast(err || '获取失败,请稍后重试'))
 }
 </script>
 

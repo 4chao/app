@@ -16,7 +16,7 @@
       @touchmove.stop.prevent
     >
       <div shadow-box class="menubar" :class="{ act: menu }" :style="{ right: mp ? '40rpx' : '20rpx' }">
-        <view>
+        <view @click="app.to('#article/new')">
           <view i-ri-ball-pen-line></view>
           新的创作
         </view>

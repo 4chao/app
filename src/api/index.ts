@@ -24,6 +24,8 @@ export const map = {
   updateSelfInfo: put<UpdateUserDto, UserDto>()("/self"),
   // 获取其他人的信息
   getUserInfo: get<{ id: number }, UserDto>()("/user/{id}"),
+  // 创建项目的标签
+  createProjectTag: post<CreateProjectTagDto, ProjectTagDto>()("/project_tag"),
   // 创建项目
   createProject: post<CreateProjectDto, ProjectDto>()("/project"),
   // 获取项目详情

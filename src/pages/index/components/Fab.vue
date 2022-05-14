@@ -1,5 +1,5 @@
 <template>
-  <div class="fab" :class="{ hide }">
+  <div class="fab" :class="{ hide }" @click="app.to('#article/new')">
     <div i-ri-add-fill w57 h57></div>
   </div>
 </template>
