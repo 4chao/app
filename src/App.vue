@@ -19,6 +19,7 @@ onHide(() => {
   uni.setKeepScreenOn({ keepScreenOn: false })
   // #endif
 })
+console.log(__filename)
 </script>
 <style lang="scss">
 // #ifndef APP-NVUE

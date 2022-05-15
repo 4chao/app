@@ -10,6 +10,10 @@ import Unocss from 'unocss/vite'
 import UniMeta from './build/vite-plugin-uni-meta'
 import UniProvider from './build/vite-plugin-uni-provider'
 import Espower from './build/vite-plugin-espower'
+import Define from './build/vite-plugin-define'
+import { visualizer } from 'rollup-plugin-visualizer'
+
+import ImportsConfig from './build/imports.config'
 
 // https://vitejs.dev/config/
 export default ({ mode }) =>
@@ -40,26 +44,16 @@ export default ({ mode }) =>
       UniProvider(), //自动注册页面全局组件
       Unocss(),
       ViteRestart({ restart: ['src/pages.js', 'src/app.config.ts'] }),
-      AutoImport({
-        imports: [
-          'vue',
-          '@vueuse/core',
-          'uni-app',
-          { '@/app/index': ['app'] },
-          { '@/app/utils/request': ['api'] },
-          { 'power-assert': [['default', 'assert']] },
-        ],
-        dts: 'declare/auto-imports.d.ts',
-      }),
+      AutoImport(ImportsConfig),
       isTest() || uni({ vueOptions: { reactivityTransform: true } }),
       isTest() && Espower(),
+      Define(), //添加一些全局变量
+      // visualizer(), //可视化依赖关系
     ],
     test: {
       globals: true,
       environment: 'jsdom',
-      deps: {
-        inline: ['@vue'],
-      },
+      deps: { inline: ['@vue'] },
     },
   })
 

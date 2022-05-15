@@ -23,7 +23,7 @@ import MescrollBody from 'mescroll-uni/mescroll-body.vue'
 // #ifndef MP
 import Paint from '@/components/Paint.vue'
 // #endif
-import { useQuery, ScrollSymbol, ScrollOptions } from '@/hooks'
+import { ScrollOptions } from '@/hooks'
 
 defineProps({
   top: String,
