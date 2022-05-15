@@ -7,14 +7,11 @@ import { merge, transform, isObject } from 'lodash'
 import normallize from 'normalize-path'
 import AppConfig from '../src/app.config'
 
-export const defaultPagesRE = /src\/pages\/((?!.+(component(s)?|static).+).)*\.vue$/
+export const defaultPagesRE = /src[\/\\]pages[\/\\]((?!.+(component(s)?|static).+).)*\.vue$/
 export const defaultMetaRE = /\<meta(.|\s)*?(\/\>|\/meta\>)/im
 export function MetaParser(str, alias, preset): Record<string, any> {
   let attr
-  let parser = new Parser(
-    { onopentag: (_, attributes) => (attr = attributes) },
-    { lowerCaseAttributeNames: false },
-  )
+  let parser = new Parser({ onopentag: (_, attributes) => (attr = attributes) }, { lowerCaseAttributeNames: false })
   parser.write(str)
   parser.end()
   if (!attr) return {}
@@ -90,8 +87,7 @@ export default function (options: Partial<Options> = {}) {
       } else {
         const packagePath = [basePath, packageName].join('/')
         const sub = META['subPackages'].find(item => item.root == packagePath)
-        if (!sub)
-          META['subPackages'].push({ root: packagePath, pages: [{ path: pageName, style }] })
+        if (!sub) META['subPackages'].push({ root: packagePath, pages: [{ path: pageName, style }] })
         else sub['pages'].push({ path: pageName, style })
       }
     })
@@ -195,12 +191,7 @@ export default function (options: Partial<Options> = {}) {
     console.log(c.dim(new Date().toLocaleTimeString()), c.bold(c.red(`[${pluginName}]`)), ...args)
   }
   function debug(...args) {
-    DEBUG &&
-      console.log(
-        c.dim(new Date().toLocaleTimeString()),
-        c.bold(c.red(`[debug:${pluginName}]`)),
-        ...args,
-      )
+    DEBUG && console.log(c.dim(new Date().toLocaleTimeString()), c.bold(c.red(`[debug:${pluginName}]`)), ...args)
   }
 }
 
