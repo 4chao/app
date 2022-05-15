@@ -1,8 +1,7 @@
-import { createModule, action } from 'vuex-class-component'
+import { Store, Pinia, Persist } from '../utils'
 
-export class Global extends createModule({
-  namespaced: 'global',
-}) {
+@Store
+export class Global extends Pinia {
   readonly config = {}
   systemInfo = uni.getSystemInfoSync()
   menuButtonBounding = uni.getMenuButtonBoundingClientRect?.()
@@ -22,7 +21,7 @@ export class Global extends createModule({
     return windowWidth - right || 0
   }
 
-  @action async getSystemInfo() {
+  getSystemInfo() {
     this.systemInfo = uni.getSystemInfoSync()
     this.menuButtonBounding = uni.getMenuButtonBoundingClientRect?.()
   }

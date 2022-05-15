@@ -50,11 +50,9 @@ export default ({ mode }) =>
       Define(), //添加一些全局变量
       // visualizer(), //可视化依赖关系
     ],
-    test: {
-      globals: true,
-      environment: 'jsdom',
-      deps: { inline: ['@vue'] },
-    },
+    esbuild: { keepNames: true },
+    optimizeDeps: { exclude: ['lodash-es'] },
+    test: { globals: true, environment: 'jsdom', deps: { inline: ['@vue'] } },
   })
 
 function isTest() {
