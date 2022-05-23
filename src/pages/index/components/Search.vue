@@ -53,7 +53,7 @@
               text-20
               font-bold
               text-white
-              @click="app.to('login').then(msg => msg && $u.toast(msg))"
+              @click="app.to('#user/login').then(msg => msg && app.toast(msg))"
             >
               登录
             </div>
@@ -92,7 +92,7 @@
                 flex-center
                 mlsm
                 :style="{ fontSize: navHpx(mp ? 0.35 : 0.35) }"
-                @click="app.to('#user/setting').then(msg => msg && $u.toast(msg))"
+                @click="app.to('#user/setting').then(msg => msg && app.toast(msg))"
               >
                 <div i-ri-settings-2-line></div>
               </div>
@@ -188,7 +188,6 @@
 <script setup lang="ts">
 import Sticker from '@/components/Sticker.vue'
 import ArticleCardRecentlyEdited from './ArticleCardRecentlyEdited.vue'
-import {} from '@/hooks'
 
 let { value, searched } = $(inject('searchInfo'))
 const dValue = computed({

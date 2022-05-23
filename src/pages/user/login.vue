@@ -2,7 +2,6 @@
   <meta title="登录" />
 
   <div flex-center>
-    <u-code ref="Coder" :seconds="seconds" @change="tip = $event" />
     <div thin mt2xl mb5xl w640>
       <div py pl bg-hex-f6f8fa flex>
         <div flex-1>
@@ -38,37 +37,38 @@
       <div ptlg pxxl>
         <div v-if="isLogin" mblg>
           <div text-25 mb4>手机号 / 邮箱 / 用户名</div>
-          <u-input v-model="account" />
+          <uni-easyinput v-model="account" />
         </div>
 
         <div v-if="!isLogin" mblg>
           <div text-25 mb4>用户名</div>
-          <u-input v-model="username" />
+          <uni-easyinput v-model="username" />
         </div>
+        <Code ref="Coder" @change="tip = $event"></Code>
         <div v-if="!isLogin" mblg>
           <div text-25 mb4>邮箱</div>
           <div flex-center justify-end>
-            <u-input v-model="email">
-              <template #suffix>
-                <div h50 w180 pyxs bg-hex-f6f8fa text-hex-6991c7 flex-center thin-12-6991c7 text-23 @click="getCode('邮箱', email)">
+            <uni-easyinput v-model="email">
+              <template #right>
+                <div h50 w180 pyxs bg-hex-f6f8fa text-hex-6991c7 flex-center thin-12-6991c7 text-23 mr5px @click="getCode('邮箱', email)">
                   {{ tip }}
                 </div>
               </template>
-            </u-input>
+            </uni-easyinput>
           </div>
         </div>
 
         <div mblg>
           <div text-25 mb4>密码</div>
-          <u-input v-model="password" type="password" />
+          <uni-easyinput v-model="password" type="password" />
         </div>
         <div v-if="!isLogin" mblg>
           <div text-25 mb4>重复密码</div>
-          <u-input v-model="repeatPassword" type="password" />
+          <uni-easyinput v-model="repeatPassword" type="password" />
         </div>
         <div v-if="!isLogin" mblg>
           <div text-25 mb4>验证码</div>
-          <u-code-input v-model="code" mode="box" :space="0" :maxlength="6" hairline></u-code-input>
+          <CodeInput v-model="code" mode="box" :space="0" :maxlength="6" hairline></CodeInput>
         </div>
       </div>
 
@@ -82,13 +82,14 @@
 </template>
 
 <script setup lang="ts">
-import { useQuery } from '@/hooks'
+import Code from './components/Code.vue'
+import CodeInput from './components/CodeInput.vue'
 const { from } = $(useQuery())
 
 let isLogin = $ref(true)
 
-let account = $ref('')
-let email = $ref('')
+let account = $ref('123')
+let email = $ref('2490445193@qq.com')
 let code = $ref('')
 let password = $ref('')
 let username = $ref('')
@@ -97,38 +98,40 @@ let agree = $ref(false)
 
 watchEffect(() => uni.setNavigationBarTitle({ title: isLogin ? '登录' : '注册' }))
 
-let seconds = $ref(5)
 let tip = $ref('')
 
 async function submit() {
-  if (!agree) return uni.$u.toast('请先阅读并同意服务条款')
+  if (!agree) return app.toast('请先阅读并同意服务条款')
   if (isLogin) {
-    if (!account) return uni.$u.toast('请输入账号')
-    if (!password) return uni.$u.toast('请输入密码')
+    if (!account) return app.toast('请输入账号')
+    if (!password) return app.toast('请输入密码')
     await app.User.login({ account, password, auth_type: 'PASSWORD' })
     app.back('登录成功')
   } else {
-    if (!username) return uni.$u.toast('请输入用户名')
-    if (!email) return uni.$u.toast('请输入邮箱')
-    if (!password) return uni.$u.toast('请输入密码')
-    if (!repeatPassword) return uni.$u.toast('请重复输入密码')
-    if (password !== repeatPassword) return uni.$u.toast('两次密码不一致')
-    if (!code) return uni.$u.toast('请输入验证码')
+    if (!username) return app.toast('请输入用户名')
+    if (!email) return app.toast('请输入邮箱')
+    if (!password) return app.toast('请输入密码')
+    if (!repeatPassword) return app.toast('请重复输入密码')
+    if (password !== repeatPassword) return app.toast('两次密码不一致')
+    if (!code) return app.toast('请输入验证码')
     await app.User.register({ account: email, code, username, password })
     app.to('#user/afterRegister', { from })
   }
 }
 
 let Coder = $ref(null)
+watchEffect(() => console.log(Coder))
 function getCode(type: string, account: string) {
-  if (!account) return uni.$u.toast('请输入' + type)
-  if (!Coder.canGetCode) return uni.$u.toast('倒计时结束后再发送')
-  tip = '正在发送...'
+  if (!account) return app.toast('请输入' + type)
+  console.log(Coder, Coder.waiting)
 
-  app.api
-    .getVerificationCode({ account })
-    .then(() => Coder.start())
-    .catch(err => uni.$u.toast(err || '获取失败,请稍后重试'))
+  if (Coder.waiting) return app.toast('倒计时结束后再发送')
+  tip = '正在发送...'
+  Coder.start()
+  // app.api
+  //   .getVerificationCode({ account })
+  //   .then(() => Coder.start())
+  //   .catch(err => (app.toast(err || '获取失败,请稍后重试'), (tip = '重新发送')))
 }
 </script>
 

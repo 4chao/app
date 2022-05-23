@@ -13,7 +13,6 @@
 
 <script setup lang="ts">
 import SectionSlide from './SectionSlide.vue'
-import {} from '@/hooks'
 import { useCreationStatus, Section } from './CreationStatus'
 let { SectionActive, SectionHighlight } = $(useCreationStatus())
 let { data } = defineProps<{

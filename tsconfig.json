@@ -34,5 +34,6 @@
       "@root/*": ["./*"]
     }
   },
-  "include": ["src", "declare", "build", "test"]
+  "include": ["src", "declare", "build", "test"],
+  "exclude": ["node_modules"]
 }

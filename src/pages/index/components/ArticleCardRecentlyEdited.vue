@@ -24,8 +24,6 @@
 </template>
 
 <script setup lang="ts">
-import {} from '@/hooks'
-
 defineProps({
   allowBanner: {
     type: Boolean,

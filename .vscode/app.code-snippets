@@ -9,7 +9,7 @@
       "</template>",
       "",
       "<script setup lang=\"ts\">",
-      "  import { $3 } from '@/hooks'",
+      "  $3",
       "</script>",
       "",
       "<style lang=\"scss\"></style>"
@@ -18,17 +18,7 @@
   "sfc-script-setup-component": {
     "scope": "vue",
     "prefix": "vue",
-    "body": [
-      "<template>",
-      "  $1",
-      "</template>",
-      "",
-      "<script setup lang=\"ts\">",
-      "  import { $3 } from '@/hooks'",
-      "</script>",
-      "",
-      "<style lang=\"scss\"></style>"
-    ]
+    "body": ["<template>", "  $1", "</template>", "", "<script setup lang=\"ts\">", "  $3", "</script>", "", "<style lang=\"scss\"></style>"]
   },
   "debug": {
     "scope": "vue,javascript,typescript",

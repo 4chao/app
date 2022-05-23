@@ -50,7 +50,6 @@ back.reject = (data?: any) => back(data, 'reject')
 const pageTools = {
   to,
   back,
-  upx2px: uni.upx2px,
 }
 
 export default function () {

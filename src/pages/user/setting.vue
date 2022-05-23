@@ -3,8 +3,6 @@
   <div @click="app.back('登录成功')">123</div>
 </template>
 
-<script setup lang="ts">
-import {} from '@/hooks'
-</script>
+<script setup lang="ts"></script>
 
 <style lang="scss"></style>

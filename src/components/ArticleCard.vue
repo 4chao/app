@@ -55,7 +55,6 @@
 </template>
 
 <script setup lang="ts">
-import {} from '@/hooks'
 let { data } = defineProps<{ data: AwaitedReturnUnwarpPage<typeof api.getProjectPage> }>()
 </script>
 

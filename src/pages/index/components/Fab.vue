@@ -5,7 +5,6 @@
 </template>
 
 <script setup lang="ts">
-import {} from '@/hooks'
 import { throttle } from 'lodash'
 let hide = $ref(false)
 let scrollTop = $ref(0)

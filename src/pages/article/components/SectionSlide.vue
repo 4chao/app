@@ -1,16 +1,10 @@
 <template>
-  <view
-    transition-all
-    @touchstart="wxsBiz.touchstart"
-    @touchmove="wxsBiz.touchmove"
-    @touchend="wxsBiz.touchend"
-  >
+  <view transition-all @touchstart="wxsBiz.touchstart" @touchmove="wxsBiz.touchmove" @touchend="wxsBiz.touchend">
     <slot></slot>
   </view>
 </template>
 
 <script setup lang="ts">
-import {} from '@/hooks'
 // #ifdef never
 let wxsBiz
 // #endif

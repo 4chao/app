@@ -35,8 +35,6 @@ export const appPlugin = {
 declare module '@vue/runtime-core' {
   export interface ComponentCustomProperties {
     app: globalThis.App
-    uni: globalThis.UniApp.Uni
-    $u: any
   }
 }
 

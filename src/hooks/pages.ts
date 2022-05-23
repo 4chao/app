@@ -94,3 +94,11 @@ export function useScroll(onPageScroll?: typeof import('@dcloudio/uni-app')['onP
   }
   return o
 }
+
+export function useSystemInfo() {
+  let systemInfo = reactive({})
+  onReady(async () => {
+    Object.assign(systemInfo, await uni.getSystemInfo())
+  }, getCurrentInstance().root)
+  return systemInfo
+}

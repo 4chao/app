@@ -4,9 +4,7 @@
   </div>
 </template>
 
-<script setup lang="ts">
-import {} from '@/hooks'
-</script>
+<script setup lang="ts"></script>
 
 <style lang="scss" scoped>
 .footer {

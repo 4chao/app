@@ -39,7 +39,6 @@
 
 <script setup lang="ts">
 import FloatComment from './FloatComment.vue'
-import {} from '@/hooks'
 import { useCreationStatus } from './CreationStatus'
 let { SectionActive } = $(useCreationStatus())
 </script>

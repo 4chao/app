@@ -6,7 +6,6 @@
 </template>
 
 <script setup lang="ts">
-import {} from '@/hooks'
 import { whenever } from '@vueuse/core'
 import { useCreationStatus, Section } from './CreationStatus'
 let { SectionActive } = $(useCreationStatus())

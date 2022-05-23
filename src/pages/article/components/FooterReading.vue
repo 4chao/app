@@ -27,7 +27,6 @@
 
 <script setup lang="ts">
 import FooterBase from './FooterBase.vue'
-import {} from '@/hooks'
 import { useCreationStatus } from './CreationStatus'
 let { CommentShow } = $(useCreationStatus())
 </script>

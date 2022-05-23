@@ -1,6 +1,3 @@
-import { useSwitch } from '@/hooks'
-import { Ref, ShallowUnwrapRef } from 'vue'
-
 function StatusFactory() {
   return {
     //创作数据

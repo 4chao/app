@@ -230,6 +230,7 @@ module.exports = {
     '@typescript-eslint/ban-types': 'off',
     'vue/multi-word-component-names': 'off',
     'no-var': 'off',
+    'vue/no-setup-props-destructure': 'off',
   },
   overrides: [
     {

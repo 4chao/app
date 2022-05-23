@@ -1,15 +1,18 @@
 <template>
-  <u-popup :show="CommentShow" :round="10" @close="CommentShow = false" @touchmove.stop.prevent>
+  <uni-popup ref="popup" type="bottom" @maskClick="CommentShow = false">
     <div class="content">
       <text>人生若只如初见，何事秋风悲画扇</text>
     </div>
-  </u-popup>
+  </uni-popup>
 </template>
 
 <script setup lang="ts">
-import {} from '@/hooks'
 import { useCreationStatus } from './CreationStatus'
 let { CommentShow } = $(useCreationStatus())
+
+let popup = $ref(null)
+
+watch($$(CommentShow), () => popup[CommentShow ? 'open' : 'close']())
 
 onBackPress(({ from }) => {
   if (from !== 'backbutton') return
@@ -22,5 +25,7 @@ onBackPress(({ from }) => {
 <style lang="scss" scoped>
 .content {
   height: calc(100vh - 300rpx);
+  background: white;
+  border-radius: 10rpx 10rpx 0 0;
 }
 </style>

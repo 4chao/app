@@ -38,5 +38,5 @@ export default defineConfig({
         util.entries = []
       }),
   ].filter(e => !!e),
-  include: [path.resolve(__dirname, 'src', '**')],
+  include: [path.resolve(__dirname, 'src', '**/*.vue')],
 })
