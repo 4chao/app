@@ -1,5 +1,5 @@
 <h1 align="center">思潮App</h1>
-<div align="center">🌆 你的开源创想平台</div>
+<div align="center">🌆 你的高质量的开源创作与内容孵化平台</div>
 <br>
 <div align="center">
 <a href="https://raw.githubusercontent.com/4chao/app/master/LICENSE"><img src="https://img.shields.io/github/license/4chao/app" alt="license"></a>
