@@ -11,6 +11,7 @@ package-lock.json
 # 本地环境文件
 .env.local
 .env.*.local
+.idea
 
 # 日志文件
 npm-debug.log*

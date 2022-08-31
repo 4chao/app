@@ -16,7 +16,7 @@
           w-full
           h-full
           mode="aspectFill"
-          src="https://repository-images.githubusercontent.com/279473495/14866c80-d6b5-11ea-84f1-a824c550bb7d"
+          :src="data.cover"
         ></image>
       </div>
       <div pxsm pyxs bg-hex-f6f8fa>
