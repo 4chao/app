@@ -184,6 +184,7 @@ interface ProjectDto {
   id: number
   title: string
   description: string
+  cover: string;
   user: UserBriefInfoDto
   contributors: UserBriefInfoDto[]
   tags: ProjectTagDto[]

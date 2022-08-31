@@ -14,7 +14,6 @@ import Define from './build/vite-plugin-define'
 import { visualizer } from 'rollup-plugin-visualizer'
 
 import ImportsConfig from './build/imports.config'
-
 // https://vitejs.dev/config/
 export default ({ mode }) =>
   defineConfig({
