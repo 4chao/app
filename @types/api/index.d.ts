@@ -189,12 +189,13 @@ interface ProjectDto {
   contributors: UserBriefInfoDto[]
   tags: ProjectTagDto[]
   coin_num: number
+  favorite_num: number
   participant_num: number
   upvote_num: number
   visibility: Visibility
   status: Status
-  createdTime: Date
-  updatedTime: Date
+  created_time: Date
+  updated_time: Date
 }
 
 interface ProjectTagDto {
