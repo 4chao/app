@@ -16,7 +16,7 @@
     "tsc": "npx vue-tsc --noEmit --skipLibCheck",
     "prepare": "husky install",
     "preinstall": "node ./scripts/preinstall.js",
-    "postinstall": "patch-package && yarn upgrade:api"
+    "postinstall": "patch-package ; yarn upgrade:api ; token-transformer build/tokens.json build/tokens_temp.json"
   },
   "dependencies": {
     "@dcloudio/uni-app": "3.0.0-alpha-3040820220424004",
@@ -99,6 +99,7 @@
     "rollup-plugin-visualizer": "^5.6.0",
     "sass": "^1.49.9",
     "shiki": "^0.11.1",
+    "token-transformer": "^0.0.25",
     "ts-morph": "^15.1.0",
     "typescript": "^4.6.3",
     "unocss": "^0.30.11",

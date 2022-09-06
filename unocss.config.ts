@@ -2,6 +2,7 @@ import { defineConfig, presetUno, presetAttributify, presetIcons, toEscapedSelec
 import transformerDirective from '@unocss/transformer-directives'
 import { times } from 'lodash'
 import path from 'path'
+import { colors } from './build/getRules'
 
 export default defineConfig({
   theme: {
@@ -10,7 +11,11 @@ export default defineConfig({
       else o[k] = (i / 3.2).toFixed(2) + 'rem'
       return o
     }, {}),
+    colors: {
+      ...colors,
+    },
   },
+
   rules: [
     [
       /^thin-?(\d+)?-?(\w+)?$/,

@@ -4,6 +4,7 @@ unpackage/
 /dist/
 src/pages.json
 /stats.html
+*_temp.*
 
 yarn.lock
 package-lock.json
