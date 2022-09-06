@@ -1,0 +1,42 @@
+{
+  "/guide/": [
+    {
+      "text": "入门",
+      "collapsible": true,
+      "items": [
+        {
+          "text": "介绍",
+          "link": "introduce"
+        },
+        {
+          "text": "开始使用",
+          "link": "getting-started"
+        }
+      ]
+    },
+    {
+      "text": "文档（docs）",
+      "collapsible": true,
+      "items": [
+        {
+          "text": "写第一个docs",
+          "link": "docs/add-page"
+        },
+        {
+          "text": "组件示例",
+          "link": "docs/components"
+        }
+      ]
+    },
+    {
+      "text": "组件（D4C）",
+      "collapsible": true,
+      "items": [
+        {
+          "text": "编写组件",
+          "link": "components/writing"
+        }
+      ]
+    }
+  ]
+}

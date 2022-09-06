@@ -1,0 +1,11 @@
+{
+  "/components/": [
+    {
+      "text": "组件",
+      "items": [
+        { "text": "Button", "link": "sc-button" },
+        { "text": "Text", "link": "sc-test" }
+      ]
+    }
+  ]
+}
