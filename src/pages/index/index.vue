@@ -25,7 +25,7 @@ useScroll(onPageScroll)
     List = List.concat(data)
     page.endBySize(data.length, total, page.time)
   })
-const scrolling = $ref(false)
+
 const searchInfo = reactive({
   value: '',
   searched: '',
@@ -37,7 +37,6 @@ let top = $computed(() => {
   const { statusBarHeight } = app.Global.systemInfo
   return navBarHeight + statusBarHeight + uni.upx2px(30) + 'px'
 })
-// var top = $computed(() => th + 30)
 </script>
 
 <style lang="scss"></style>

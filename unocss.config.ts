@@ -1,13 +1,34 @@
-import { defineConfig, presetUno, presetAttributify, presetIcons, toEscapedSelector as e } from 'unocss'
+import type { Preset, SourceCodeTransformer } from 'unocss'
+import {
+  defineConfig,
+  presetUno,
+  presetAttributify,
+  presetIcons,
+  toEscapedSelector as e,
+  transformerDirectives,
+  transformerVariantGroup,
+} from 'unocss'
+import { presetApplet, presetRemToRpx, transformerApplet, transformerAttributify } from 'unocss-applet'
 import transformerDirective from '@unocss/transformer-directives'
 import { times } from 'lodash'
 import path from 'path'
 import { colors } from './build/getRules'
 
+const presets: Preset[] = []
+const transformers: SourceCodeTransformer[] = []
+const isMP = !!process.env.UNI_PLATFORM?.startsWith('mp')
+
+if (!isMP) {
+  presets.push(presetAttributify())
+} else {
+  transformers.push(transformerAttributify())
+  transformers.push(transformerApplet())
+}
+
 export default defineConfig({
   theme: {
     spacing: [...['none', 'xs', 'sm', 'DEFAULT', 'lg', 'xl'], ...times(8).map(n => n + 2 + 'xl')].reduce((o, k, i) => {
-      if (process.env.UNI_PLATFORM?.startsWith('mp')) o[k] = (i * 10).toFixed(2) + 'rpx'
+      if (isMP) o[k] = (i * 10).toFixed(2) + 'rpx'
       else o[k] = (i / 3.2).toFixed(2) + 'rem'
       return o
     }, {}),
@@ -28,20 +49,11 @@ export default defineConfig({
     ],
     ['absolute-center', { position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }],
   ],
-  presets: [presetUno(), presetAttributify(), presetIcons()],
-  transformers: [transformerDirective() as any],
+  presets: [presetUno(), presetIcons(), ...presets],
+  transformers: [transformerDirectives(), transformerVariantGroup(), ...transformers],
   shortcuts: {
     'flex-center': 'flex flex-row justify-center items-center',
     'flex-center-col': 'flex flex-col justify-center items-center',
   },
-  postprocess: [
-    // 小程序不需要属性选择器
-    process.env.UNI_PLATFORM?.startsWith('mp') &&
-      (util => {
-        if (!util.selector.startsWith('[')) return
-        util.selector = undefined
-        util.entries = []
-      }),
-  ].filter(e => !!e),
-  include: [path.resolve(__dirname, 'src', '**/*.vue')],
+  include: [path.resolve(__dirname, 'src', '**')],
 })

@@ -6,9 +6,6 @@ src/pages.json
 /stats.html
 *_temp.*
 
-yarn.lock
-package-lock.json
-
 # 本地环境文件
 .env.local
 .env.*.local
