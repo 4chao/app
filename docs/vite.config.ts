@@ -1,8 +1,8 @@
-import path from 'path';
-import type { UserConfig } from 'vite';
-import Inspect from 'vite-plugin-inspect';
-// import DefineOptions from 'unplugin-vue-define-options/vite';
-import { MarkdownTransform } from './.vitepress/plugins/markdown-transform';
+import path from 'path'
+import type { UserConfig } from 'vite'
+import Inspect from 'vite-plugin-inspect'
+import Unocss from 'unocss/vite'
+import { MarkdownTransform } from './.vitepress/plugins/markdown-transform'
 
 export default (): UserConfig => {
   return {
@@ -24,7 +24,7 @@ export default (): UserConfig => {
     plugins: [
       Inspect(), // only applies in dev mode
       MarkdownTransform(),
-      // DefineOptions(),
+      Unocss(),
     ],
-  };
-};
+  }
+}

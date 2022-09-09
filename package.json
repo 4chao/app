@@ -6,7 +6,7 @@
     "bootstrap": "yarn install && node ./scripts/bootstrap.js",
     "dev:h5": "uni",
     "dev:mp-weixin": "uni -p mp-weixin",
-    "docs:dev": "vitepress dev docs",
+    "dev:docs": "vitepress dev docs",
     "cc": "bash ./scripts/createComponent.sh",
     "build:h5": "uni build",
     "test": "vitest",
