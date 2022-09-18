@@ -26,7 +26,7 @@ export default ({ mode }) =>
       },
     },
     server: {
-      watch: { ignored: ['**/dist/**', '!**/node_modules/uview-ui/**'] },
+      watch: { ignored: ['**/dist/**'] },
       // https: true,
       proxy: {
         '^/api': {
