@@ -186,10 +186,9 @@
 </template>
 
 <script setup lang="ts">
-import Sticker from '@/components/Sticker.vue'
 import ArticleCardRecentlyEdited from './ArticleCardRecentlyEdited.vue'
 
-let { value, searched } = $(inject('searchInfo'))
+let { value, searched } = $(inject<any>('searchInfo'))
 const dValue = computed({
   get: () => (open && !profile ? value || searched : searched),
   set: val => (value = val),

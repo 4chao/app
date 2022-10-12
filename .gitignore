@@ -4,7 +4,6 @@ unpackage/
 /dist/
 src/pages.json
 /stats.html
-*_temp.*
 
 # 本地环境文件
 .env.local

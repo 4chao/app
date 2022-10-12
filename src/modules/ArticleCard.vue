@@ -12,12 +12,7 @@
     </div>
     <div class="card" thin @click="app.to('#article')">
       <div w-full h100>
-        <image
-          w-full
-          h-full
-          mode="aspectFill"
-          :src="data.cover"
-        ></image>
+        <image w-full h-full mode="aspectFill" :src="data.cover"></image>
       </div>
       <div pxsm pyxs bg-hex-f6f8fa>
         <div class="row1" flex justify-between myxs>

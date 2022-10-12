@@ -6,7 +6,6 @@
 </template>
 
 <script setup lang="ts">
-import ArticleCard from '@/components/ArticleCard.vue'
 import { merge } from 'lodash'
 
 type Article = AwaitedReturnUnwarpPage<typeof api.getProjectPage>

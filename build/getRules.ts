@@ -1,4 +1,4 @@
-import tokens from './tokens_temp.json'
+import tokens from '../declare/tokens.d.json'
 import { set, forIn } from 'lodash'
 
 const PREFIX = 'sc'
