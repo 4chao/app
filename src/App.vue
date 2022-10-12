@@ -24,7 +24,6 @@ console.log(__filename)
 </script>
 <style lang="scss">
 // #ifndef APP-NVUE
-@import 'uview-ui/index.scss';
 @import '@/styles/color-ui.css';
 @import '@/styles/index.scss';
 // #endif
