@@ -14,7 +14,6 @@
 <script setup lang="ts">
 import Search from './components/Search.vue'
 import Fab from './components/Fab.vue'
-import ArticleCard from '@/components/ArticleCard.vue'
 let { indexList: List } = $(app.Data)
 useScroll(onPageScroll)
   .onLoad(page => {})
@@ -25,7 +24,7 @@ useScroll(onPageScroll)
     List = List.concat(data)
     page.endBySize(data.length, total, page.time)
   })
-const scrolling = $ref(false)
+
 const searchInfo = reactive({
   value: '',
   searched: '',
@@ -37,7 +36,6 @@ let top = $computed(() => {
   const { statusBarHeight } = app.Global.systemInfo
   return navBarHeight + statusBarHeight + uni.upx2px(30) + 'px'
 })
-// var top = $computed(() => th + 30)
 </script>
 
 <style lang="scss"></style>

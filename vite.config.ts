@@ -5,6 +5,7 @@ import uni from '@dcloudio/vite-plugin-uni'
 import mkcert from 'vite-plugin-mkcert'
 import ViteRestart from 'vite-plugin-restart'
 import AutoImport from 'unplugin-auto-import/vite'
+import Components from 'unplugin-vue-components/vite'
 import Inspect from 'vite-plugin-inspect'
 import Unocss from 'unocss/vite'
 import UniMeta from './build/vite-plugin-uni-meta'
@@ -13,7 +14,7 @@ import Espower from './build/vite-plugin-espower'
 import Define from './build/vite-plugin-define'
 import { visualizer } from 'rollup-plugin-visualizer'
 
-import ImportsConfig from './build/imports.config'
+import { ImportsConfig, ComponentsConfig } from './build/imports.config'
 // https://vitejs.dev/config/
 export default ({ mode }) =>
   defineConfig({
@@ -44,6 +45,7 @@ export default ({ mode }) =>
       Unocss(),
       ViteRestart({ restart: ['src/pages.js', 'src/app.config.ts'] }),
       AutoImport(ImportsConfig),
+      Components(ComponentsConfig),
       isTest() || uni({ vueOptions: { reactivityTransform: true } }),
       isTest() && Espower(),
       Define(), //添加一些全局变量

@@ -29,7 +29,6 @@
 
 <script setup lang="ts">
 import { initCreationStatus } from './components/CreationStatus'
-import Loadding from '@/components/Loadding.vue'
 import Nav from './components/Nav.vue'
 import Section from './components/Section.vue'
 import Float from './components/Float.vue'
