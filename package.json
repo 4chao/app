@@ -11,10 +11,11 @@
     "commit": "cz",
     "upgrade:template": "echo '将模板合并到当前分支...' ; git remote add template https://github.com/4chao/preset.git ; git fetch template && git merge template/master -m '🥝 upgrade: template'",
     "upgrade:api": "export http_proxy=''; curl http://wofbi001.local:8080/apidoc/api.ts -o src/api/index.ts && sed -i '' '1s/.*/\\/\\/\\/ <reference types=\"api\" \\/\\>/' src/api/index.ts && curl http://wofbi001.local/apidoc/data_type.d.ts -o @types/api/index.d.ts",
+    "trans:token": "yarn token-transformer build/tokens.json declare/tokens.d.json >/dev/null",
     "tsc": "npx vue-tsc --noEmit --skipLibCheck",
     "prepare": "husky install",
     "preinstall": "node ./scripts/preinstall.js",
-    "postinstall": "patch-package ; yarn upgrade:api ; token-transformer build/tokens.json declare/tokens.d.json"
+    "postinstall": "patch-package ; yarn upgrade:api ; yarn trans:token"
   },
   "dependencies": {
     "@dcloudio/uni-app": "3.0.0-alpha-3060120220907002",
