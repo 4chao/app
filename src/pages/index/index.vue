@@ -3,7 +3,6 @@
   <sys :top="top">
     <template #fixed>
       <Search />
-      <Fab />
     </template>
     <div id="articles" ptsm>
       <ArticleCard v-for="item in List" :key="item.id" :data="item" />

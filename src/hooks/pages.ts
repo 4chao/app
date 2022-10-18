@@ -1,18 +1,18 @@
 import { ToRefs } from 'vue'
-import { PageParams } from '@/types'
+import { PageParams, definePage, ParamsType } from '@/types'
 
-type QueryDefaultData<T> = Omit<PageParams, 'data'> & { data: T & AObjectHasAnyKeys }
+type QueryDefaultData<T> = Omit<PageParams, 'params'> & { params: T & AObjectHasAnyKeys }
 /**
  * 获得当前页面跳转携带的参数和信息
  * (依赖 app.to )
  * @param fn 函数时为回调函数,其他为默认返回值
  */
-export function useQuery<T>(fn: T): ToRefs<QueryDefaultData<T>>
-export function useQuery(fn?: (data: any) => void): ToRefs<PageParams>
-export function useQuery<T>(fn?: (data: any) => void | T) {
+export function useQuery<T extends definePage>(fn?: T[typeof ParamsType]): ToRefs<QueryDefaultData<T[typeof ParamsType]>>
+export function useQuery<T extends definePage>(fn?: (params: T[typeof ParamsType]) => void): ToRefs<PageParams>
+export function useQuery<T>(fn?: (params: T) => void | T) {
   let isF = typeof fn === 'function'
-  const query = reactive<{ data?: any; id?: string; from?: string }>({
-    data: isF ? {} : fn,
+  const query = reactive<{ params?: any; id?: string; from?: string }>({
+    params: isF ? {} : fn,
     id: null,
     from: null,
   })
@@ -21,7 +21,7 @@ export function useQuery<T>(fn?: (data: any) => void | T) {
     if (!getCurrentPages().pop()?.['$page']?.fullPath) await new Promise(r => onLoad(r))
     let id = getCurrentPages().pop()['$page'].fullPath.split('?id=')[1]
     uni.$emit(id + '_query', pkg => Object.assign(query, pkg))
-    isF && fn(query.data)
+    isF && fn(query.params)
   }).catch(err => app.error('参数获取失败', err))
 
   return toRefs(query)

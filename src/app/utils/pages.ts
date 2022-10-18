@@ -1,4 +1,5 @@
 import { debounce, DebouncedFuncLeading } from 'lodash'
+import { definePage, ParamsType, ReturnType } from '@/types'
 
 export function getPath(p: string, currentGroup: string) {
   let [group, path] = Array.from(p.match(/^(?:#(.*?)(?:\/|$))?(.*)$/)).slice(1)
@@ -12,18 +13,18 @@ let to = debounce(
     const currentGroup = currentPath.split('/')[1]
     const id = String.rand()
 
-    const pkg = { data: obj, from: currentPath, id }
+    const pkg = { params: obj || {}, from: currentPath, id }
     uni.$on(id + '_query', cb => cb(pkg))
     let url = getPath(path, currentGroup)
     uni
       .navigateTo({ url: url + '?id=' + id })
-      .then(() => app.info('页面切换', obj || '', '=>', path == url ? path : `${path} (${url})`))
+      .then(() => app.info('页面切换', obj || {}, '=>', path == url ? path : `${path} (${url})`))
       .catch(err => app.error('页面切换失败', '=>' + path, err))
     return new Promise<any>((r, e) => (uni.$once(id + '_resolve', r), uni.$once(id + '_reject', e)))
   },
   50,
   { leading: true, trailing: false },
-)
+) as <U extends definePage = any>(path: string, obj?: U[typeof ParamsType]) => Promise<U[typeof ReturnType]>
 
 const back = debounce(
   (data?: any, type: 'resolve' | 'reject' = 'resolve') => {

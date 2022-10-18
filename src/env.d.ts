@@ -24,3 +24,4 @@ type Intersect<U> = (U extends any ? (arg: U) => void : never) extends (arg: inf
 type AObjectHasAnyKeys = { [key in any]: any }
 type AwaitedReturn<T extends (...args: any) => any> = Partial<Awaited<ReturnType<T>>>
 type AwaitedReturnUnwarpPage<T extends (...args: any) => any> = Partial<Awaited<ReturnType<T>>['data'][0]>
+type RecordAny = Record<string, any>
