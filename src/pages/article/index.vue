@@ -2,6 +2,7 @@
   <meta hide:app hide:h5 title="创作详情" />
   <sys bottom="100rpx">
     <template #fixed>
+      <Draggable><Fab /></Draggable>
       <!-- <u-loading-page :loading="!ready" loading-text="加载思潮..." fixed z-99></u-loading-page> -->
       <div v-show="!ready" fixed z-97 inset-0 bg-white></div>
       <uni-transition fixed z-98 :show="!ready">
@@ -28,6 +29,7 @@
 </template>
 
 <script setup lang="ts">
+import Fab from './components/Fab.vue'
 import { initCreationStatus } from './components/CreationStatus'
 import Nav from './components/Nav.vue'
 import Section from './components/Section.vue'
@@ -36,15 +38,24 @@ import FooterEditing from './components/FooterEditing.vue'
 import FooterReading from './components/FooterReading.vue'
 import Comment from './components/Comment.vue'
 
+import { PageArticle } from '@/types'
+
 let { Meta, Sections, SectionActive, SectionHighlight, editMode } = $(initCreationStatus())
 
-let project_id = 1
+const { params } = $(useQuery<PageArticle>())
+
 let { loading, ready, error } = $(
   useScroll(onPageScroll)
-    .onLoad(page => api.getProject({ id: project_id }).then(res => (Meta = res)))
+    .onLoad(async page => {
+      const { id } = await use(() => params)
+      if (!id) {
+        // TODO 创建项目
+      } else Meta = await api.getProject({ id })
+    })
     .onFetch(async page => {
       let pageData = { page: page.num, size: page.size, last_time: page.time }
-      const { data, total } = await api.getProjectParagraph({ project_id, ...pageData })
+      const { id } = await use(() => params)
+      const { data, total } = await api.getProjectParagraph({ project_id: id, ...pageData })
       if (page.num == 0) Sections = []
       Sections = Sections.concat(data)
       page.endBySize(data.length, total, page.time)
