@@ -1,78 +1,84 @@
 <template>
-  <meta hide:app hide:h5 title="创作详情" />
-  <sys bottom="100rpx">
+  <meta hide />
+  <sys>
     <template #fixed>
-      <Draggable><Fab /></Draggable>
-      <!-- <u-loading-page :loading="!ready" loading-text="加载思潮..." fixed z-99></u-loading-page> -->
-      <div v-show="!ready" fixed z-97 inset-0 bg-white></div>
-      <uni-transition fixed z-98 :show="!ready">
-        <div fixed z-98 inset-0 bg-white>
-          <Loadding />
-        </div>
-      </uni-transition>
-      <div v-show="!initFail">
-        <uni-transition :show="footer == 'editing'"><FooterEditing /></uni-transition>
-        <uni-transition :show="footer == 'reading'"><FooterReading /></uni-transition>
-        <Float />
-        <Comment fixed z-110 />
-      </div>
+      <Draggable><BottomTool /></Draggable>
     </template>
-    <Nav>{{ Meta.title || '' }}</Nav>
-    <div v-if="initFail" pt300>加载失败</div>
-    <div v-else>
-      <div mxsm mblg>{{ Meta.description }}</div>
-      <div v-for="item in Sections" :key="item.uuid">
-        <Section :data="item" />
+    <div flex-center>
+      <div pxy><div i-ri-arrow-left-line></div></div>
+      <div flex-1></div>
+      <div pxy text-xs text-gray>自动保存成功</div>
+      <div pxy><div i-ri-menu-line></div></div>
+    </div>
+    <div pxy>
+      <textarea auto-height placeholder="请输入标题" class="textarea" maxlength="400" placeholder-style="color: #D5D5E0;" />
+      <div relative>
+        <div
+          v-if="!addDiscription && !discription"
+          absolute
+          inset-0
+          flex-center
+          justify-start
+          text-gray
+          bg-white
+          z-100
+          @click="addDiscription = true"
+        >
+          <div i-ri-ball-pen-fill></div>
+          <div mlxs>添加描述</div>
+        </div>
+        <textarea v-model="discription" auto-height :focus="addDiscription" @blur="addDiscription = false" @focus="addDiscription = true" />
+      </div>
+    </div>
+    <div mtxl p60>
+      <div class="empty-target" flex-center>
+        <Droppable class="empty-target-dropbox" flex-center>
+          <div>将</div>
+          <div class="fab" transform-scale-50 m--15>
+            <div i-fluent-add-28-regular w70 h70></div>
+          </div>
+          <div>拖拽到此处, 添加你的第一个段落</div>
+        </Droppable>
       </div>
     </div>
   </sys>
 </template>
 
 <script setup lang="ts">
+import BottomTool from './components/BottomTool.vue'
 import Fab from './components/Fab.vue'
-import { initCreationStatus } from './components/CreationStatus'
-import Nav from './components/Nav.vue'
-import Section from './components/Section.vue'
-import Float from './components/Float.vue'
-import FooterEditing from './components/FooterEditing.vue'
-import FooterReading from './components/FooterReading.vue'
-import Comment from './components/Comment.vue'
 
-import { PageArticle } from '@/types'
-
-let { Meta, Sections, SectionActive, SectionHighlight, editMode } = $(initCreationStatus())
-
-const { params } = $(useQuery<PageArticle>())
-
-let { loading, ready, error } = $(
-  useScroll(onPageScroll)
-    .onLoad(async page => {
-      const { id } = await use(() => params)
-      if (!id) {
-        // TODO 创建项目
-      } else Meta = await api.getProject({ id })
-    })
-    .onFetch(async page => {
-      let pageData = { page: page.num, size: page.size, last_time: page.time }
-      const { id } = await use(() => params)
-      const { data, total } = await api.getProjectParagraph({ project_id: id, ...pageData })
-      if (page.num == 0) Sections = []
-      Sections = Sections.concat(data)
-      page.endBySize(data.length, total, page.time)
-    }),
-)
-
-let initFail = $computed(() => error && !Sections.length)
-watchEffect(() => console.log(error, !Sections.length))
-
-let footer = $computed(() => {
-  if (editMode) {
-    return 'editing'
-  } else {
-    if (SectionActive) return 'none'
-    return 'reading'
-  }
-})
+let addDiscription = $ref(false)
+let discription = $ref('')
 </script>
 
-<style lang="scss"></style>
+<style lang="scss" scoped>
+.textarea {
+  width: 100%;
+  font-size: 72rpx;
+  line-height: 1.5;
+  font-weight: bold;
+}
+
+.empty-target {
+  border: 6rpx dashed #e8e8e8;
+  border-radius: 20rpx;
+  width: 630rpx;
+  height: 324rpx;
+}
+
+.empty-target-dropbox {
+  width: 580rpx;
+  height: 274rpx;
+  border-radius: 10rpx;
+}
+
+.fab {
+  width: 100rpx;
+  height: 100rpx;
+  box-shadow: 0px 2px 10px 1px rgba(0, 0, 0, 0.15);
+  @apply bg-brand-pri text-white;
+  @apply rounded-full;
+  @apply flex-center;
+}
+</style>
