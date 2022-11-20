@@ -1,6 +1,6 @@
 <template>
   <div class="fab">
-    <div i-fluent-add-28-regular w30 h30></div>
+    <div i-fluent-add-28-regular w70 h70></div>
   </div>
 </template>
 

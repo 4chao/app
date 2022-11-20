@@ -2,12 +2,20 @@ import Hammer from 'hammerjs'
 import { debounce } from 'lodash'
 import { animate, spring } from 'motion'
 
+declare global {
+  interface Window {
+    dropIns: Set<Droppable>
+  }
+}
+
+window.dropIns = new Set<Droppable>()
 interface Options {
   distance: number
 }
 class DragManager {
   pageX = -1000
   pageY = -1000
+  onTouch = false
 
   options: Options
   constructor(public $el: HTMLElement, public name = String.rand(), options: Partial<Options> = {}) {
@@ -15,25 +23,26 @@ class DragManager {
       distance: 100,
       ...options,
     }
+    $el.addEventListener('touchstart', () => (this.onTouch = true))
+    $el.addEventListener('touchend', () => (this.onTouch = false))
     $el.addEventListener('touchmove', ev => {
-      console.log(ev)
-
       this.pageX = ev.touches[0].pageX
       this.pageY = ev.touches[0].pageY
-      console.log(this.pageY)
       this.update()
     })
   }
 
-  static dropIns = new Set<Droppable>()
   static registerDropIns(ins: Droppable) {
-    this.dropIns.add(ins)
+    window.dropIns.add(ins)
   }
+  target?: Droppable
   update = debounce(() => {
+    if (!this.onTouch) return
     let tempD = Infinity
     let target: Droppable = null
-    console.log('====')
-    Array.from(DragManager.dropIns)
+    this.target = null
+
+    Array.from(window.dropIns)
       .filter(e => !(e.name && e.name !== this.name))
       .forEach(e => {
         e.update()
@@ -46,12 +55,14 @@ class DragManager {
       })
     if (target && tempD < this.options.distance) {
       target.$el.dataset.active = 'true'
+      this.target = target
     }
   }, 0)
 }
 
 export class Draggable extends DragManager {
   hammer: HammerManager
+  onPanend = (id: string) => {}
 
   constructor($el: HTMLElement, name: string = null, options: Partial<Options> = {}) {
     super($el, name, options)
@@ -73,6 +84,12 @@ export class Draggable extends DragManager {
       this.to(ev.deltaX, ev.deltaY)
     })
     hammer.on('panend', ev => {
+      console.log('panend:', this.target?.$el.dataset.id)
+      if (this.target) {
+        const dataset = this.target.$el.dataset
+        dataset.active = 'false'
+        this.onPanend(dataset.id)
+      }
       this.to(0, 0, true)
       this.size.normal()
     })
@@ -92,7 +109,7 @@ export class Draggable extends DragManager {
 
   size = {
     normal: () => animate(this.$el, { scale: 1 }, { easing: spring({ stiffness: 1000, damping: 20 }) }),
-    big: () => animate(this.$el, { scale: 1.5 }, { easing: spring({ stiffness: 1000, damping: 20 }) }),
+    big: () => animate(this.$el, { scale: 1.2 }, { easing: spring({ stiffness: 1000, damping: 20 }) }),
   }
 
   hide() {
@@ -104,13 +121,13 @@ export class Droppable {
   constructor(public $el: HTMLElement, public name?: 'string') {
     this.init()
     this.bind()
-    DragManager.registerDropIns(this)
   }
 
   init() {}
 
   bind() {
     const { $el } = this
+    DragManager.registerDropIns(this)
   }
 
   rect: DOMRect

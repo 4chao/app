@@ -6,12 +6,31 @@
 
 <script setup lang="ts"></script>
 
+<script lang="ts">
+export default {
+  emits: ['onPanend'],
+  mounted() {
+    setTimeout(() => {
+      let a = 'alert(window.aa)'
+      // console.log(getCurrentPages().pop()['$getAppWebview']().evalJS(a))
+    }, 1000)
+  },
+  methods: {
+    onPanend(id: string) {
+      this.$emit('onPanend', id)
+    },
+  },
+}
+</script>
+
 <script module="render" lang="renderjs">
 import { Draggable } from './DragManager'
 export default {
   mounted() {
+    window.aa = 11223344
     console.log(this.$ownerInstance);
-    new Draggable(this.$ownerInstance.$el)
+    const dragger = new Draggable(this.$ownerInstance.$el)
+    dragger.onPanend = (id) => this.$ownerInstance.callMethod('onPanend', id)
   },
 }
 </script>
