@@ -5,13 +5,17 @@
       <Toolbar @new-paragraph="groups.push({ paragraph: [{ new: true }] })"></Toolbar>
     </template>
     <div flex-center>
-      <div pxy><div i-ri-arrow-left-line></div></div>
+      <div pxy>
+        <div i-ri-arrow-left-line></div>
+      </div>
       <div flex-1></div>
       <div pxy text-xs text-gray>自动保存成功</div>
-      <div pxy><div i-ri-menu-line></div></div>
+      <div pxy>
+        <div i-ri-menu-line></div>
+      </div>
     </div>
     <div pxy mb>
-      <textarea auto-height placeholder="请输入标题" class="textarea" maxlength="400" placeholder-style="color: #D5D5E0;" />
+      <textarea v-model="title" auto-height placeholder="请输入标题" class="textarea" maxlength="400" placeholder-style="color: #D5D5E0;" />
       <div relative>
         <div
           v-if="!addDiscription && !discription"
@@ -53,9 +57,31 @@
 <script setup lang="ts">
 import Toolbar from './components/Toolbar.vue'
 import Group from './components/Group.vue'
+import { PageArticle } from '@/types'
+let paramsDataTitle = ''
+
+let paramsDataDescription = ''
+
+const { params } = $(useQuery<PageArticle>())
+
+if (params) {
+  console.log('params', params)
+
+  if (params.data && params.data.description) {
+    console.log('data', params.data)
+    paramsDataDescription = params.data.description
+    console.log('paramsDataDescription', paramsDataDescription)
+  }
+  if (params.data && params.data.title) {
+    console.log('data', params.data)
+    paramsDataTitle = params.data.title
+    console.log('paramsDataTitle', paramsDataTitle)
+  }
+}
 
 let addDiscription = $ref(false)
-let discription = $ref('')
+let title = $ref(paramsDataTitle)
+let discription = $ref(paramsDataDescription)
 
 const groups = reactive([])
 </script>

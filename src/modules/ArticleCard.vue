@@ -10,7 +10,7 @@
         关注的人
       </div>
     </div>
-    <div class="card" thin @click="app.to('#article')">
+    <div class="card" thin @click="app.to<PageArticle>('#article', { id: data.id, data: data })">
       <div w-full h100>
         <image w-full h-full mode="aspectFill" :src="cover"></image>
       </div>
@@ -40,7 +40,7 @@
       </div>
       <div psm>
         <div line-clamp-3 text-27>
-          {{ data.content }}
+          {{ data.description }}
         </div>
       </div>
     </div>
@@ -49,6 +49,7 @@
 
 <script setup lang="ts">
 import { log } from 'console'
+import { PageArticle } from '@/types'
 
 let { data } = defineProps<{ data: AwaitedReturnUnwarpPage<typeof api.getProjectPage> }>()
 const oss_base_url = import.meta.env.VITE_OSS_BASE_URL

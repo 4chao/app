@@ -9,5 +9,6 @@ export type PageArticle = definePage<{
   /**
    * 项目id, 不传视为新建
    */
-  id?: string
+  id?: number
+  data?: ProjectDto
 }>
