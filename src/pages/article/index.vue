@@ -9,30 +9,14 @@
         <div i-ri-arrow-left-line></div>
       </div>
       <div flex-1></div>
-      <div pxy text-xs text-gray>自动保存成功</div>
+      <div pxy text-xs text-gray>{{ autoSaveStatus }}</div>
       <div pxy>
         <div i-ri-menu-line></div>
       </div>
     </div>
     <div pxy mb>
-      <textarea v-model="title" auto-height placeholder="请输入标题" class="textarea" maxlength="400" placeholder-style="color: #D5D5E0;" />
-      <div relative>
-        <div
-          v-if="!addDiscription && !discription"
-          absolute
-          inset-0
-          flex-center
-          justify-start
-          text-gray
-          bg-white
-          z-100
-          @click="addDiscription = true"
-        >
-          <div i-ri-ball-pen-fill></div>
-          <div mlxs>添加描述</div>
-        </div>
-        <textarea v-model="discription" auto-height :focus="addDiscription" @blur="addDiscription = false" @focus="addDiscription = true" />
-      </div>
+      <textarea v-model="base.title" auto-height placeholder="请输入标题" class="textarea" maxlength="400" placeholder-style="color: #D5D5E0;" />
+      <Contenteditable v-model="base.description" placeholder="添加描述" text-32 />
     </div>
     <div v-if="!groups.length" mtxl p60>
       <div class="empty-target" flex-center>
@@ -58,42 +42,39 @@
 import Toolbar from './components/Toolbar.vue'
 import Group from './components/Group.vue'
 import { PageArticle } from '@/types'
-let paramsDataTitle = ''
-let paramsDataCommentNum = 0
-let paramsDataUpvoteNum = 0
-let paramsDataFavoriteNum = 0
+import { debounce, merge } from 'lodash'
 
-let paramsDataDescription = ''
-
+// ==================== 基础信息 ====================
 const { params } = $(useQuery<PageArticle>())
+const baseOriginal = reactive<Partial<ProjectDto>>({})
+const baseEdited = reactive<Partial<ProjectDto>>({})
+const base = new Proxy(baseEdited, {
+  get: (target, key) => target[key] || baseOriginal[key],
+  set: (target, key, value) => !void (target[key] = value),
+})
 
-if (params) {
-  console.log('params', params)
+// ==================== 页面加载 ====================
+useScroll(onPageScroll).onLoad(async () => {
+  const { id } = await use(() => params)
+  console.log('初始化:', id)
+  merge(baseOriginal, id ? await api.getProject({ id }) : {})
+  console.log(baseOriginal)
+})
 
-  if (params.data && params.data.description) {
-    paramsDataDescription = params.data.description
-  }
-  if (params.data && params.data.title) {
-    paramsDataTitle = params.data.title
-  }
-  if (params.data && params.data.comment_num) {
-    paramsDataCommentNum = params.data.comment_num
-  }
-  if (params.data && params.data.coin_num) {
-    paramsDataUpvoteNum = params.data.upvote_num
-  }
-  if (params.data && params.data.favorite_num) {
-    paramsDataFavoriteNum = params.data.favorite_num
-  }
+// ==================== 自动保存 ====================
+let autoSaveStatus = $ref('')
+
+async function autoSaveRun() {
+  autoSaveStatus = '自动保存中...'
+  // await api.updateProject({ ...baseEdited, id: params.id })
+  await new Promise(resolve => setTimeout(resolve, 500))
+  autoSaveStatus = '自动保存成功'
 }
+// 内容修改 1s 后自动保存, 最多等待五秒
+watch(baseEdited, debounce(autoSaveRun, 1000, { maxWait: 5000 }), { deep: true })
 
-let addDiscription = $ref(false)
-let title = $ref(paramsDataTitle)
-let discription = $ref(paramsDataDescription)
-let upvoteNum = $ref(paramsDataUpvoteNum)
-let favoriteNum = $ref(paramsDataFavoriteNum)
-let commentNum = $ref(paramsDataCommentNum)
-
+// ==================== 分组 ====================
+// WIP...
 const groups = reactive([])
 </script>
 

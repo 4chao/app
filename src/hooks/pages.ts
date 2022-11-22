@@ -12,7 +12,7 @@ export function useQuery<T extends definePage>(fn?: (params: T[typeof ParamsType
 export function useQuery<T>(fn?: (params: T) => void | T) {
   let isF = typeof fn === 'function'
   const query = reactive<{ params?: any; id?: string; from?: string }>({
-    params: isF ? {} : fn,
+    params: isF ? {} : fn || {},
     id: null,
     from: null,
   })

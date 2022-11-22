@@ -57,6 +57,8 @@ export const map = {
   createProject: post<CreateProjectDto, ProjectDto>()("/project"),
   // 获取项目详情
   getProject: get<{}, ProjectDto>()("/project/{id}"),
+  // 更新项目
+  updateProject: put<UpdateProjectDto, ProjectDto>()("/project/{id}"),
   // 获取项目页
   getProjectPage: get<Page, PageDto<ProjectDto>>()("/project/page"),
   // 创建项目段落

@@ -10,7 +10,7 @@
         关注的人
       </div>
     </div>
-    <div class="card" thin @click="app.to<PageArticle>('#article', { id: data.id, data: data })">
+    <div class="card" thin @click="app.to<PageArticle>('#article', data)">
       <div w-full h100>
         <image w-full h-full mode="aspectFill" :src="cover"></image>
       </div>

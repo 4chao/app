@@ -225,7 +225,7 @@ watch($$(open), () => (menu = false))
 function rightBtn() {
   if (menu == true) return (menu = false)
   // if (!open) return (menu = true) //图标为 + , 未弹出 => 打开菜单
-  if (!open) app.to<PageArticle>('#article', { id: 123123 }) //图标为 + , 创建新项目
+  if (!open) app.to<PageArticle>('#article') //图标为 + , 创建新项目
   if (profile) return (profile = false) // 图标为 x 关闭个人信息
   if (value) return (value = '') // 图标为 x 清空输入
   return (open = false) // 图标为 x 关闭弹窗
