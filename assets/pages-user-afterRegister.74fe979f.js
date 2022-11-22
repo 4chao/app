@@ -1,0 +1,1 @@
+import{_ as e,a as s}from"./sys.965ff6bd.js";import{o as a,c as r,w as n,L as o,b as t,M as f}from"./index.6e76e36e.js";const d={};function l(e,d){const l=o(f("sys"),s);return a(),r(l,null,{default:n((()=>[t("div",null,"恭喜你,注册成功,请修改个人信息")])),_:1})}(0,Object.defineProperty)(l,"name",{value:"_sfc_render",configurable:!0});var u=e(d,[["render",l]]);export{u as default};
