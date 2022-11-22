@@ -5,13 +5,17 @@
       <Toolbar @new-paragraph="groups.push({ paragraph: [{ new: true }] })"></Toolbar>
     </template>
     <div flex-center>
-      <div pxy><div i-ri-arrow-left-line></div></div>
+      <div pxy>
+        <div i-ri-arrow-left-line></div>
+      </div>
       <div flex-1></div>
       <div pxy text-xs text-gray>自动保存成功</div>
-      <div pxy><div i-ri-menu-line></div></div>
+      <div pxy>
+        <div i-ri-menu-line></div>
+      </div>
     </div>
     <div pxy mb>
-      <textarea auto-height placeholder="请输入标题" class="textarea" maxlength="400" placeholder-style="color: #D5D5E0;" />
+      <textarea v-model="title" auto-height placeholder="请输入标题" class="textarea" maxlength="400" placeholder-style="color: #D5D5E0;" />
       <div relative>
         <div
           v-if="!addDiscription && !discription"
@@ -53,9 +57,42 @@
 <script setup lang="ts">
 import Toolbar from './components/Toolbar.vue'
 import Group from './components/Group.vue'
+import { PageArticle } from '@/types'
+let paramsDataTitle = ''
+let paramsDataCommentNum = 0
+let paramsDataUpvoteNum = 0
+let paramsDataFavoriteNum = 0
+
+let paramsDataDescription = ''
+
+const { params } = $(useQuery<PageArticle>())
+
+if (params) {
+  console.log('params', params)
+
+  if (params.data && params.data.description) {
+    paramsDataDescription = params.data.description
+  }
+  if (params.data && params.data.title) {
+    paramsDataTitle = params.data.title
+  }
+  if (params.data && params.data.comment_num) {
+    paramsDataCommentNum = params.data.comment_num
+  }
+  if (params.data && params.data.coin_num) {
+    paramsDataUpvoteNum = params.data.upvote_num
+  }
+  if (params.data && params.data.favorite_num) {
+    paramsDataFavoriteNum = params.data.favorite_num
+  }
+}
 
 let addDiscription = $ref(false)
-let discription = $ref('')
+let title = $ref(paramsDataTitle)
+let discription = $ref(paramsDataDescription)
+let upvoteNum = $ref(paramsDataUpvoteNum)
+let favoriteNum = $ref(paramsDataFavoriteNum)
+let commentNum = $ref(paramsDataCommentNum)
 
 const groups = reactive([])
 </script>
