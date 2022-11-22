@@ -2,8 +2,8 @@
   <div mblg mxsm>
     <div flex justify-between>
       <div mbxs flex-center text-gray text-20>
-        <image w35 h35 mrxs class="smooth" src="https://q2.qlogo.cn/headimg_dl?dst_uin=2490445193&spec=100&v=0.5662477152747005"></image>
-        <div>PentaTea</div>
+        <image w35 h35 mrxs class="smooth" :src="avatar"></image>
+        <div>{{ data.user.nickname }}</div>
       </div>
       <div flex-center text-gray text-20>
         <div i-ri-eye-fill mrxs></div>
@@ -12,14 +12,12 @@
     </div>
     <div class="card" thin @click="app.to('#article')">
       <div w-full h100>
-        <image w-full h-full mode="aspectFill" :src="data.cover"></image>
+        <image w-full h-full mode="aspectFill" :src="cover"></image>
       </div>
       <div pxsm pyxs bg-hex-f6f8fa>
         <div class="row1" flex justify-between myxs>
           <div flex>
-            <div class="tag thin-8">创业</div>
-            <div class="tag thin-8">售楼处当托</div>
-            <div class="tag thin-8">物联网</div>
+            <div v-for="tag in data.tags" :key="tag.id" class="tag thin-8">{{ tag.name }}</div>
           </div>
           <div>
             <div class="more thin-500 round">
@@ -29,20 +27,20 @@
         </div>
         <div class="title" text-35 line-clamp-2>{{ data.title }}</div>
         <div flex justify-between text-20 text-gray mtxs>
-          <div>3 天前更新</div>
+          <div>{{ date }} 更新</div>
           <div flex-center>
             <div i-ri-star-fill mlsm mrxs></div>
-            <div>238</div>
+            <div>{{ numfix(data.favorite_num) }}</div>
             <div i-ri-thumb-up-fill mlsm mrxs></div>
-            <div>1.5k+</div>
+            <div>{{ numfix(data.upvote_num) }}</div>
             <div i-ri-brush-fill mlsm mrxs></div>
-            <div>24</div>
+            <div>{{ numfix(data.contributors.length) }}</div>
           </div>
         </div>
       </div>
       <div psm>
         <div line-clamp-3 text-27>
-          根据现场情况，消防员立即对水泥盖板周围杂物及缝隙里的小石块及泥土进行清理，随后用撬棍等工具撬动水泥盖板。经过3分钟救助，被困人员成功脱困。
+          {{ data.content }}
         </div>
       </div>
     </div>
@@ -50,7 +48,19 @@
 </template>
 
 <script setup lang="ts">
+import { log } from 'console'
+
 let { data } = defineProps<{ data: AwaitedReturnUnwarpPage<typeof api.getProjectPage> }>()
+const oss_base_url = import.meta.env.VITE_OSS_BASE_URL
+
+const avatar = oss_base_url + data.user.avatar
+const cover = oss_base_url + data.cover.image_file.filename
+
+const date = app.time(data.updated_time).toNow()
+
+function numfix(num) {
+  return num / 10000 >= 1 ? (num / 10000).toFixed(0) + 'w' : num / 1000 >= 1 ? (num / 1000).toFixed(0) + 'k' : num
+}
 </script>
 
 <style lang="scss">
@@ -63,16 +73,19 @@ let { data } = defineProps<{ data: AwaitedReturnUnwarpPage<typeof api.getProject
     box-sizing: border-box;
     @apply flex-center;
   }
+
   .tag {
     font-size: 17rpx;
     padding: 0 17rpx;
     margin-right: 12rpx;
     color: #656565;
   }
+
   .more {
     width: 35rpx;
   }
 }
+
 .title {
   font-weight: bold;
   opacity: 0.8;
