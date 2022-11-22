@@ -326,6 +326,7 @@ interface ProjectDto extends RecComponentDto {
   tags: TagDto[]
   paragraph_ids: number[]
   coin_num: number
+  comment_num: number
   participant_num: number
   upvote_num: number
   favorite_num: number

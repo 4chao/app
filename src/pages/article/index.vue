@@ -59,6 +59,9 @@ import Toolbar from './components/Toolbar.vue'
 import Group from './components/Group.vue'
 import { PageArticle } from '@/types'
 let paramsDataTitle = ''
+let paramsDataCommentNum = 0
+let paramsDataUpvoteNum = 0
+let paramsDataFavoriteNum = 0
 
 let paramsDataDescription = ''
 
@@ -68,20 +71,28 @@ if (params) {
   console.log('params', params)
 
   if (params.data && params.data.description) {
-    console.log('data', params.data)
     paramsDataDescription = params.data.description
-    console.log('paramsDataDescription', paramsDataDescription)
   }
   if (params.data && params.data.title) {
-    console.log('data', params.data)
     paramsDataTitle = params.data.title
-    console.log('paramsDataTitle', paramsDataTitle)
+  }
+  if (params.data && params.data.comment_num) {
+    paramsDataCommentNum = params.data.comment_num
+  }
+  if (params.data && params.data.coin_num) {
+    paramsDataUpvoteNum = params.data.upvote_num
+  }
+  if (params.data && params.data.favorite_num) {
+    paramsDataFavoriteNum = params.data.favorite_num
   }
 }
 
 let addDiscription = $ref(false)
 let title = $ref(paramsDataTitle)
 let discription = $ref(paramsDataDescription)
+let upvoteNum = $ref(paramsDataUpvoteNum)
+let favoriteNum = $ref(paramsDataFavoriteNum)
+let commentNum = $ref(paramsDataCommentNum)
 
 const groups = reactive([])
 </script>
