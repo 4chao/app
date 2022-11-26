@@ -317,6 +317,7 @@ interface CreateTagDto {
 
 interface ProjectDto extends RecComponentDto {
   id: number
+  uuid: string
   title: string
   description: string
   cover: ImageDto

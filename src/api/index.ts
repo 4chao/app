@@ -46,7 +46,6 @@ export const map = {
   getUserExist: get<{}, ResultDto<boolean>>()("/user/username/{username}/exist"),
   // 创建文本段落的修改
   createParaTextModification: post<CreateTextModificationDto, TextModificationDto>()("/text/{textId}/text_modification"),
-
   // 创建项目的标签
   createTag: post<CreateTagDto, TagDto>()("/tag"),
   // // 创建项目的标签
