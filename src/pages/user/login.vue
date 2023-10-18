@@ -36,16 +36,16 @@
       </div>
       <div ptlg pxxl>
         <div v-if="isLogin" mblg>
-          <div text-25 mb4>手机号 / 邮箱 / 用户名</div>
+          <div text-25 mb4>手机号</div>
           <uni-easyinput v-model="account" />
         </div>
 
         <div v-if="!isLogin" mblg>
-          <div text-25 mb4>用户名</div>
+          <div text-25 mb4>手机号</div>
           <uni-easyinput v-model="username" />
         </div>
         <Code ref="Coder" @change="tip = $event"></Code>
-        <div v-if="!isLogin" mblg>
+        <!--        <div v-if="!isLogin" mblg>
           <div text-25 mb4>邮箱</div>
           <div flex-center justify-end>
             <uni-easyinput v-model="email">
@@ -56,7 +56,7 @@
               </template>
             </uni-easyinput>
           </div>
-        </div>
+        </div> -->
 
         <div mblg>
           <div text-25 mb4>密码</div>
@@ -66,10 +66,10 @@
           <div text-25 mb4>重复密码</div>
           <uni-easyinput v-model="repeatPassword" type="password" />
         </div>
-        <div v-if="!isLogin" mblg>
+        <!--        <div v-if="!isLogin" mblg>
           <div text-25 mb4>验证码</div>
           <CodeInput v-model="code" mode="box" :space="0" :maxlength="6" hairline></CodeInput>
-        </div>
+        </div> -->
       </div>
 
       <div mt3xl plg flex justify-between>
