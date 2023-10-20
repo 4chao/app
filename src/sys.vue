@@ -25,6 +25,12 @@ import Paint from '@/components/Paint.vue'
 // #endif
 import { ScrollOptions } from '@/hooks'
 
+onShow(() => {
+  uni.hideTabBar({
+    animation: false,
+  })
+})
+
 defineProps({
   top: String,
   bottom: String,

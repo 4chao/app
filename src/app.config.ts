@@ -1,5 +1,3 @@
-import { size } from 'lodash'
-
 export default {
   pages: {
     globalStyle: {
@@ -22,16 +20,11 @@ export default {
       list: [
         {
           pagePath: 'pages/index/index',
-          text: '发现',
+          text: '',
         },
         {
-          pagePath: 'pages/index/index',
-          iconPath: 'static/img/create.jpg',
-          selectedIconPath: 'static/img/create.jpg',
-        },
-        {
-          pagePath: 'pages/index/index',
-          text: '我的',
+          pagePath: 'pages/userCenter/userCenter',
+          text: '',
         },
       ],
     },
