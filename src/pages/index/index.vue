@@ -8,7 +8,7 @@
       <ArticleCard v-for="item in List" :key="item.id" :data="item" />
     </div>
   </sys>
-  <Tabbar index="0"></Tabbar>
+  <Tabbar :index="0"></Tabbar>
 </template>
 
 <script setup lang="ts">

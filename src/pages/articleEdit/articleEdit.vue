@@ -1,19 +1,25 @@
 <template>
   <meta hide bounce="false" softinputMode="adjustResize" />
-  <div class="articleEdit" w-710 ml-20>
+  <div class="articleEdit" w-710 ml-20 @touchmove="move" @touchend="up($event)">
     <div class="head" w-710 fixed top-0 left-20 z-10 bg-white :style="'padding-top:' + top">
       <div v-if="titleShowFlag" class="titleInput" shadow-box w-full h-92 mt-20 flex items-center>
         <input class="uni-input" h-80 pl-20 flex-1 text-32 placeholder="为你的故事取个标题" />
-        <image src="../../static/img/create.jpg" mode="" w-55 h-55 ml-4 mr-26></image>
+        <image src="../../static/img/create.jpg" mode="" w-55 h-55 ml-4 mr-26 @click="saveOrRelease"></image>
       </div>
     </div>
-    <div class="context" w-full mt-16 relative p-6 pb-30 :style="ctxHeight + rtop" @click="flag = true">
-      <view class="uni-textarea">
-        <textarea v-model="textValue" :focus="flag" auto-height text-28 placeholder="说出你的故事......" @blur="textareaBlur" @input="inputcontext" />
-      </view>
+    <div class="context" w-full mt-16 relative p-6 pb-30 :style="ctxHeight + rtop">
+      <EditCenter
+        :itemList="contextList.list"
+        :touchTop="touchTop"
+        :headHeigth="headHeigth"
+        :imgFlag="imgFlag"
+        @emitboxposition="onBoxPosition"
+        @emitdelete="onDeleteOrPreviewItem"
+        @uploadimg="uploadImg"
+      ></EditCenter>
     </div>
     <div id="bottom" w-full pt-20 fixed bottom-0 left-0 bg-white>
-      <div class="labelBox" w-710 ml-20 h-78 flex items-center pl-8 pr-8 style="background-color: #f5f5f5; border-radius: 20rpx">
+      <div class="labelBox" w-710 ml-20 pt-13 pb-13 flex items-center pl-8 pr-8 flex-wrap style="background-color: #f5f5f5; border-radius: 20rpx">
         <div
           v-for="(item, i) in labelList"
           :key="i"
@@ -23,6 +29,7 @@
           h-45
           pl-10
           pr-10
+          mt-6
           ml-5
           mr-10
           style="background-color: #e7dfdf; border-radius: 45rpx"
@@ -37,10 +44,11 @@
           v-model="labelValue"
           class="uni-input"
           h-52
+          mt-6
           pl-12
           flex-1
           text-22
-          style="border: 1px solid #797979; border-radius: 26rpx"
+          style="border: 1px solid #797979; border-radius: 26rpx; min-width: 50%"
           placeholder="在此输入标签,输入空格或回车完成标签"
           @confirm="addLabel"
           @input="checkBlank"
@@ -48,32 +56,101 @@
       </div>
       <div class="funList" pt-20 pb-30 flex items-center>
         <image src="../../static/img/models.jpeg" mode="" w-70 h-60 ml-26 mr-6></image>
-        <image src="../../static/img/text.jpeg" mode="" w-70 h-60 ml-26 mr-6></image>
-        <image src="../../static/img/addimg.jpeg" mode="" w-70 h-58 ml-26 mr-6></image>
+        <image
+          src="../../static/img/text.jpeg"
+          mode=""
+          w-70
+          h-60
+          ml-26
+          mr-6
+          @click="addItemFun('text')"
+          @longpress="createMoveImg()"
+          @touchstart="start($event, 'text')"
+        ></image>
+        <image
+          src="../../static/img/addimg.jpeg"
+          mode=""
+          w-70
+          h-58
+          ml-26
+          mr-6
+          @click="addItemFun('img')"
+          @longpress="createMoveImg()"
+          @touchstart="start($event, 'img')"
+        ></image>
       </div>
     </div>
+    <div v-show="imgFlag" class="fixedBox" fixed :style="{ left: clientData.left, top: clientData.top }">
+      <image :src="imgUrl" mode="" w-105 h-88></image>
+    </div>
   </div>
+  <uni-popup ref="alertDialog" type="dialog">
+    <uni-popup-dialog
+      type="warn"
+      :cancelText="dialogInfo.cancelText"
+      :confirmText="dialogInfo.confirmText"
+      title="提示"
+      :content="dialogInfo.content"
+      @confirm="dialogConfirm"
+      @close="dialogClose"
+    ></uni-popup-dialog>
+  </uni-popup>
+  <div v-if="conhtml != ''" class="box" fixed left-0 top-80 bg-white w-full z-10 p-30 style="height: 100vh" v-html="conhtml"></div>
 </template>
 
 <script setup lang="ts">
+import { RefType } from 'vue/macros'
+import EditCenter from './components/EditCenter.vue'
+let img = 'https://0-1-0test.oss-cn-beijing.aliyuncs.com/static/img/default.jpg'
+
 interface ILabel {
   value: string
 }
 let flag = $ref(false)
 let textValue = $ref('')
 let titleShowFlag = $ref(true)
-let bottomHeight = $ref(104)
+let bottomHeight = $ref(0)
 let pxRpx = $ref(0)
 const labelList = reactive<ILabel[]>([])
 let labelValue = $ref('')
+let contextList = reactive({
+  list: [
+    {
+      id: '1',
+      type: 'text',
+      textValue: '',
+      list: [],
+      colorFlag: false,
+    },
+  ],
+})
+let imgFlag = $ref(false)
+let imgUrl = $ref('../../static/img/addimg.jpeg')
+let addType = $ref('img')
+let clientData = $ref({
+  left: '110px',
+  top: '840px',
+})
+let touchTop = $ref(840)
+let headHeigth = $ref(0)
+let itemStyleList = []
+let alertDialog = ref()
+let dialogInfo = reactive({
+  content: '',
+  cancelText: '',
+  confirmText: '',
+})
+onLoad(() => {
+  console.log('add load')
+})
 onMounted(() => {
   const { windowWidth } = app.Global.systemInfo
   pxRpx = (750 * 1) / windowWidth
-  const query = uni.createSelectorQuery().in(this)
+  const query = uni.createSelectorQuery()
   query
     .select('#bottom')
     .boundingClientRect(data => {
-      bottomHeight = data.height
+      bottomHeight = parseInt(data.height)
     })
     .exec()
 })
@@ -88,9 +165,11 @@ let rtop = $computed(() => {
   return 'top:' + (height / pxRpx + statusBarHeight) + 'px;'
 })
 let ctxHeight = $computed(() => {
+  console.log(bottomHeight)
   const { statusBarHeight } = app.Global.systemInfo
   const { windowHeight } = app.Global.systemInfo
   const height = titleShowFlag ? 102 : 0
+  headHeigth = statusBarHeight - height / pxRpx
   return 'height:' + (windowHeight - bottomHeight - 30 - statusBarHeight - height / pxRpx) + 'px;'
 })
 
@@ -99,7 +178,7 @@ const addLabel = () => {
     labelValue = ''
     return
   }
-  if (labelList.length >= 3) {
+  if (labelList.length >= 7) {
     return
   }
   let count = labelValue.trim().length
@@ -107,7 +186,7 @@ const addLabel = () => {
     count = count + item.value.length
     console.log(count)
   })
-  if (count > 12) {
+  if (count > 21) {
     return
   }
 
@@ -126,11 +205,194 @@ const delLabel = (i: number, item: ILabel) => {
   labelList.splice(i, 1)
 }
 
-const textareaBlur = () => {
-  flag = false
+const addItemFun = (type: string) => {
+  let date = new Date()
+  contextList.list.push({
+    id: date.toString(),
+    type: type,
+    textValue: '',
+    list: type == 'img' ? [img] : [],
+    colorFlag: false,
+  })
 }
-const inputcontext = () => {
-  console.log(textValue)
+
+const createMoveImg = () => {
+  imgFlag = true
+}
+
+const start = (event, type) => {
+  if (type === 'img') {
+    imgUrl = '../../static/img/addimg.jpeg'
+  } else if (type === 'text') {
+    imgUrl = '../../static/img/text.jpeg'
+  }
+  addType = type
+  clientData.left = parseInt(event.changedTouches[0].clientX) - 105 / pxRpx / 2 + 'px'
+  clientData.top = parseInt(event.changedTouches[0].clientY) - 88 / pxRpx / 2 + 'px'
+}
+
+const move = event => {
+  clientData.left = parseInt(event.changedTouches[0].clientX) - 105 / pxRpx / 2 + 'px'
+  clientData.top = parseInt(event.changedTouches[0].clientY) - 88 / pxRpx / 2 + 'px'
+  if (imgFlag) {
+    touchTop = parseInt(event.changedTouches[0].clientY) - 105 / pxRpx / 2
+  }
+}
+
+const up = event => {
+  const { windowHeight } = app.Global.systemInfo
+  if (imgFlag) {
+    if (event.changedTouches[0].clientY > headHeigth && event.changedTouches[0].clientY < windowHeight - bottomHeight) {
+      let index = -1
+      let flag = true
+      for (let i = 0; i < itemStyleList.length; i++) {
+        if (
+          event.changedTouches[0].clientY > itemStyleList[i].top &&
+          event.changedTouches[0].clientY < itemStyleList[i].top + itemStyleList[i].height - 50
+        ) {
+          index = itemStyleList[i].index
+          break
+        } else if (
+          event.changedTouches[0].clientY > itemStyleList[i].top + itemStyleList[i].height - 50 &&
+          event.changedTouches[0].clientY < itemStyleList[i].top + itemStyleList[i].height
+        ) {
+          index = itemStyleList[i].index
+          flag = false
+          break
+        }
+      }
+      if (index == -1) {
+        let date = new Date()
+        contextList.list.push({
+          id: date.toString(),
+          type: addType,
+          textValue: '',
+          list: addType == 'img' ? [img] : [],
+          colorFlag: false,
+        })
+      } else {
+        if (addType === 'img' && flag && contextList.list[index].type !== 'text') {
+          if (contextList.list[index].list.length === 4) {
+            imgFlag = false
+            return
+          }
+          contextList.list[index].list.push(img)
+        } else {
+          let date = new Date()
+          contextList.list.splice(index + 1, 0, {
+            id: date.toString(),
+            type: addType,
+            textValue: '',
+            list: addType == 'img' ? [img] : [],
+            colorFlag: false,
+          })
+        }
+      }
+    } else {
+      let date = new Date()
+      contextList.list.push({
+        id: date.toString(),
+        type: addType,
+        textValue: '',
+        list: addType == 'img' ? [img] : [],
+        colorFlag: false,
+      })
+    }
+  }
+  imgFlag = false
+}
+
+const onBoxPosition = list => {
+  itemStyleList = list
+}
+
+let deleteOrPreviewItemIndex = reactive({
+  index1: -1,
+  index2: -1,
+})
+const onDeleteOrPreviewItem = (index1: number, index2: number) => {
+  deleteOrPreviewItemIndex.index1 = index1
+  deleteOrPreviewItemIndex.index2 = index2
+  if (contextList.list[index1].type === 'text') {
+    messageToggle('是否确认删除这段文本', '取消', '确认')
+  } else {
+    messageToggle('请确认你要进行的操作', '删除', '预览')
+  }
+}
+const dialogConfirm = () => {
+  if (contextList.list[deleteOrPreviewItemIndex.index1].type === 'text') {
+    contextList.list.splice(deleteOrPreviewItemIndex.index1, 1)
+  } else {
+    console.log('aasa')
+    uni.previewImage({
+      current: deleteOrPreviewItemIndex.index2,
+      urls: contextList.list[deleteOrPreviewItemIndex.index1].list,
+      longPressActions: {
+        itemList: ['发送给朋友', '保存图片', '收藏'],
+        success: function (data) {
+          console.log(data)
+        },
+        fail: function (err) {
+          console.log(err.errMsg)
+        },
+      },
+    })
+  }
+}
+const dialogClose = () => {
+  if (contextList.list[deleteOrPreviewItemIndex.index1].type === 'img') {
+    if (contextList.list[deleteOrPreviewItemIndex.index1].list.length === 1) {
+      contextList.list.splice(deleteOrPreviewItemIndex.index1, 1)
+    } else {
+      contextList.list[deleteOrPreviewItemIndex.index1].list.splice(deleteOrPreviewItemIndex.index2, 1)
+    }
+  }
+}
+const messageToggle = (content: string, cancelText: string, confirmText: string) => {
+  dialogInfo.content = content
+  dialogInfo.cancelText = cancelText
+  dialogInfo.confirmText = confirmText
+  alertDialog.value.open()
+}
+const uploadImg = (index1: number, index2: number) => {
+  uni.chooseImage({
+    count: 1, //默认9
+    sizeType: ['original'], //可以指定是原图还是压缩图，默认二者都有
+    sourceType: ['album'], //从相册选择
+    success: function (chooseImageRes) {
+      const file = chooseImageRes.tempFiles[0]
+      if (file.type != 'image/jpeg' && file.type != 'image/png') {
+        return
+      }
+      if (file.size > 1024 * 1024 * 5) {
+        return
+      }
+    },
+  })
+}
+let conhtml = $ref('')
+const saveOrRelease = () => {
+  let contentText = ''
+  for (let i = 0; i < contextList.list.length; i++) {
+    if (contextList.list[i].type === 'text') {
+      let newString = contextList.list[i].textValue.replace(/\n/g, '_@').replace(/\r/g, '_#')
+      newString = newString.replace(/<[^>]+>/g, '')
+      newString = newString.replace(/_@/g, '<br/>') // IE9、FF、chrome
+      newString = newString.replace(/\s/g, '&nbsp;') // 空格处理
+      contentText = contentText + `<p style="fontSize:${28 / pxRpx}px">${newString}</p>`
+    }
+    if (contextList.list[i].type === 'img') {
+      if (contextList.list[i].list.length === 1) {
+        contentText =
+          contentText +
+          `<div class="img1" style="width: 100%">
+          <image src="${contextList.list[i].list[0]}" mode="widthFix" style="width: 100%"></image>
+        </div>`
+      }
+    }
+  }
+  console.log(contentText)
+  conhtml = contentText
 }
 </script>
 
