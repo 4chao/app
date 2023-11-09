@@ -1,7 +1,6 @@
 <template>
   <meta title="登录" />
-
-  <div flex-center>
+  <div flex-center style="overflow: hidden">
     <div thin mt2xl mb5xl w640>
       <div py pl bg-hex-f6f8fa flex>
         <div flex-1>
@@ -36,16 +35,16 @@
       </div>
       <div ptlg pxxl>
         <div v-if="isLogin" mblg>
-          <div text-25 mb4>手机号</div>
+          <div text-25 mb4>邮箱</div>
           <uni-easyinput v-model="account" />
         </div>
 
         <div v-if="!isLogin" mblg>
-          <div text-25 mb4>手机号</div>
-          <uni-easyinput v-model="username" />
+          <div text-25 mb4>邮箱</div>
+          <uni-easyinput v-model="account" />
         </div>
         <Code ref="Coder" @change="tip = $event"></Code>
-        <!--        <div v-if="!isLogin" mblg>
+        <!--               <div v-if="!isLogin" mblg>
           <div text-25 mb4>邮箱</div>
           <div flex-center justify-end>
             <uni-easyinput v-model="email">
@@ -66,10 +65,13 @@
           <div text-25 mb4>重复密码</div>
           <uni-easyinput v-model="repeatPassword" type="password" />
         </div>
-        <!--        <div v-if="!isLogin" mblg>
+        <div v-if="!isLogin" mblg>
           <div text-25 mb4>验证码</div>
-          <CodeInput v-model="code" mode="box" :space="0" :maxlength="6" hairline></CodeInput>
-        </div> -->
+          <div flex h-56>
+            <CodeInput v-model="code" mode="box" :space="0" :maxlength="6" hairline></CodeInput>
+            <button type="primary" plain="true" style="line-height: 60rpx; width: 180rpx" @click="getCode">发送验证码</button>
+          </div>
+        </div>
       </div>
 
       <div mt3xl plg flex justify-between>
@@ -88,9 +90,9 @@ const { from } = $(useQuery())
 
 let isLogin = $ref(true)
 
-let account = $ref('123')
+let account = $ref('')
 let email = $ref('2490445193@qq.com')
-let code = $ref('')
+let code = $ref<number>()
 let password = $ref('')
 let username = $ref('')
 let repeatPassword = $ref('')
@@ -105,33 +107,27 @@ async function submit() {
   if (isLogin) {
     if (!account) return app.toast('请输入账号')
     if (!password) return app.toast('请输入密码')
-    await app.User.login({ account, password, auth_type: 'PASSWORD' })
+    await app.User.login({ account, password, authType: 'PASSWORD' })
     app.back('登录成功')
   } else {
-    if (!username) return app.toast('请输入用户名')
-    if (!email) return app.toast('请输入邮箱')
+    if (!account) return app.toast('请输入邮箱')
     if (!password) return app.toast('请输入密码')
     if (!repeatPassword) return app.toast('请重复输入密码')
     if (password !== repeatPassword) return app.toast('两次密码不一致')
     if (!code) return app.toast('请输入验证码')
-    await app.User.register({ account: email, code, username, password })
-    app.to('#user/afterRegister', { from })
+    await app.User.register({ account, password, code })
+    app.back('登录成功')
+    // app.to('#user/afterRegister', { from })
   }
 }
 
 let Coder = $ref(null)
 watchEffect(() => console.log(Coder))
-function getCode(type: string, account: string) {
-  if (!account) return app.toast('请输入' + type)
-  console.log(Coder, Coder.waiting)
-
-  if (Coder.waiting) return app.toast('倒计时结束后再发送')
-  tip = '正在发送...'
-  Coder.start()
-  // app.api
-  //   .getVerificationCode({ account })
-  //   .then(() => Coder.start())
-  //   .catch(err => (app.toast(err || '获取失败,请稍后重试'), (tip = '重新发送')))
+const getCode = async () => {
+  let data = await api.getCode({
+    email: account,
+  })
+  console.log(data)
 }
 </script>
 

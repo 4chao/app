@@ -3,7 +3,7 @@
   <div class="articleEdit" w-710 ml-20 @touchmove="move" @touchend="up($event)">
     <div class="head" w-710 fixed top-0 left-20 z-10 bg-white :style="'padding-top:' + top">
       <div v-if="titleShowFlag" class="titleInput" shadow-box w-full h-92 mt-20 flex items-center>
-        <input class="uni-input" h-80 pl-20 flex-1 text-32 placeholder="为你的故事取个标题" />
+        <input v-model="titleText" class="uni-input" h-80 pl-20 flex-1 text-32 placeholder="为你的故事取个标题" />
         <image src="../../static/img/create.jpg" mode="" w-55 h-55 ml-4 mr-26 @click="saveOrRelease"></image>
       </div>
     </div>
@@ -18,8 +18,21 @@
         @uploadimg="uploadImg"
       ></EditCenter>
     </div>
-    <div id="bottom" w-full pt-20 fixed bottom-0 left-0 bg-white>
-      <div class="labelBox" w-710 ml-20 pt-13 pb-13 flex items-center pl-8 pr-8 flex-wrap style="background-color: #f5f5f5; border-radius: 20rpx">
+    <div id="bottom" w-full pt-16 fixed bottom-0 left-0 bg-white>
+      <div
+        v-if="titleShowFlag"
+        class="labelBox"
+        w-710
+        ml-20
+        pt-13
+        pb-13
+        flex
+        items-center
+        pl-8
+        pr-8
+        flex-wrap
+        style="background-color: #f5f5f5; border-radius: 20rpx"
+      >
         <div
           v-for="(item, i) in labelList"
           :key="i"
@@ -33,10 +46,10 @@
           ml-5
           mr-10
           style="background-color: #e7dfdf; border-radius: 45rpx"
-          @click="delLabel(i, item)"
+          @click="delLabel(i)"
         >
           <div class="val" text-24>
-            {{ item.value }}
+            {{ item }}
           </div>
           <div class="del" text-28 ml-4 style="font-weight: 700">×</div>
         </div>
@@ -54,7 +67,7 @@
           @input="checkBlank"
         />
       </div>
-      <div class="funList" pt-20 pb-30 flex items-center>
+      <div class="funList" pt-20 pb-30 flex items-center relative>
         <image src="../../static/img/models.jpeg" mode="" w-70 h-60 ml-26 mr-6></image>
         <image
           src="../../static/img/text.jpeg"
@@ -78,6 +91,18 @@
           @longpress="createMoveImg()"
           @touchstart="start($event, 'img')"
         ></image>
+        <div
+          v-if="!titleShowFlag"
+          class="button"
+          w-160
+          h-60
+          absolute
+          right-28
+          style="border: 2px solid #797979; text-align: center; line-height: 60rpx; border-radius: 10rpx"
+          @click="saveOrRelease()"
+        >
+          确认发布
+        </div>
       </div>
     </div>
     <div v-show="imgFlag" class="fixedBox" fixed :style="{ left: clientData.left, top: clientData.top }">
@@ -95,7 +120,17 @@
       @close="dialogClose"
     ></uni-popup-dialog>
   </uni-popup>
-  <div v-if="conhtml != ''" class="box" fixed left-0 top-80 bg-white w-full z-10 p-30 style="height: 100vh" v-html="conhtml"></div>
+  <uni-popup ref="releaseDialog" type="dialog">
+    <uni-popup-dialog
+      type="info"
+      cancelText="取消"
+      confirmText="发布"
+      title="提示"
+      content="是否确认发布"
+      @confirm="releaseDialogConfirm"
+      @close="releaseDialogClose"
+    ></uni-popup-dialog>
+  </uni-popup>
 </template>
 
 <script setup lang="ts">
@@ -103,15 +138,13 @@ import { RefType } from 'vue/macros'
 import EditCenter from './components/EditCenter.vue'
 let img = 'https://0-1-0test.oss-cn-beijing.aliyuncs.com/static/img/default.jpg'
 
-interface ILabel {
-  value: string
-}
-let flag = $ref(false)
-let textValue = $ref('')
-let titleShowFlag = $ref(true)
+let { params } = useQuery()
+
+let titleShowFlag = $ref(false)
 let bottomHeight = $ref(0)
 let pxRpx = $ref(0)
-const labelList = reactive<ILabel[]>([])
+let titleText = $ref('')
+const labelList = reactive<string[]>([])
 let labelValue = $ref('')
 let contextList = reactive({
   list: [
@@ -120,7 +153,6 @@ let contextList = reactive({
       type: 'text',
       textValue: '',
       list: [],
-      colorFlag: false,
     },
   ],
 })
@@ -144,15 +176,22 @@ onLoad(() => {
   console.log('add load')
 })
 onMounted(() => {
-  const { windowWidth } = app.Global.systemInfo
-  pxRpx = (750 * 1) / windowWidth
-  const query = uni.createSelectorQuery()
-  query
-    .select('#bottom')
-    .boundingClientRect(data => {
-      bottomHeight = parseInt(data.height)
-    })
-    .exec()
+  if (params._object.params.type == 'BIND_PARENT_TITLE') {
+    titleShowFlag = true
+  } else {
+    titleShowFlag = false
+  }
+  setTimeout(() => {
+    const { windowWidth } = app.Global.systemInfo
+    pxRpx = (750 * 1) / windowWidth
+    const query = uni.createSelectorQuery()
+    query
+      .select('#bottom')
+      .boundingClientRect(data => {
+        bottomHeight = parseInt(data.height)
+      })
+      .exec()
+  }, 50)
 })
 let top = $computed(() => {
   const { navBarHeight } = app.Global
@@ -165,12 +204,11 @@ let rtop = $computed(() => {
   return 'top:' + (height / pxRpx + statusBarHeight) + 'px;'
 })
 let ctxHeight = $computed(() => {
-  console.log(bottomHeight)
   const { statusBarHeight } = app.Global.systemInfo
   const { windowHeight } = app.Global.systemInfo
   const height = titleShowFlag ? 102 : 0
   headHeigth = statusBarHeight - height / pxRpx
-  return 'height:' + (windowHeight - bottomHeight - 30 - statusBarHeight - height / pxRpx) + 'px;'
+  return 'height:' + (windowHeight - bottomHeight - 10 - statusBarHeight - height / pxRpx) + 'px;'
 })
 
 const addLabel = () => {
@@ -183,14 +221,13 @@ const addLabel = () => {
   }
   let count = labelValue.trim().length
   labelList.forEach(item => {
-    count = count + item.value.length
-    console.log(count)
+    count = count + item.length
   })
   if (count > 21) {
     return
   }
 
-  labelList.push({ value: labelValue.trim() })
+  labelList.push(labelValue.trim())
   labelValue = ''
 }
 
@@ -201,7 +238,7 @@ const checkBlank = () => {
   }
 }
 
-const delLabel = (i: number, item: ILabel) => {
+const delLabel = (i: number) => {
   labelList.splice(i, 1)
 }
 
@@ -212,7 +249,6 @@ const addItemFun = (type: string) => {
     type: type,
     textValue: '',
     list: type == 'img' ? [img] : [],
-    colorFlag: false,
   })
 }
 
@@ -268,7 +304,6 @@ const up = event => {
           type: addType,
           textValue: '',
           list: addType == 'img' ? [img] : [],
-          colorFlag: false,
         })
       } else {
         if (addType === 'img' && flag && contextList.list[index].type !== 'text') {
@@ -284,7 +319,6 @@ const up = event => {
             type: addType,
             textValue: '',
             list: addType == 'img' ? [img] : [],
-            colorFlag: false,
           })
         }
       }
@@ -295,7 +329,6 @@ const up = event => {
         type: addType,
         textValue: '',
         list: addType == 'img' ? [img] : [],
-        colorFlag: false,
       })
     }
   }
@@ -359,41 +392,71 @@ const uploadImg = (index1: number, index2: number) => {
     count: 1, //默认9
     sizeType: ['original'], //可以指定是原图还是压缩图，默认二者都有
     sourceType: ['album'], //从相册选择
-    success: function (chooseImageRes) {
+    success: async chooseImageRes => {
+      const tempFilePaths = chooseImageRes.tempFilePaths
       const file = chooseImageRes.tempFiles[0]
-      if (file.type != 'image/jpeg' && file.type != 'image/png') {
+      console.log(file)
+
+      // if (file.type != 'image/jpeg' && file.type != 'image/png') {
+      //   return
+      // }
+      if (file.size > 1024 * 1024 * 8) {
         return
       }
-      if (file.size > 1024 * 1024 * 5) {
-        return
-      }
+      console.log(file.size)
+      uni.uploadFile({
+        url: import.meta.env.VITE_PROXY_URL + '/api/upload_file', //仅为示例，非真实的接口地址
+        filePath: tempFilePaths[0],
+        header: {
+          'MiaoA-User-Token': app.User.token,
+        },
+        name: 'file',
+        formData: {
+          fileType: 'IMAGE',
+        },
+        success: res => {
+          console.log(res)
+          let data = JSON.parse(res.data)
+          let { url } = data.data
+          contextList.list[index1].list[index2] = url
+        },
+      })
+      console.log(444)
     },
   })
 }
-let conhtml = $ref('')
+let releaseDialog = ref()
 const saveOrRelease = () => {
-  let contentText = ''
-  for (let i = 0; i < contextList.list.length; i++) {
-    if (contextList.list[i].type === 'text') {
-      let newString = contextList.list[i].textValue.replace(/\n/g, '_@').replace(/\r/g, '_#')
-      newString = newString.replace(/<[^>]+>/g, '')
-      newString = newString.replace(/_@/g, '<br/>') // IE9、FF、chrome
-      newString = newString.replace(/\s/g, '&nbsp;') // 空格处理
-      contentText = contentText + `<p style="fontSize:${28 / pxRpx}px">${newString}</p>`
-    }
-    if (contextList.list[i].type === 'img') {
-      if (contextList.list[i].list.length === 1) {
-        contentText =
-          contentText +
-          `<div class="img1" style="width: 100%">
-          <image src="${contextList.list[i].list[0]}" mode="widthFix" style="width: 100%"></image>
-        </div>`
-      }
-    }
-  }
-  console.log(contentText)
-  conhtml = contentText
+  releaseDialog.value.open()
 }
+const releaseDialogConfirm = async () => {
+  let uuid = ''
+  if (titleShowFlag) {
+    try {
+      let data = await api.createContentTitle({
+        titleText: titleText,
+        labels: labelList,
+      })
+      uuid = data.uuid
+    } catch (error) {
+      console.log(error)
+    }
+  } else {
+    uuid = params._object.params.contextId
+  }
+  try {
+    let data = await api.createContent({
+      uuid,
+      createContentType: params._object.params.type,
+      contentText: JSON.stringify(contextList.list),
+      contentStruct: '',
+    })
+    app.back()
+  } catch (error) {
+    console.log(error)
+  }
+}
+const releaseDialogClose = () => {}
 </script>
 
 <style lang="scss">

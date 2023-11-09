@@ -3,7 +3,14 @@ import { Store, Pinia, Persist } from '../utils'
 @Store
 export class User extends Pinia {
   baseUrl = import.meta.env.VITE_BASE_URL
-  userInfo = { token: '12345' } as Awaited<ReturnType<typeof api.login>>
+  @Persist
+  userInfo: LoginUserDto = {
+    email: '',
+    phone: '',
+    username: '',
+    gender: '',
+    token: null,
+  }
   get token() {
     return this.userInfo.token
   }
@@ -12,11 +19,13 @@ export class User extends Pinia {
   }
 
   async login(options: Parameters<typeof api.login>[0]) {
-    this.userInfo = await api.login(options)
+    let data = await api.login(options)
+    this.userInfo = data as LoginUserDto
     uni.$emit('$reload')
   }
   async register(options: Parameters<typeof api.register>[0]) {
-    this.userInfo = await api.register(options)
+    let data = await api.register(options)
+    this.userInfo = data as LoginUserDto
     uni.$emit('$reload')
   }
 }

@@ -1,6 +1,6 @@
 <template>
   <!-- 底部导航 -->
-  <div class="tabbar" fixed bottom-0 w-screen flex justify-around items-center pt-14 pb-14>
+  <div class="tabbar" fixed bottom-0 w-screen flex justify-around items-center pt-14 pb-14 style="border-top: 1px solid #f5f5f5">
     <div v-for="(item, i) in tabbarList" :key="item.path" class="tabbar-item" @click.stop="toPath(item)">
       <div v-if="item.text != ''" class="label" text-36 :style="index == i ? 'color:red' : 'color:#333333'">
         {{ item.text }}
@@ -43,11 +43,19 @@ const tabbarList = reactive([
 ])
 const toPath = item => {
   if (item.type === '1') {
+    if (!app.User.isLogin && item.path != '/pages/index/index') {
+      app.to('/pages/user/login')
+      return
+    }
     uni.switchTab({
       url: item.path,
     })
   } else if (item.type === '2') {
-    app.to(item.path)
+    app.to(item.path, {
+      type: 'BIND_PARENT_TITLE',
+      titleId: '',
+      contextId: '',
+    })
   }
 }
 </script>

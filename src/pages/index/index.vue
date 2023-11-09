@@ -1,41 +1,75 @@
 <template>
   <meta hide />
   <sys :top="top">
-    <template #fixed>
-      <Search />
-    </template>
-    <div id="articles" ptsm>
-      <ArticleCard v-for="item in List" :key="item.id" :data="item" />
+    <div class="listbox" w-710 ml-20>
+      <swiper class="swiper" w-full :vertical="true" :style="ctxHeight">
+        <swiper-item v-for="(item, i) in contextList.list" :key="i" relative>
+          <ContentTemplate :contextList="toJsonFun(item.contentText)" :titleFlag="true" :title="item.titleText"></ContentTemplate>
+          <div
+            class="foldbox"
+            absolute
+            bottom-0
+            left-0
+            w-full
+            text-center
+            h-170
+            style="line-height: 170rpx"
+            @click="toNodeDetails(item.titleUuid, item.contentUuid)"
+          >
+            查看更多
+          </div>
+        </swiper-item>
+      </swiper>
     </div>
   </sys>
   <Tabbar :index="0"></Tabbar>
 </template>
 
 <script setup lang="ts">
-import Search from './components/Search.vue'
-import Fab from './components/Fab.vue'
-let { indexList: List } = $(app.Data)
-useScroll(onPageScroll)
-  .onLoad(page => {})
-  .onFetch(async page => {
-    let pageData = { page: page.num, size: page.size, last_time: page.time }
-    const { data, total } = await api.getProjectPage(pageData)
-    if (page.num == 0) List = []
-    List = List.concat(data)
-    page.endBySize(data.length, total, page.time)
-  })
-
-const searchInfo = reactive({
-  value: '',
-  searched: '',
+let pxRpx = $ref(0)
+let contextList = reactive({
+  list: [],
 })
-provide('searchInfo', searchInfo)
+let list = reactive({ list: [contextList.list, contextList.list, contextList.list, contextList.list, contextList.list] })
 
 let top = $computed(() => {
-  const { navBarHeight } = app.Global
   const { statusBarHeight } = app.Global.systemInfo
-  return navBarHeight + statusBarHeight + uni.upx2px(30) + 'px'
+  return statusBarHeight + 6 + 'px'
 })
+
+onMounted(() => {
+  const { windowWidth } = app.Global.systemInfo
+  pxRpx = (750 * 1) / windowWidth
+  getContentList()
+})
+
+const getContentList = async () => {
+  let data = await api.getPecommendation()
+  contextList.list = data.recommendation
+}
+
+let ctxHeight = $computed(() => {
+  const { statusBarHeight } = app.Global.systemInfo
+  const { windowHeight } = app.Global.systemInfo
+  return 'height:' + (windowHeight - statusBarHeight - 130 / pxRpx - 6) + 'px;'
+})
+
+const toNodeDetails = (titleId: string, contextId: string) => {
+  app.to('/pages/nodeDetails/nodeDetails', {
+    titleId: titleId,
+    contextId: contextId,
+  })
+}
+
+const toJsonFun = (str: string) => {
+  return JSON.parse(str)
+}
 </script>
 
-<style lang="scss"></style>
+<style lang="scss" scoped>
+.listbox {
+  .foldbox {
+    background-image: linear-gradient(rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
+  }
+}
+</style>

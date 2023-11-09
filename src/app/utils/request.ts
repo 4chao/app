@@ -16,18 +16,20 @@ function request(ins) {
       delete data[name]
       return '/' + val
     })
+    console.log(app.User.token)
     app.debug('发起请求', type, url, data)
     return new Promise((resolve, reject) => {
       uni.request({
-        url: app.User.baseUrl + url,
+        url: import.meta.env.VITE_PROXY_URL + app.User.baseUrl + url,
         method: type,
         data: data,
         timeout: 10000,
-        // header: {
-        //   'Sichiao-User-Token': app.User.token,
-        // },
+        sslVerify: false,
+        header: {
+          'MiaoA-User-Token': app.User.token,
+        },
         success: ({ data: res }: any) => {
-          if (res.code != '31458') {
+          if (res.code != '200') {
             uni.showToast({ title: res.message, icon: 'none' })
             app.error('请求失败', res.message)
             return reject(res.message)

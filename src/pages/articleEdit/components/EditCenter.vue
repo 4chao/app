@@ -3,11 +3,11 @@
     <div v-for="(item, i) in itemList" id="item" :key="item.id">
       <div v-if="item.type === 'text'" class="textItem" @longpress="deleteItem(i, 0)">
         <view class="uni-textarea">
-          <textarea v-model="item.textValue" auto-height text-28 placeholder="此处编写内容......" />
+          <textarea v-model="item.textValue" auto-height text-28 style="min-height: 38rpx" placeholder="此处编写内容......" />
         </view>
-        <div :class="item.colorFlag ? 'checkedIn' : 'insertion'" w-full style="height: 20px"></div>
+        <div class="insertion" w-full style="height: 20px"></div>
       </div>
-      <div v-if="item.type === 'img'" ref="imgitem" class="imgList">
+      <div v-if="item.type === 'img'" class="imgList">
         <div v-show="item.list.length == 1" class="img1" w-full @longpress="deleteItem(i, 0)">
           <image :src="item.list[0]" mode="widthFix" style="width: 100%" @click="uploadImg(i, 0)"></image>
         </div>
@@ -24,18 +24,18 @@
             @click="uploadImg(i, index2)"
             @longpress="deleteItem(i, index2)"
           >
-            <image :src="one" mode="aspectFill"></image>
+            <image :src="one" mode="aspectFill" style="height: 440rpx"></image>
           </div>
         </div>
         <div v-show="item.list.length == 3" class="img1" w-full flex flex-wrap>
           <div class="imgbox" h-360 ml-1 mr-1 mb-4 style="overflow: hidden; min-width: 100%" @click="uploadImg(i, 0)" @longpress="deleteItem(i, 0)">
-            <image :src="item.list[0]" mode="widthFix" w-full></image>
+            <image :src="item.list[0]" mode="widthFix" w-full h-360></image>
           </div>
           <div class="imgbox" flex-1 h-440 ml-2 mr-2 style="overflow: hidden" @click="uploadImg(i, 1)" @longpress="deleteItem(i, 1)">
-            <image :src="item.list[1]" mode="aspectFill"></image>
+            <image :src="item.list[1]" mode="aspectFill" h-440></image>
           </div>
           <div class="imgbox" flex-1 h-440 ml-2 mr-2 style="overflow: hidden" @click="uploadImg(i, 2)" @longpress="deleteItem(i, 2)">
-            <image :src="item.list[2]" mode="aspectFill"></image>
+            <image :src="item.list[2]" mode="aspectFill" h-440></image>
           </div>
         </div>
         <div v-show="item.list.length == 4" class="img1" w-full flex flex-wrap>
@@ -51,10 +51,10 @@
             @click="uploadImg(i, index2)"
             @longpress="deleteItem(i, index2)"
           >
-            <image :src="one" mode="aspectFill"></image>
+            <image :src="one" mode="aspectFill" h-330></image>
           </div>
         </div>
-        <div :class="item.colorFlag ? 'checkedIn' : 'insertion'" w-full style="height: 20px"></div>
+        <div class="insertion" w-full style="height: 20px"></div>
       </div>
     </div>
   </div>
@@ -67,7 +67,6 @@ interface Iitem {
   type: string
   textValue?: string
   list?: string[]
-  colorFlag: boolean
 }
 let props = defineProps<{
   itemList: Iitem[]
@@ -75,10 +74,6 @@ let props = defineProps<{
   headHeigth: number
   imgFlag: boolean
 }>()
-let imgitem = ref(null)
-onMounted(() => {
-  console.log(imgitem.value)
-})
 
 let { itemList } = toRefs(props)
 

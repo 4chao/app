@@ -16,6 +16,10 @@ let to = debounce(
     const pkg = { params: obj || {}, from: currentPath, id }
     uni.$on(id + '_query', cb => cb(pkg))
     let url = getPath(path, currentGroup)
+    console.log(url)
+    if (!app.User.isLogin && url != 'pages/index/index' && url != '/pages/nodeDetails/nodeDetails' && url != '/pages/user/login') {
+      url = '/pages/user/login'
+    }
     uni
       .navigateTo({ url: url + '?id=' + id })
       .then(() => app.info('页面切换', obj || {}, '=>', path == url ? path : `${path} (${url})`))

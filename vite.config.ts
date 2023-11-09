@@ -30,11 +30,11 @@ export default ({ mode }) =>
       watch: { ignored: ['**/dist/**'] },
       // https: true,
       proxy: {
-        '^/api': {
-          target: loadEnv(mode, process.cwd()).VITE_PROXY_URL,
-          changeOrigin: true,
-          rewrite: path => path.replace(/^\/api/, ''),
-        },
+        // '^/api': {
+        //   target: loadEnv(mode, process.cwd()).VITE_PROXY_URL,
+        //   changeOrigin: true,
+        //   // rewrite: path => path.replace(/^\/api/, ''),
+        // },
       },
     },
     plugins: [
