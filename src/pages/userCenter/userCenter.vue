@@ -1,7 +1,8 @@
 <template>
   <meta hide />
   <div fixed :style="pdTop">用户中心</div>
-  <Tabbar index="2"></Tabbar>
+  <button fixed top-200 @click="logout">退出登录</button>
+  <Tabbar :index="2"></Tabbar>
 </template>
 
 <script setup lang="ts">
@@ -13,6 +14,16 @@ let top = $computed(() => {
   return statusBarHeight + uni.upx2px(30) + 'px'
 })
 let pdTop = $ref('top:' + top)
+const logout = () => {
+  app.User.userInfo = {
+    email: '',
+    phone: '',
+    username: '',
+    gender: '',
+    token: null,
+  }
+  app.to('/pages/user/login')
+}
 </script>
 
 <style></style>

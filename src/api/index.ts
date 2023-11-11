@@ -13,7 +13,7 @@ type Page = { page?: number; size?: number; last_time?: number };
 
 export const map = {
   // 获取注册验证码接口
-  getCode: post<{ email: string }, {}>()("/send_verify_code"),
+  getCode: post<{ account: string }, {}>()("/send_verify_code"),
   // 注册接口
   register: post<RegisterDto, {}>()("/register"),
   // 登录接口
@@ -27,7 +27,7 @@ export const map = {
 
   // 信息流接口
   // 获取发现推荐list
-  getPecommendation: post<{}, {}>()("/get_recommendation"),
+  getPecommendation: post<{}, { recommendation: [] }>()("/get_recommendation"),
   // 获取作品标题
   getTitle: post<{ uuid: string }, { titleText: string; labels: string[] }>()("/get_title_info"),
   // 获取作品内容

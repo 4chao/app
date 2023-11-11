@@ -134,8 +134,8 @@
 </template>
 
 <script setup lang="ts">
-import { RefType } from 'vue/macros'
 import EditCenter from './components/EditCenter.vue'
+import { TextEncoder } from 'text-encoding'
 let img = 'https://0-1-0test.oss-cn-beijing.aliyuncs.com/static/img/default.jpg'
 
 let { params } = useQuery()
@@ -219,11 +219,15 @@ const addLabel = () => {
   if (labelList.length >= 7) {
     return
   }
-  let count = labelValue.trim().length
+  const encoder = new TextEncoder()
+  const buffer = encoder.encode(labelValue.trim())
+  let count = buffer.byteLength
   labelList.forEach(item => {
-    count = count + item.length
+    let itemEncoder = new TextEncoder()
+    const itemBuffer = encoder.encode(item)
+    count = count + itemBuffer.byteLength
   })
-  if (count > 21) {
+  if (count > 66) {
     return
   }
 
@@ -451,7 +455,9 @@ const releaseDialogConfirm = async () => {
       contentText: JSON.stringify(contextList.list),
       contentStruct: '',
     })
-    app.back()
+    app.back({
+      createFlag: true,
+    })
   } catch (error) {
     console.log(error)
   }

@@ -1,7 +1,7 @@
 <template>
-  <meta hide />
-  <sys :top="top" bounce="false">
-    <div class="nodeDetails" @touchmove="touchMove($event)" @touchend="touchUp($event)">
+  <meta hide bounce="false" />
+  <sys :top="top" bounce="none">
+    <div class="nodeDetails" bounce="none" @touchend="touchUp($event)">
       <div class="navhead" flex w-710 ml-20>
         <div class="back" w-30 h-50>
           <image src="../../static/img/back.jpeg" w-30 h-50 mode=""></image>
@@ -13,7 +13,7 @@
       </div>
       <div class="contentBox" w-750 :style="'height:' + ctxHeight + 'overflow: hidden;'" @touchstart="touchStart($event)">
         <div class="rollingBox" relative flex flex-wrap right-750 :style="'width: 300%; height: 300%;bottom:' + ctxHeight + 'transform:' + moveWidth">
-          <div v-for="(item, i) in rendering.list" :key="i" w-710 ml-20 mr-20 :style="'height:' + ctxHeight + 'overflow-y: hidden;'">
+          <div v-for="item in rendering.list" :key="item.index" w-710 ml-20 mr-20 :style="'height:' + ctxHeight + 'overflow-y: hidden;'">
             <scroll-view
               :scroll-top="scrollTop"
               scroll-y="true"
@@ -23,24 +23,27 @@
               @scrolltolower="lower"
               @scroll="contentScroll"
             >
-              <div class="title">测试标题</div>
-              <ContentTemplate v-if="item.contentList.length > 0" :contextList="item.contentList" :titleFlag="false"></ContentTemplate>
-              <div class="labels" flex w-full ml--10 mt-2 flex-wrap>
-                <div
-                  v-for="label in 6"
-                  :key="label"
-                  class="oneLab"
-                  text-24
-                  ml-10
-                  mt-8
-                  pl-16
-                  pr-16
-                  pt-6
-                  pb-6
-                  style="background-color: #e7dfdf; border-radius: 40rpx"
-                >
-                  哈哈哈哈
+              <div style="min-height: 100.5%" @touchmove="touchMove($event)">
+                <div v-if="item.index == 0" class="title" mt-10 text-40 style="text-align: center">{{ titleAndLables.titleText }}</div>
+                <ContentTemplate v-if="item.contentList.length > 0" :contextList="item.contentList" :titleFlag="false"></ContentTemplate>
+                <div v-if="item.index == 0" class="labels" flex w-full ml--10 mt-2 flex-wrap>
+                  <div
+                    v-for="label in titleAndLables.lables"
+                    :key="label"
+                    class="oneLab"
+                    text-24
+                    ml-10
+                    mt-8
+                    pl-16
+                    pr-16
+                    pt-6
+                    pb-6
+                    style="background-color: #e7dfdf; border-radius: 40rpx"
+                  >
+                    {{ label }}
+                  </div>
                 </div>
+                <div h-30 w-full></div>
               </div>
             </scroll-view>
           </div>
@@ -75,59 +78,20 @@ import { RefType } from 'vue/macros'
 
 const { params } = useQuery()
 
-let navheadHeight = $ref(0)
-let bottomBoxHeight = $ref(0)
-let nodeList = reactive<INode[]>([])
-let contextList = reactive({
-  list: [
-    {
-      id: '1',
-      type: 'text',
-      textValue: '好好好，这样玩是吧。好好好，这样玩是吧。好好好，这样玩是吧。好好好，这样玩是吧。好好好，这样玩是吧。',
-      list: [],
-    },
-    {
-      id: '1',
-      type: 'img',
-      textValue: '',
-      list: ['https://0-1-0test.oss-cn-beijing.aliyuncs.com/static/img/default.jpg'],
-    },
-    {
-      id: '1',
-      type: 'text',
-      textValue: '好好好，这样玩是吧。好好好，这样玩是吧。好好好，这样玩是吧。好好好，这样玩是吧。好好好，这样玩是吧。',
-      list: [],
-    },
-    {
-      id: '1',
-      type: 'img',
-      textValue: '',
-      list: ['https://0-1-0test.oss-cn-beijing.aliyuncs.com/static/img/default.jpg'],
-    },
-    {
-      id: '1',
-      type: 'text',
-      textValue: '好好好，这样玩是吧。好好好，这样玩是吧。好好好，这样玩是吧。好好好，这样玩是吧。好好好，这样玩是吧。',
-      list: [],
-    },
-    {
-      id: '1',
-      type: 'img',
-      textValue: '',
-      list: ['https://0-1-0test.oss-cn-beijing.aliyuncs.com/static/img/default.jpg'],
-    },
-  ],
-})
-
-let rendering = reactive({ list: [{ contentList: [] }] })
-
+let navheadHeight = $ref(0) // 头部高度
+let bottomBoxHeight = $ref(0) // 底部高度
+let nodeList = reactive<INode[]>([]) // 记录节点数据
+// 渲染数据
+let rendering = reactive({ list: [{ index: 0, contentList: [] }] })
+// 获得系统顶部高度
 let top = $computed(() => {
   const { statusBarHeight } = app.Global.systemInfo
   return statusBarHeight + 5 + 'px'
 })
+// 当前节点的内容id
 let curentContentUUid = $ref('')
-let bottomFlag = $ref()
 onMounted(() => {
+  // 此处获得页面head和bottom的高度
   setTimeout(() => {
     const query = uni.createSelectorQuery()
     query
@@ -144,25 +108,35 @@ onMounted(() => {
       .exec()
   }, 50)
   curentContentUUid = params._object.params.contextId
+  getTitle()
   getContent()
 })
-
+// 中间内容部分高度
 let ctxHeight = $computed(() => {
   const { statusBarHeight } = app.Global.systemInfo
   const { windowHeight } = app.Global.systemInfo
   return windowHeight - statusBarHeight - navheadHeight - bottomBoxHeight - 5 + 'px;'
 })
 
+// 标题和标签数据
+let titleAndLables = reactive({
+  titleText: '',
+  lables: [],
+})
+// 获得标题标签数据的方法
 const getTitle = async () => {
   let data = await api.getTitle({
     uuid: params._object.params.titleId,
   })
+  titleAndLables.titleText = data.titleText
+  titleAndLables.lables = data.labels
 }
-
+// 获得第一个内容的方法
 const getContent = async () => {
   let data = await api.getContent({
     uuid: params._object.params.contextId,
   })
+  // 添加一个记录节点数据
   nodeList.push({
     index: 0,
     httpFlag: false,
@@ -174,7 +148,9 @@ const getContent = async () => {
   })
   getOtherNode(nodeList[0], 'all')
 }
+// 节点位移的变量
 let moveWidth = $ref('translate(0%,0%);')
+// 获得兄弟节点子节点、拼接节点数据方法。
 const getOtherNode = async (node: INode, type: string) => {
   curentContentUUid = node.contentUuid
   try {
@@ -188,7 +164,6 @@ const getOtherNode = async (node: INode, type: string) => {
         for (let i = 0; i < data.brothers.length; i++) {
           let length = nodeList.length
           let beforeNode = i == 0 ? node.index : length - 1
-          console.log('beforeNode' + beforeNode)
 
           if (i > 0) nodeList[length - 1].nextBrother = length
           else nodeList[node.index].nextBrother = length
@@ -226,35 +201,41 @@ const getOtherNode = async (node: INode, type: string) => {
     // 下面拼接渲染数据
     let list = []
     for (let i = 0; i < 9; i++) {
+      // 拼接父节点
       if (i === 1 && node.beforeNode !== -1 && nodeList[node.beforeNode].nextChild === node.index) {
         list.push(nodeList[node.beforeNode])
         continue
       }
+      // 拼接借一个兄弟节点
       if (i === 3 && node.beforeNode !== -1 && nodeList[node.beforeNode].nextBrother === node.index) {
         list.push(nodeList[node.beforeNode])
         continue
       }
+      // 当前节点
       if (i === 4) {
         list.push(nodeList[node.index])
         continue
       }
+      // 下一个兄弟节点
       if (i === 5 && nodeList[node.index].nextBrother !== -1) {
         list.push(nodeList[nodeList[node.index].nextBrother])
         continue
       }
+      // 子节点
       if (i === 7 && nodeList[node.index].nextChild !== -1) {
         list.push(nodeList[nodeList[node.index].nextChild])
         continue
       }
-      list.push({ contentList: [] })
+      list.push({ index: Math.random(), contentList: [] })
     }
+    // 将拼接的数据赋给渲染list
     rendering.list = list
     moveWidth = 'translate(0%,0%);'
   } catch (error) {
     console.log(error)
   }
 }
-
+// 创建节点的方法（后续要添加代码）
 const createNode = (type: string) => {
   app.to('/pages/articleEdit/articleEdit', {
     type: type,
@@ -262,13 +243,14 @@ const createNode = (type: string) => {
     contextId: curentContentUUid,
   })
 }
-let ifToTop = $ref(true)
-let ifToBottom = $ref(false)
+let ifToTop = $ref(true) // 内容是否滚到顶部
+let ifToBottom = $ref(false) // 内容是否滚动到底部
 let scrollTop = $ref(0)
-let directionFlag = $ref('')
+let directionFlag = $ref('') // 滚动方法
 let x1 = $ref(0)
 let y1 = $ref(0)
-let startMillTime = $ref(0)
+let startMillTime = $ref(0) // 触屏开始的时间戳
+// 触屏开始方法
 const touchStart = event => {
   const date = new Date()
   startMillTime = date.getTime()
@@ -278,9 +260,12 @@ const touchStart = event => {
 }
 let x2 = $ref(0)
 let y2 = $ref(0)
+let oldScrollTop = $ref(0)
+// 划动屏幕的方法
 const touchMove = event => {
   x2 = event.touches[0].clientX - x1
   y2 = event.touches[0].clientY - y1
+  // 判断划动方法
   if (directionFlag == '') {
     if (Math.abs(x2) > Math.abs(y2)) {
       directionFlag = x2 > 0 ? 'right' : 'left'
@@ -288,12 +273,14 @@ const touchMove = event => {
       directionFlag = y2 > 0 ? 'down' : 'up'
     }
   }
+  // 水平划动是
   if (directionFlag == 'right' || directionFlag == 'left') {
     if (directionFlag == 'right' && rendering.list[3].contentList.length === 0) {
       x2 = 0
       return
     }
     if (directionFlag == 'left' && rendering.list[5].contentList.length === 0) {
+      // 没有兄弟节点时，进入编辑页面创建兄弟节点
       if (rendering.list[5].contentList.length === 0) {
         createNode('BIND_BROTHER_CONTENT')
       }
@@ -301,8 +288,10 @@ const touchMove = event => {
       return
     }
     const { windowWidth } = app.Global.systemInfo
+    // 节点内容跟着划动走
     moveWidth = 'translate(' + (x2 / (windowWidth * 3)) * 100 + '%,0%);'
   } else if (directionFlag == 'down' || directionFlag == 'up') {
+    // 以下两个if用于确定内容是否划动到顶部或者底部
     if ((!ifToTop && directionFlag == 'down') || (directionFlag == 'down' && rendering.list[1].contentList.length === 0)) {
       y2 = 0
       return
@@ -328,6 +317,9 @@ const touchUp = event => {
       let timer = setInterval(() => {
         current = current - 0.6
         if (current <= -33.33) {
+          scrollTop = 0
+          ifToTop = true
+          ifToBottom = false
           moveWidth = 'translate(-33.33%,0%);'
           getOtherNode(rendering.list[5] as INode, 'left')
           clearInterval(timer)
@@ -346,6 +338,9 @@ const touchUp = event => {
       let timer = setInterval(() => {
         current = current + 0.6
         if (current >= 33.33) {
+          scrollTop = 0
+          ifToTop = true
+          ifToBottom = false
           moveWidth = 'translate(33.33%,0%);'
           getOtherNode(rendering.list[3] as INode, 'right')
           clearInterval(timer)
@@ -359,7 +354,7 @@ const touchUp = event => {
     }
   }
   if (directionFlag == 'up') {
-    if (rendering.list[7].contentList.length === 0) {
+    if (ifToBottom && rendering.list[7].contentList.length === 0) {
       createNode('BIND_PARENT_CONTENT')
     }
     if ((time < 300 && Math.abs(y2) > 50) || Math.abs(y2) > parseInt(ctxHeight) * 0.5) {
@@ -367,6 +362,9 @@ const touchUp = event => {
       let timer = setInterval(() => {
         current = current - 0.7
         if (current <= -33.33) {
+          scrollTop = 0
+          ifToTop = true
+          ifToBottom = false
           moveWidth = 'translate(0%,-33.33%);'
           getOtherNode(rendering.list[7] as INode, 'up')
           clearInterval(timer)
@@ -385,6 +383,9 @@ const touchUp = event => {
       let timer = setInterval(() => {
         current = current + 0.7
         if (current >= 33.33) {
+          scrollTop = 0
+          ifToTop = false
+          ifToBottom = true
           moveWidth = 'translate(0%,33.33%);'
           getOtherNode(rendering.list[1] as INode, 'down')
           clearInterval(timer)
@@ -415,12 +416,11 @@ const rollbackFun = (current: number, type: string) => {
     moveWidth = type == 'up' || type == 'down' ? 'translate(0%,' + current + '%);' : 'translate(' + current + '%,0%);'
   }, 12)
 }
-let oldScrollTop = $ref(0)
 const contentScroll = event => {
-  if (event.detail.scrollTop < oldScrollTop - 10) {
+  if (event.detail.scrollTop < oldScrollTop) {
     oldScrollTop = event.detail.scrollTop
     ifToBottom = false
-  } else if (event.detail.scrollTop > oldScrollTop + 10) {
+  } else if (event.detail.scrollTop > oldScrollTop) {
     oldScrollTop = event.detail.scrollTop
     ifToTop = false
   }

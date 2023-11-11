@@ -73,7 +73,7 @@ const textToHtml = textValue => {
   newString = newString.replace(/<[^>]+>/g, '')
   newString = newString.replace(/_@/g, '<br/>') // IE9、FF、chrome
   newString = newString.replace(/\s/g, '&nbsp;')
-  return `<p style="fontSize:${30 / 32}rem;">${newString}</p>`
+  return `<p style="fontSize:${32 / 32}rem;">${newString}</p>`
 }
 
 const previewImg = (index1: number, index2: number) => {

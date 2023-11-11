@@ -16,7 +16,6 @@ function request(ins) {
       delete data[name]
       return '/' + val
     })
-    console.log(app.User.token)
     app.debug('发起请求', type, url, data)
     return new Promise((resolve, reject) => {
       uni.request({

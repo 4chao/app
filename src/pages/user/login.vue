@@ -125,7 +125,7 @@ let Coder = $ref(null)
 watchEffect(() => console.log(Coder))
 const getCode = async () => {
   let data = await api.getCode({
-    email: account,
+    account: account,
   })
   console.log(data)
 }
