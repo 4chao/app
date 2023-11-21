@@ -77,6 +77,9 @@ const textToHtml = textValue => {
 }
 
 const previewImg = (index1: number, index2: number) => {
+  if (props.titleFlag) {
+    return
+  }
   uni.previewImage({
     current: index2,
     urls: props.contextList[index1].list,

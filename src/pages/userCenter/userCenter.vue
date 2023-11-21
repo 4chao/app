@@ -16,6 +16,7 @@ let top = $computed(() => {
 let pdTop = $ref('top:' + top)
 const logout = () => {
   app.User.userInfo = {
+    uuid: '',
     email: '',
     phone: '',
     username: '',

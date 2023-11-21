@@ -11,6 +11,7 @@ interface LoginDto {
 
 // 登录返回用户信息接口
 interface LoginUserDto {
+  uuid: string
   email: string
   phone: string
   username: string
@@ -37,6 +38,8 @@ interface CreateContentDto {
 interface NodeDto {
   uuid: string
   contentText: string
+  userUuid: string
+  username: string
 }
 
 // 前端数据结构接口
@@ -51,6 +54,7 @@ interface Iitem {
 // 节点接口
 interface INode {
   index: number
+  userUuid: string
   httpFlag: boolean
   contentUuid: string
   contentList: Iitem[]
@@ -60,6 +64,8 @@ interface INode {
   nextChild: number
   // 下一个兄弟节点的 index, 没有设为-1
   nextBrother: number
+  topFlag: boolean
+  bottomFlag: boolean
 }
 // 节点渲染树接口
 interface ITree {

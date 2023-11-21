@@ -139,13 +139,14 @@ import { TextEncoder } from 'text-encoding'
 let img = 'https://0-1-0test.oss-cn-beijing.aliyuncs.com/static/img/default.jpg'
 
 let { params } = useQuery()
-
+// 是否有标题
 let titleShowFlag = $ref(false)
-let bottomHeight = $ref(0)
+let bottomHeight = $ref(0) // 工具区高度
 let pxRpx = $ref(0)
-let titleText = $ref('')
-const labelList = reactive<string[]>([])
-let labelValue = $ref('')
+let titleText = $ref('') // 标题
+const labelList = reactive<string[]>([]) // 标签list
+let labelValue = $ref('') // 标签输入内容
+// 内容list，编辑数据
 let contextList = reactive({
   list: [
     {
@@ -157,6 +158,7 @@ let contextList = reactive({
   ],
 })
 let imgFlag = $ref(false)
+// 默认图片
 let imgUrl = $ref('../../static/img/addimg.jpeg')
 let addType = $ref('img')
 let clientData = $ref({
@@ -164,6 +166,7 @@ let clientData = $ref({
   top: '840px',
 })
 let touchTop = $ref(840)
+// 头部高度
 let headHeigth = $ref(0)
 let itemStyleList = []
 let alertDialog = ref()
@@ -176,11 +179,13 @@ onLoad(() => {
   console.log('add load')
 })
 onMounted(() => {
+  // 判断是否需要标题
   if (params._object.params.type == 'BIND_PARENT_TITLE') {
     titleShowFlag = true
   } else {
     titleShowFlag = false
   }
+  // 获得底部高度
   setTimeout(() => {
     const { windowWidth } = app.Global.systemInfo
     pxRpx = (750 * 1) / windowWidth
@@ -193,8 +198,8 @@ onMounted(() => {
       .exec()
   }, 50)
 })
+// 系统头部高度
 let top = $computed(() => {
-  const { navBarHeight } = app.Global
   const { statusBarHeight } = app.Global.systemInfo
   return statusBarHeight + 'px;'
 })
@@ -203,6 +208,7 @@ let rtop = $computed(() => {
   const height = titleShowFlag ? 112 : 0
   return 'top:' + (height / pxRpx + statusBarHeight) + 'px;'
 })
+// 内容高度
 let ctxHeight = $computed(() => {
   const { statusBarHeight } = app.Global.systemInfo
   const { windowHeight } = app.Global.systemInfo
@@ -210,7 +216,7 @@ let ctxHeight = $computed(() => {
   headHeigth = statusBarHeight - height / pxRpx
   return 'height:' + (windowHeight - bottomHeight - 10 - statusBarHeight - height / pxRpx) + 'px;'
 })
-
+// 添加标签的方法
 const addLabel = () => {
   if (labelValue.trim() === '') {
     labelValue = ''
@@ -457,6 +463,8 @@ const releaseDialogConfirm = async () => {
     })
     app.back({
       createFlag: true,
+      uuid: data.uuid,
+      contentText: JSON.stringify(contextList.list),
     })
   } catch (error) {
     console.log(error)

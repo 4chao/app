@@ -1,7 +1,7 @@
 <template>
   <meta hide bounce="false" />
   <sys :top="top" bounce="none">
-    <div class="nodeDetails" bounce="none" @touchend="touchUp($event)">
+    <div class="nodeDetails" bounce="none">
       <div class="navhead" flex w-710 ml-20>
         <div class="back" w-30 h-50>
           <image src="../../static/img/back.jpeg" w-30 h-50 mode=""></image>
@@ -11,7 +11,7 @@
           <div class="nickname" ml-10>昵称</div>
         </div>
       </div>
-      <div class="contentBox" w-750 :style="'height:' + ctxHeight + 'overflow: hidden;'" @touchstart="touchStart($event)">
+      <div class="contentBox" w-750 :style="'height:' + ctxHeight + 'overflow: hidden;'" @touchstart="touchStart($event)" @touchend="touchUp($event)">
         <div class="rollingBox" relative flex flex-wrap right-750 :style="'width: 300%; height: 300%;bottom:' + ctxHeight + 'transform:' + moveWidth">
           <div v-for="item in rendering.list" :key="item.index" w-710 ml-20 mr-20 :style="'height:' + ctxHeight + 'overflow-y: hidden;'">
             <scroll-view
@@ -23,7 +23,7 @@
               @scrolltolower="lower"
               @scroll="contentScroll"
             >
-              <div style="min-height: 100.5%" @touchmove="touchMove($event)">
+              <div class="valbox" style="min-height: 101%" @touchmove="touchMove($event)">
                 <div v-if="item.index == 0" class="title" mt-10 text-40 style="text-align: center">{{ titleAndLables.titleText }}</div>
                 <ContentTemplate v-if="item.contentList.length > 0" :contextList="item.contentList" :titleFlag="false"></ContentTemplate>
                 <div v-if="item.index == 0" class="labels" flex w-full ml--10 mt-2 flex-wrap>
@@ -82,7 +82,7 @@ let navheadHeight = $ref(0) // 头部高度
 let bottomBoxHeight = $ref(0) // 底部高度
 let nodeList = reactive<INode[]>([]) // 记录节点数据
 // 渲染数据
-let rendering = reactive({ list: [{ index: 0, contentList: [] }] })
+let rendering = reactive({ list: [{ index: 0, contentList: [], userUuid: '', topFlag: true, bottomFlag: false }] })
 // 获得系统顶部高度
 let top = $computed(() => {
   const { statusBarHeight } = app.Global.systemInfo
@@ -139,17 +139,24 @@ const getContent = async () => {
   // 添加一个记录节点数据
   nodeList.push({
     index: 0,
+    userUuid: params._object.params.userUuid,
     httpFlag: false,
     contentUuid: params._object.params.contextId,
     contentList: JSON.parse(data.contentText),
     beforeNode: -1,
     nextChild: -1,
     nextBrother: -1,
+    topFlag: true,
+    bottomFlag: false,
   })
   getOtherNode(nodeList[0], 'all')
 }
 // 节点位移的变量
 let moveWidth = $ref('translate(0%,0%);')
+let ifToTop = $ref(false) // 内容是否滚到顶部
+let ifToBottom = $ref(false) // 内容是否滚动到底部
+let upFlag = $ref(false)
+let downFlag = $ref(false)
 // 获得兄弟节点子节点、拼接节点数据方法。
 const getOtherNode = async (node: INode, type: string) => {
   curentContentUUid = node.contentUuid
@@ -169,12 +176,15 @@ const getOtherNode = async (node: INode, type: string) => {
           else nodeList[node.index].nextBrother = length
           nodeList.push({
             index: length,
+            userUuid: data.brothers[i].userUuid,
             httpFlag: false,
             contentUuid: data.brothers[i].uuid,
             contentList: JSON.parse(data.brothers[i].contentText),
             beforeNode: beforeNode,
             nextChild: -1,
             nextBrother: -1,
+            topFlag: true,
+            bottomFlag: false,
           })
         }
       }
@@ -187,12 +197,15 @@ const getOtherNode = async (node: INode, type: string) => {
           else nodeList[node.index].nextChild = length
           nodeList.push({
             index: length,
+            userUuid: data.children[i].userUuid,
             httpFlag: false,
             contentUuid: data.children[i].uuid,
             contentList: JSON.parse(data.children[i].contentText),
             beforeNode: beforeNode,
             nextChild: -1,
             nextBrother: -1,
+            topFlag: true,
+            bottomFlag: false,
           })
         }
       }
@@ -237,14 +250,59 @@ const getOtherNode = async (node: INode, type: string) => {
 }
 // 创建节点的方法（后续要添加代码）
 const createNode = (type: string) => {
-  app.to('/pages/articleEdit/articleEdit', {
-    type: type,
-    titleId: '',
-    contextId: curentContentUUid,
-  })
+  if (!app.User.isLogin) {
+    app.to('/pages/user/login')
+    return
+  }
+  if (type == 'BIND_PARENT_CONTENT' && rendering.list[4].userUuid != app.User.userInfo.uuid) {
+    return
+  }
+  if (type == 'BIND_BROTHER_CONTENT' && rendering.list[4].userUuid == app.User.userInfo.uuid) {
+    return
+  }
+  app
+    .to('/pages/articleEdit/articleEdit', {
+      type: type,
+      titleId: '',
+      contextId: curentContentUUid,
+    })
+    .then(data => {
+      if (type == 'BIND_BROTHER_CONTENT' && data.createFlag) {
+        let nextBrother = nodeList[rendering.list[4].index].nextBrother
+        nodeList[rendering.list[4].index].nextBrother = nodeList.length
+        console.log(nextBrother)
+        console.log(nodeList.length)
+        nodeList.push({
+          index: nodeList.length,
+          userUuid: app.User.userInfo.uuid,
+          httpFlag: false,
+          contentUuid: data.uuid,
+          contentList: JSON.parse(data.contentText),
+          beforeNode: rendering.list[4].index,
+          nextChild: -1,
+          nextBrother: nextBrother,
+          topFlag: true,
+          bottomFlag: false,
+        })
+        rendering.list[5] = nodeList[nodeList[rendering.list[4].index].nextBrother]
+      } else if (type == 'BIND_PARENT_CONTENT' && data.createFlag) {
+        nodeList[rendering.list[4].index].nextChild = nodeList.length
+        nodeList.push({
+          index: nodeList.length,
+          userUuid: app.User.userInfo.uuid,
+          httpFlag: false,
+          contentUuid: data.uuid,
+          contentList: JSON.parse(data.contentText),
+          beforeNode: rendering.list[4].index,
+          nextChild: -1,
+          nextBrother: -1,
+          topFlag: true,
+          bottomFlag: false,
+        })
+        rendering.list[7] = nodeList[nodeList[rendering.list[4].index].nextChild]
+      }
+    })
 }
-let ifToTop = $ref(true) // 内容是否滚到顶部
-let ifToBottom = $ref(false) // 内容是否滚动到底部
 let scrollTop = $ref(0)
 let directionFlag = $ref('') // 滚动方法
 let x1 = $ref(0)
@@ -273,7 +331,7 @@ const touchMove = event => {
       directionFlag = y2 > 0 ? 'down' : 'up'
     }
   }
-  // 水平划动是
+  // 水平划动
   if (directionFlag == 'right' || directionFlag == 'left') {
     if (directionFlag == 'right' && rendering.list[3].contentList.length === 0) {
       x2 = 0
@@ -281,9 +339,6 @@ const touchMove = event => {
     }
     if (directionFlag == 'left' && rendering.list[5].contentList.length === 0) {
       // 没有兄弟节点时，进入编辑页面创建兄弟节点
-      if (rendering.list[5].contentList.length === 0) {
-        createNode('BIND_BROTHER_CONTENT')
-      }
       x2 = 0
       return
     }
@@ -292,30 +347,44 @@ const touchMove = event => {
     moveWidth = 'translate(' + (x2 / (windowWidth * 3)) * 100 + '%,0%);'
   } else if (directionFlag == 'down' || directionFlag == 'up') {
     // 以下两个if用于确定内容是否划动到顶部或者底部
-    if ((!ifToTop && directionFlag == 'down') || (directionFlag == 'down' && rendering.list[1].contentList.length === 0)) {
-      y2 = 0
-      return
+    console.log(rendering.list[4].topFlag)
+    console.log(rendering.list[4].bottomFlag)
+    if (directionFlag == 'down') {
+      if (!rendering.list[4].topFlag || rendering.list[1].contentList.length === 0 || !downFlag) {
+        y2 = 0
+        return
+      }
     }
-    if ((!ifToBottom && directionFlag == 'up') || (directionFlag == 'up' && rendering.list[7].contentList.length === 0)) {
-      y2 = 0
-      return
+    console.log(111)
+    console.log(upFlag)
+    console.log(222)
+    if (directionFlag == 'up') {
+      if (!rendering.list[4].bottomFlag || rendering.list[7].contentList.length === 0 || !upFlag) {
+        y2 = 0
+        return
+      }
     }
-    const { windowWidth } = app.Global.systemInfo
     moveWidth = 'translate(0%,' + (y2 / (parseInt(ctxHeight) * 3)) * 100 + '%);'
   }
 }
+// 触屏结束
 const touchUp = event => {
+  let speed = 1.2
   const date = new Date()
   let time = date.getTime() - startMillTime
   const { windowWidth } = app.Global.systemInfo
+  // 一下四个判断用于判断方向
   if (directionFlag == 'left') {
+    // 判断是否还有兄弟，没有进入编辑页面
     if (rendering.list[5].contentList.length === 0) {
-      createNode('BIND_PARENT_CONTENT')
+      createNode('BIND_BROTHER_CONTENT')
     }
+    // 判断速度和划动距离
     if ((time < 300 && Math.abs(x2) > 50) || Math.abs(x2) > windowWidth * 0.5) {
       let current = (x2 / (windowWidth * 3)) * 100
       let timer = setInterval(() => {
-        current = current - 0.6
+        current = current - speed
+        speed = speed <= 0.3 ? 0.3 : speed - 0.03
         if (current <= -33.33) {
           scrollTop = 0
           ifToTop = true
@@ -336,7 +405,8 @@ const touchUp = event => {
     if ((time < 300 && Math.abs(x2) > 50) || Math.abs(x2) > windowWidth * 0.5) {
       let current = (x2 / (windowWidth * 3)) * 100
       let timer = setInterval(() => {
-        current = current + 0.6
+        current = current + speed
+        speed = speed <= 0.3 ? 0.3 : speed - 0.03
         if (current >= 33.33) {
           scrollTop = 0
           ifToTop = true
@@ -354,13 +424,19 @@ const touchUp = event => {
     }
   }
   if (directionFlag == 'up') {
-    if (ifToBottom && rendering.list[7].contentList.length === 0) {
+    if (!upFlag && rendering.list[4].bottomFlag) {
+      upFlag = true
+      return
+    }
+    // 判断是否进入创建子节点
+    if (rendering.list[4].bottomFlag && rendering.list[7].contentList.length === 0) {
       createNode('BIND_PARENT_CONTENT')
     }
     if ((time < 300 && Math.abs(y2) > 50) || Math.abs(y2) > parseInt(ctxHeight) * 0.5) {
       let current = (y2 / (parseInt(ctxHeight) * 3)) * 100
       let timer = setInterval(() => {
-        current = current - 0.7
+        current = current - speed
+        speed = speed <= 0.3 ? 0.3 : speed - 0.03
         if (current <= -33.33) {
           scrollTop = 0
           ifToTop = true
@@ -378,10 +454,15 @@ const touchUp = event => {
     }
   }
   if (directionFlag == 'down') {
+    if (!downFlag && rendering.list[4].topFlag) {
+      downFlag = true
+      return
+    }
     if ((time < 300 && Math.abs(y2) > 50) || Math.abs(y2) > parseInt(ctxHeight) * 0.5) {
       let current = (y2 / (parseInt(ctxHeight) * 3)) * 100
       let timer = setInterval(() => {
-        current = current + 0.7
+        current = current + speed
+        speed = speed <= 0.3 ? 0.3 : speed - 0.03
         if (current >= 33.33) {
           scrollTop = 0
           ifToTop = false
@@ -400,6 +481,7 @@ const touchUp = event => {
   }
 }
 
+// 节点回滚
 const rollbackFun = (current: number, type: string) => {
   let timer = setInterval(() => {
     let plusOrMinus = type == 'left' || type == 'up' ? 0.3 : -0.3
@@ -417,23 +499,21 @@ const rollbackFun = (current: number, type: string) => {
   }, 12)
 }
 const contentScroll = event => {
-  if (event.detail.scrollTop < oldScrollTop) {
+  if (event.detail.scrollTop < oldScrollTop - 10) {
     oldScrollTop = event.detail.scrollTop
-    ifToBottom = false
-  } else if (event.detail.scrollTop > oldScrollTop) {
+    rendering.list[4].bottomFlag = false
+    downFlag = false
+  } else if (event.detail.scrollTop > oldScrollTop + 10) {
     oldScrollTop = event.detail.scrollTop
-    ifToTop = false
+    rendering.list[4].topFlag = false
+    upFlag = false
   }
 }
 const toupper = () => {
-  setTimeout(() => {
-    ifToTop = true
-  }, 200)
+  rendering.list[4].topFlag = true
 }
 const lower = () => {
-  setTimeout(() => {
-    ifToBottom = true
-  }, 200)
+  rendering.list[4].bottomFlag = true
 }
 </script>
 

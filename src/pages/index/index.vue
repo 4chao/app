@@ -6,21 +6,16 @@
         刷新......
       </div> -->
       <swiper class="swiper" w-full :vertical="true" :style="ctxHeight" bounce="none" :disable-touch="false" @change="changeFun">
-        <swiper-item v-for="(item, i) in contextList.list" :key="i" relative @touchstart="touchStart($event)" @touchend="touchEnd($event)">
+        <swiper-item
+          v-for="(item, i) in contextList.list"
+          :key="i"
+          relative
+          @click="toNodeDetails(item)"
+          @touchstart="touchStart($event)"
+          @touchend="touchEnd($event)"
+        >
           <ContentTemplate :contextList="toJsonFun(item.contentText)" :titleFlag="true" :title="item.titleText"></ContentTemplate>
-          <div
-            class="foldbox"
-            absolute
-            bottom-0
-            left-0
-            w-full
-            text-center
-            h-170
-            style="line-height: 170rpx"
-            @click="toNodeDetails(item.titleUuid, item.contentUuid)"
-          >
-            查看更多
-          </div>
+          <div class="foldbox" absolute bottom-0 left-0 w-full text-center h-170 style="line-height: 170rpx">查看更多</div>
         </swiper-item>
       </swiper>
     </div>
@@ -64,10 +59,11 @@ let ctxHeight = $computed(() => {
   return 'height:' + (windowHeight - statusBarHeight - 130 / pxRpx - 6) + 'px;'
 })
 
-const toNodeDetails = (titleId: string, contextId: string) => {
+const toNodeDetails = item => {
   app.to('/pages/nodeDetails/nodeDetails', {
-    titleId: titleId,
-    contextId: contextId,
+    titleId: item.titleUuid,
+    contextId: item.contentUuid,
+    userUuid: item.userUuid,
   })
 }
 

@@ -5,6 +5,7 @@ export class User extends Pinia {
   baseUrl = import.meta.env.VITE_BASE_URL
   @Persist
   userInfo: LoginUserDto = {
+    uuid: '',
     email: '',
     phone: '',
     username: '',
