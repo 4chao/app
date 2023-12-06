@@ -68,7 +68,25 @@
         />
       </div>
       <div class="funList" pt-20 pb-30 flex items-center relative>
-        <image src="../../static/img/models.jpeg" mode="" w-70 h-60 ml-26 mr-6></image>
+        <div relative ml-26 mr-6>
+          <div
+            v-show="modelFlag"
+            class="modelList"
+            flex
+            flex-col
+            absolute
+            bottom-80
+            left--10
+            bg-red
+            style="border-radius: 12rpx; background-color: #f2f2f2; padding: 6rpx 10rpx 16rpx 10rpx"
+          >
+            <div v-for="item in 5" :key="item" class="oneModel" mt-10 w-120 text-22 text-center bg-white style="border-radius: 30rpx">
+              模板{{ item }}
+            </div>
+            <div class="oneModel" mt-10 w-120 text-22 text-center style="border-radius: 30rpx; background-color: #ebe6fa">存为模板</div>
+          </div>
+          <image src="../../static/img/models.jpeg" mode="" w-70 h-60 @click="modelFlag = !modelFlag"></image>
+        </div>
         <image
           src="../../static/img/text.jpeg"
           mode=""
@@ -128,7 +146,16 @@
       title="提示"
       content="是否确认发布"
       @confirm="releaseDialogConfirm"
-      @close="releaseDialogClose"
+    ></uni-popup-dialog>
+  </uni-popup>
+  <uni-popup ref="modelDialog" type="dialog">
+    <uni-popup-dialog
+      type="info"
+      cancelText="取消"
+      confirmText="确认"
+      title="提示"
+      content="是否将当前内容存为模板"
+      @confirm="saveModelDialogConfirm"
     ></uni-popup-dialog>
   </uni-popup>
 </template>
@@ -431,7 +458,6 @@ const uploadImg = (index1: number, index2: number) => {
           contextList.list[index1].list[index2] = url
         },
       })
-      console.log(444)
     },
   })
 }
@@ -460,6 +486,7 @@ const releaseDialogConfirm = async () => {
       createContentType: params._object.params.type,
       contentText: JSON.stringify(contextList.list),
       contentStruct: '',
+      isWork: false,
     })
     app.back({
       createFlag: true,
@@ -470,7 +497,10 @@ const releaseDialogConfirm = async () => {
     console.log(error)
   }
 }
-const releaseDialogClose = () => {}
+
+let modelFlag = $ref(false)
+
+const saveModelDialogConfirm = () => {}
 </script>
 
 <style lang="scss">

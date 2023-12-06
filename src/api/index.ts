@@ -24,16 +24,22 @@ export const map = {
   createContentTitle: post<{ titleText: string; labels: string[] }, {}>()("/create_title"),
   // 创建文章内容
   createContent: post<CreateContentDto, { uuid: string }>()("/create_content"),
+  // 同时创建标题和内容
+  createTitleAndContent: post<CreateTitleContentDto, {}>()("/create_title_and_content"),
 
   // 信息流接口
   // 获取发现推荐list
-  getPecommendation: post<{}, { recommendation: [] }>()("/get_recommendation"),
-  // 获取作品标题
+  getPecommendation: post<{}, { recommendation: RecommendationDto[] }>()("/get_recommendation"),
+  // 获取节点标题
   getTitle: post<{ uuid: string }, { titleText: string; labels: string[] }>()("/get_title_info"),
   // 获取作品内容
-  getContent: post<{ uuid: string }, { contentText: string; contentStruct: string }>()("/get_content_text"),
+  getContent: post<{ uuid: string }, { contentText: string; userUuid: string; username: string }>()("/get_content_text"),
   // 获得兄弟节点、子节点
   getOtherNode: post<{ uuid: string }, { brothers: NodeDto[]; children: NodeDto[] }>()("/get_preview"),
+
+  // 用户作品、创想管理相关接口
+  // 查询用户创想list接口
+  getUserCreatives: post<{}, { owns: object[]; collaborations: object[] }>()("/get_creatives/self"),
 };
 
 export const manage_map = {};

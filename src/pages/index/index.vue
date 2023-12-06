@@ -10,11 +10,12 @@
           v-for="(item, i) in contextList.list"
           :key="i"
           relative
-          @click="toNodeDetails(item)"
+          @click="toDetails(item)"
           @touchstart="touchStart($event)"
           @touchend="touchEnd($event)"
         >
-          <ContentTemplate :contextList="toJsonFun(item.contentText)" :titleFlag="true" :title="item.titleText"></ContentTemplate>
+          <WorksTemplate v-if="item.isWork" :context="item"></WorksTemplate>
+          <ContentTemplate v-else :contextList="toJsonFun(item.contentText)" :titleFlag="true" :title="item.titleText"></ContentTemplate>
           <div class="foldbox" absolute bottom-0 left-0 w-full text-center h-170 style="line-height: 170rpx">查看更多</div>
         </swiper-item>
       </swiper>
@@ -59,12 +60,20 @@ let ctxHeight = $computed(() => {
   return 'height:' + (windowHeight - statusBarHeight - 130 / pxRpx - 6) + 'px;'
 })
 
-const toNodeDetails = item => {
-  app.to('/pages/nodeDetails/nodeDetails', {
-    titleId: item.titleUuid,
-    contextId: item.contentUuid,
-    userUuid: item.userUuid,
-  })
+const toDetails = item => {
+  if (item.isWork) {
+    app.to('/pages/worksDetails/worksDetails', {
+      titleId: item.titleUuid,
+      contextId: item.contentUuid,
+      userUuid: item.userUuid,
+    })
+  } else if (!item.isWork) {
+    app.to('/pages/nodeDetails/nodeDetails', {
+      titleId: item.titleUuid,
+      contextId: item.contentUuid,
+      userUuid: item.userUuid,
+    })
+  }
 }
 
 const toJsonFun = (str: string) => {

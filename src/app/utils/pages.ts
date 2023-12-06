@@ -17,7 +17,13 @@ let to = debounce(
     uni.$on(id + '_query', cb => cb(pkg))
     let url = getPath(path, currentGroup)
     console.log(url)
-    if (!app.User.isLogin && url != 'pages/index/index' && url != '/pages/nodeDetails/nodeDetails' && url != '/pages/user/login') {
+    if (
+      !app.User.isLogin &&
+      url != 'pages/index/index' &&
+      url != '/pages/nodeDetails/nodeDetails' &&
+      url != '/pages/worksDetails/worksDetails' &&
+      url != '/pages/user/login'
+    ) {
       url = '/pages/user/login'
     }
     uni

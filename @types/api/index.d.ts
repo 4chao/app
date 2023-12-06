@@ -32,14 +32,40 @@ interface CreateContentDto {
   createContentType: string
   contentText: string
   contentStruct?: string
+  isWork: boolean
+}
+
+// 同时创建标题加内容请求参数
+interface CreateTitleContentDto {
+  titleText: string
+  labels: string[]
+  contentText: string
+  contentStruct: string
+  isWork: boolean
+}
+
+interface RecommendationDto {
+  titleUuid: string
+  titleText: string
+  contentUuid: string
+  contentText: string
+  userUuid: string
+  username: string
+  isWork: boolean
 }
 
 // 兄弟节点子节点返回参数限制
 interface NodeDto {
-  uuid: string
   contentText: string
   userUuid: string
   username: string
+  titleUuid: string
+  contentUuid: string
+  contentStruct: string
+  upvoteCount: number
+  downvoteCount: number
+  createTime: string
+  isWork: boolean
 }
 
 // 前端数据结构接口
